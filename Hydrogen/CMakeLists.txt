@@ -4,11 +4,13 @@ project(Hydrogen)
 
 set(CMAKE_CXX_STANDARD 20)
 
-# Create executable
-add_library(${PROJECT_NAME} STATIC)
-
 # Compiler flags
-target_compile_options(${PROJECT_NAME} BEFORE PRIVATE -Wall -Wpedantic -Wextra -Wshadow -Wconversion)
+add_compile_options(-Wall -Wpedantic -Wextra -Wshadow -Wconversion)
+set(CMAKE_CXX_VISIBILITY_PRESET hidden)
+set(CMAKE_VISIBILITY_INLINES_HIDDEN YES)
+
+# Create executable
+add_library(${PROJECT_NAME} SHARED)
 
 # Sources
 target_sources(${PROJECT_NAME} PRIVATE
@@ -16,3 +18,9 @@ target_sources(${PROJECT_NAME} PRIVATE
         )
 
 target_include_directories(${PROJECT_NAME} PRIVATE src/)
+
+# Include Interface
+target_include_directories(${PROJECT_NAME} PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/>
+        $<INSTALL_INTERFACE:include/Hydrogen>
+        )

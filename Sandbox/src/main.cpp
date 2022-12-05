@@ -1,8 +1,4 @@
-namespace Hydrogen {
-
-void test();
-
-}
+#include "Hydrogen/hydrogen.h"
 
 int main() {
     Hydrogen::test();
