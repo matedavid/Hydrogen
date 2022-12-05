@@ -14,7 +14,9 @@ add_library(${PROJECT_NAME} SHARED)
 
 # Sources
 target_sources(${PROJECT_NAME} PRIVATE
-        src/test.cpp
+        src/vertex_array.cpp
+        src/buffers.cpp
+        src/shader.cpp
         )
 
 target_include_directories(${PROJECT_NAME} PRIVATE src/)
@@ -24,3 +26,24 @@ target_include_directories(${PROJECT_NAME} PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/>
         $<INSTALL_INTERFACE:include/Hydrogen>
         )
+
+# Glad
+target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/vendor/glad/include/)
+target_sources(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/vendor/glad/src/glad.c)
+
+
+# GLFW
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/vendor/glfw-3.3.8)
+target_link_libraries(${PROJECT_NAME} glfw)
+
+set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+
+# OpenGL
+find_package(OpenGL REQUIRED)
+target_link_libraries(${PROJECT_NAME} OpenGL::GL)
+
+# Glm
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/vendor/glm)
+target_link_libraries(${PROJECT_NAME} glm::glm)
