@@ -70,7 +70,7 @@ void Shader::set_uniform_mat4(const glm::mat4& value, const std::string& name) {
     }
 
     int uniform_location = m_uniform_location[name];
-    glUniformMatrix4fv(uniform_location, 1, GL_TRUE, &value[0][0]);
+    glUniformMatrix4fv(uniform_location, 1, GL_FALSE, &value[0][0]);
 }
 
 Shader::Shader(unsigned int id) : ID(id) {

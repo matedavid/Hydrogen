@@ -1,5 +1,7 @@
 #pragma once
 
+#include "core.h"
+
 #include <vector>
 
 namespace Hydrogen {
@@ -7,9 +9,9 @@ namespace Hydrogen {
 //
 // Attribute Data
 //
-enum class ShaderType { Float32, UnsignedInt, Bool };
+enum class HG_API ShaderType { Float32, UnsignedInt, Bool };
 
-struct VertexLayout {
+struct HG_API VertexLayout {
     ShaderType type;
     int count;
     bool normalized;
@@ -18,7 +20,7 @@ struct VertexLayout {
 //
 // Vertex Buffer
 //
-class VertexBuffer {
+class HG_API VertexBuffer {
   public:
     VertexBuffer(const float* vertices, unsigned int size);
     ~VertexBuffer();
@@ -35,7 +37,7 @@ class VertexBuffer {
 //
 // Index Buffer
 //
-class IndexBuffer {
+class HG_API IndexBuffer {
   public:
     IndexBuffer(const unsigned int* indices, int count);
     ~IndexBuffer();
@@ -50,4 +52,4 @@ class IndexBuffer {
     int m_count;
 };
 
-} // namespace renderer
+} // namespace Hydrogen

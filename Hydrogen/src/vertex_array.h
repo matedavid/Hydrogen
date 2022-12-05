@@ -1,12 +1,14 @@
 #pragma once
 
+#include "core.h"
+
 #include <vector>
 
 #include "buffers.h"
 
 namespace Hydrogen {
 
-class VertexArray {
+class HG_API VertexArray {
   public:
     VertexArray();
     ~VertexArray();
