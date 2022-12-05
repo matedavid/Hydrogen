@@ -7,10 +7,11 @@
 #include <functional>
 
 #include "renderer.h"
+#include "events.h"
 
 namespace Hydrogen {
 
-// TODO: using EventCallbackFunc = std::function<void(Event&)>;
+using EventCallbackFunc = std::function<void(Event&)>;
 
 #define BIND_EVENT_FUNC(func)                                     \
     [this](auto&&... args) -> decltype(auto) {                    \
@@ -22,7 +23,7 @@ struct ApplicationData {
     int height;
     // TODO: math::vec2 mouse_position;
 
-    // TODO: EventCallbackFunc event_callback;
+    EventCallbackFunc event_callback;
 };
 
 class HG_API Application {
@@ -33,14 +34,14 @@ class HG_API Application {
     void run();
     virtual void on_update(double ts) = 0;
 
-    // void on_event(Event& event);
-    // void bind_event_callback_func(EventType event, EventCallbackFunc func);
+    void on_event(Event& event);
+    void bind_event_callback_func(EventType event, EventCallbackFunc func);
 
   private:
     GLFWwindow* m_window;
     ApplicationData m_data;
 
-    // std::unordered_map<EventType, EventCallbackFunc> m_event_callback;
+    std::unordered_map<EventType, EventCallbackFunc> m_event_callback;
 };
 
 }

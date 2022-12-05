@@ -11,7 +11,7 @@ Application::Application(int width, int height, const std::string& title) {
     glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
     glfwSetWindowUserPointer(m_window, &m_data);
 
-    // TODO: m_data.event_callback = BIND_EVENT_FUNC(Application::on_event);
+    m_data.event_callback = BIND_EVENT_FUNC(Application::on_event);
 
     // Window events
     glfwSetWindowSizeCallback(m_window, [](GLFWwindow* window, int width, int height) {
@@ -19,22 +19,21 @@ Application::Application(int width, int height, const std::string& title) {
         data->width = width;
         data->height = height;
 
-        // TODO: WindowResizeEvent event(width, height);
-        // TODO: data->event_callback(event);
+        WindowResizeEvent event(width, height);
+        data->event_callback(event);
     });
 
     // Mouse events
     glfwSetCursorPosCallback(m_window, [](GLFWwindow* window, double xpos, double ypos) {
         auto data = (ApplicationData*)glfwGetWindowUserPointer(window);
 
-        // TODO: MouseMovedEvent event(xpos, ypos);
-        // TODO: data->event_callback(event);
+        MouseMovedEvent event(xpos, ypos);
+        data->event_callback(event);
     });
 
     glfwSetMouseButtonCallback(m_window, [](GLFWwindow* window, int button, int action, int mods) {
         auto data = (ApplicationData*)glfwGetWindowUserPointer(window);
 
-        /* TODO:
         if (action == GLFW_PRESS) {
             MousePressedEvent event(button, mods);
             data->event_callback(event);
@@ -42,13 +41,11 @@ Application::Application(int width, int height, const std::string& title) {
             MouseReleasedEvent event(button, mods);
             data->event_callback(event);
         }
-         */
     });
 
     // Keyboard events
     glfwSetKeyCallback(
         m_window, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
-            /* TODO:
             auto data = (ApplicationData*)glfwGetWindowUserPointer(window);
             if (action == GLFW_PRESS) {
                 KeyPressedEvent event(key, scancode, mods);
@@ -60,7 +57,6 @@ Application::Application(int width, int height, const std::string& title) {
                 KeyRepeatEvent event(key, scancode, mods);
                 data->event_callback(event);
             }
-             */
         });
 }
 
@@ -85,7 +81,6 @@ void Application::run() {
     }
 }
 
-/*
 void Application::on_event(Event& event) {
     if (m_event_callback.find(event.get_type()) != m_event_callback.end()) {
         m_event_callback[event.get_type()](event);
@@ -107,6 +102,5 @@ void Application::on_event(Event& event) {
 void Application::bind_event_callback_func(EventType event, EventCallbackFunc func) {
     m_event_callback[event] = std::move(func);
 }
- */
 
 }
