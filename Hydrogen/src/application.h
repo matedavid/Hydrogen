@@ -6,7 +6,7 @@
 #include <unordered_map>
 #include <functional>
 
-#include "renderer.h"
+#include "renderer/renderer.h"
 #include "events.h"
 
 namespace Hydrogen {

@@ -1,7 +1,8 @@
 #pragma once
 
-#include "../src/vertex_array.h"
-#include "../src/buffers.h"
-#include "../src/shader.h"
-#include "../src/renderer.h"
 #include "../src/application.h"
+
+#include "../../src/renderer/vertex_array.h"
+#include "../../src/renderer/buffers.h"
+#include "../../src/renderer/shader.h"
+#include "../../src/renderer/renderer.h"

@@ -65,12 +65,12 @@ void Renderer::draw_quad(float x, float y, float width, float height, Shader* sh
     model = glm::translate(model, glm::vec3(x, y, 0.0f));
     model = glm::scale(model, glm::vec3(width, height, 1.0f));
 
-    shader->set_uniform_mat4(model, "TG");
+    shader->set_uniform_mat4(model, "Model");
     Renderer::draw(m_resources->quad, shader);
 }
 
 void Renderer::draw_quad(float x, float y, float width, float height, const glm::vec3& color) {
-    m_resources->flat_color_shader->set_uniform_vec3(color, "aColor");
+    m_resources->flat_color_shader->set_uniform_vec3(color, "Color");
     Renderer::draw_quad(x, y, width, height, m_resources->flat_color_shader);
 }
 

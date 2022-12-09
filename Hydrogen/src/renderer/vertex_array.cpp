@@ -1,6 +1,6 @@
 #include "vertex_array.h"
 
-#include <glad/glad.h>
+#include "glad/glad.h"
 
 namespace Hydrogen {
 

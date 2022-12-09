@@ -14,17 +14,18 @@ add_library(${PROJECT_NAME} SHARED)
 
 # Sources
 target_sources(${PROJECT_NAME} PRIVATE
-        src/vertex_array.cpp
-        src/buffers.cpp
-        src/shader.cpp
-        src/renderer.cpp
         src/application.cpp
+
+        src/renderer/vertex_array.cpp
+        src/renderer/buffers.cpp
+        src/renderer/shader.cpp
+        src/renderer/renderer.cpp
         )
 
-target_include_directories(${PROJECT_NAME} PRIVATE src/)
+# target_include_directories(${PROJECT_NAME} PRIVATE src/)
 
 # Include Interface
-target_include_directories(${PROJECT_NAME} PUBLIC
+target_include_directories(${PROJECT_NAME} PUBLIC src/
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/>
         $<INSTALL_INTERFACE:include/Hydrogen>
         )
