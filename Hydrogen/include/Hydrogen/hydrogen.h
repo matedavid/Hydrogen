@@ -6,3 +6,5 @@
 #include "../../src/renderer/buffers.h"
 #include "../../src/renderer/shader.h"
 #include "../../src/renderer/renderer.h"
+#include "../../src/renderer/camera.h"
+#include "../../src/renderer/orthographic_camera.h"

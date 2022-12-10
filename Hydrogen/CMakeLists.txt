@@ -20,6 +20,8 @@ target_sources(${PROJECT_NAME} PRIVATE
         src/renderer/buffers.cpp
         src/renderer/shader.cpp
         src/renderer/renderer.cpp
+        src/renderer/camera.cpp
+        src/renderer/orthographic_camera.cpp
         )
 
 # target_include_directories(${PROJECT_NAME} PRIVATE src/)
