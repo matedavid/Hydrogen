@@ -7,7 +7,9 @@ class Sandbox : public Hydrogen::Application {
         m_shader = Hydrogen::Shader::from_file("../../Hydrogen/assets/vertex.glsl",
                                                "../../Hydrogen/assets/fragment.glsl");
         bind_event_callback_func(Hydrogen::EventType::MouseMoved, BIND_EVENT_FUNC(on_mouse_moved));
-        m_camera = Hydrogen::OrthographicCamera(-2.5, 2.5f, -2.5f, 2.5f);
+
+        m_camera.set_position({0, 0, 0});
+        m_camera = Hydrogen::OrthographicCamera(-2.5, 2.5f, -2.5f, 2.5f, -5, 5);
     }
 
     void on_update(double ts) override {

@@ -2,8 +2,7 @@
 
 #include "core.h"
 
-#include "glad/glad.h"
-#include "GLFW/glfw3.h"
+#include <glad/glad.h>
 
 #include "glm/glm.hpp"
 #include "glm/gtx/transform.hpp"
@@ -16,8 +15,8 @@ namespace Hydrogen {
 
 class HG_API Renderer {
   public:
-    static GLFWwindow* init(int width, int height, const std::string& window_title);
-    static void free(GLFWwindow* window);
+    static void init();
+    static void free();
 
     static void clear(const glm::vec3& color);
 
@@ -38,4 +37,4 @@ class HG_API Renderer {
     static VertexArray* create_quad();
 };
 
-}
+} // namespace Hydrogen

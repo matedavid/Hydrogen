@@ -4,46 +4,14 @@
 
 namespace Hydrogen {
 
-GLFWwindow* Renderer::init(int width, int height, const std::string& window_title) {
-    if (!glfwInit()) {
-        std::cerr << "Error initializing glfw\n";
-        return nullptr;
-    }
-
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-    GLFWwindow* window = glfwCreateWindow(width, height, window_title.c_str(), nullptr, nullptr);
-    if (!window) {
-        std::cerr << "Error creating window\n";
-        glfwTerminate();
-        return nullptr;
-    }
-    glfwMakeContextCurrent(window);
-
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-        std::cerr << "Failed to initialize GLAD\n";
-        glfwTerminate();
-        return nullptr;
-    }
-
-    // Set VSync
-    glfwSwapInterval(1);
-    glViewport(0, 0, width, height);
-
+void Renderer::init() {
     m_resources = new RendererResources();
     m_resources->quad = create_quad();
     m_resources->flat_color_shader
         = Shader::from_file("../../Hydrogen/assets/vertex.glsl", "../../Hydrogen/assets/fragment.glsl");
-
-    return window;
 }
 
-void Renderer::free(GLFWwindow* window) {
-    glfwDestroyWindow(window);
-    glfwTerminate();
-
+void Renderer::free() {
     delete m_resources->quad;
     delete m_resources;
 }
