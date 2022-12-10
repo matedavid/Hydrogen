@@ -21,6 +21,14 @@ void Renderer::clear(const glm::vec3& color) {
     glClear(GL_COLOR_BUFFER_BIT);
 }
 
+void Renderer::begin_scene(const Camera& camera) {
+    m_resources->flat_color_shader->bind();
+    m_resources->flat_color_shader->set_uniform_mat4(camera.get_view_projection(), "ViewProjection");
+}
+
+void Renderer::end_scene() {
+}
+
 void Renderer::draw(const VertexArray* vao, const Shader* shader) {
     shader->bind();
     vao->bind();

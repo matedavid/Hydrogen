@@ -4,9 +4,10 @@
 
 #include <glad/glad.h>
 
-#include "glm/glm.hpp"
-#include "glm/gtx/transform.hpp"
+#include <glm/glm.hpp>
+#include <glm/gtx/transform.hpp>
 
+#include "camera.h"
 #include "vertex_array.h"
 #include "buffers.h"
 #include "shader.h"
@@ -19,6 +20,8 @@ class HG_API Renderer {
     static void free();
 
     static void clear(const glm::vec3& color);
+    static void begin_scene(const Camera& camera);
+    static void end_scene();
 
     static void draw(const VertexArray* vao, const Shader* shader);
 
