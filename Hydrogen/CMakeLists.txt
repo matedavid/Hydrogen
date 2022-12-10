@@ -16,6 +16,7 @@ add_library(${PROJECT_NAME} SHARED)
 target_sources(${PROJECT_NAME} PRIVATE
         src/application.cpp
         src/window.cpp
+        src/input.cpp
 
         src/renderer/vertex_array.cpp
         src/renderer/buffers.cpp

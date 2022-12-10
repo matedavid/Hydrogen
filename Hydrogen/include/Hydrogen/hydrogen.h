@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../src/application.h"
+#include "../src/input.h"
 
 #include "../../src/renderer/vertex_array.h"
 #include "../../src/renderer/buffers.h"

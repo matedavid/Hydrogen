@@ -31,22 +31,26 @@ class Sandbox : public Hydrogen::Application {
         double x = mouse_moved.get_xpos();
         double y = mouse_moved.get_ypos();
 
-        float x_rotation = 0.0f;
-        float y_rotation = 0.0f;
+        if (Hydrogen::Input::is_mouse_button_pressed(GLFW_MOUSE_BUTTON_LEFT)
+            && Hydrogen::Input::is_key_pressed(GLFW_KEY_LEFT_CONTROL)) {
+            float x_rotation = 0.0f;
+            float y_rotation = 0.0f;
 
-        if (x > m_mouse_position.x) {
-            x_rotation -= 0.03f;
-        } else if (x < m_mouse_position.x) {
-            x_rotation += 0.03f;
+            if (x > m_mouse_position.x) {
+                x_rotation -= 0.03f;
+            } else if (x < m_mouse_position.x) {
+                x_rotation += 0.03f;
+            }
+
+            if (y > m_mouse_position.y) {
+                y_rotation += 0.03f;
+            } else if (y < m_mouse_position.y) {
+                y_rotation -= 0.03f;
+            }
+
+            m_camera.rotate({x_rotation, y_rotation});
         }
 
-        if (y > m_mouse_position.y) {
-            y_rotation += 0.03f;
-        } else if (y < m_mouse_position.y) {
-            y_rotation -= 0.03f;
-        }
-
-        m_camera.rotate({x_rotation, y_rotation});
         m_mouse_position = glm::vec2(x, y);
     }
 

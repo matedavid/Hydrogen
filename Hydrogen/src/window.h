@@ -34,6 +34,7 @@ class Window {
     bool should_close() const;
     void on_update() const;
 
+    GLFWwindow* get_native_window() const { return m_window; }
     void bind_event_func(EventType event, EventCallbackFunc func);
 
   private:

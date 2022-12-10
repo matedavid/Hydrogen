@@ -8,11 +8,13 @@ Application::Application(int width, int height, const std::string& title) {
     m_window = new Window(width, height, title);
     Renderer::init();
 
+    m_instance = this;
 }
 
 Application::~Application() {
     Renderer::free();
     delete m_window;
+    delete m_instance;
 }
 
 void Application::run() {
