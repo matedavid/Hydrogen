@@ -6,14 +6,14 @@ class Sandbox : public Hydrogen::Application {
         : Hydrogen::Application(width, height, title) {
         bind_event_callback_func(Hydrogen::EventType::MouseMoved, BIND_EVENT_FUNC(on_mouse_moved));
 
-        m_camera.set_position({0.0f, 0.0f, 2.5f});
-        m_camera = Hydrogen::OrthographicCamera(-2.5f, 2.5f, -2.5f, 2.5f, -2.5f, 10.0f);
+        m_camera.set_position({0.0f, 0.0f, 0.0f});
+        m_camera = Hydrogen::OrthographicCamera(-1.0f, 1.0f, -1.0f, 1.0f, -2.5f, 10.0f);
     }
 
     void on_update(double ts) override {
-        Hydrogen::Renderer::begin_scene(m_camera);
-        Hydrogen::Renderer::draw_quad(0.0f, 0.0f, 1.0f, 1.0f, glm::vec3(0.2f, 0.3f, 0.2f));
-        Hydrogen::Renderer::end_scene();
+        Hydrogen::Renderer3D::begin_scene(m_camera);
+        Hydrogen::Renderer3D::draw_cube({0.0f, 0.0f, 0.0f}, {1.0f, 1.0f, 1.0f}, glm::vec3(0.2f, 0.3f, 0.2f));
+        Hydrogen::Renderer3D::end_scene();
     }
 
     void on_mouse_moved(Hydrogen::Event& event) {

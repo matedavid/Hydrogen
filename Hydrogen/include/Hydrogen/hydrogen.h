@@ -1,11 +1,11 @@
 #pragma once
 
-#include "../src/application.h"
-#include "../src/input.h"
+#include "application.h"
+#include "input.h"
 
-#include "../../src/renderer/vertex_array.h"
-#include "../../src/renderer/buffers.h"
-#include "../../src/renderer/shader.h"
-#include "../../src/renderer/renderer.h"
-#include "../../src/renderer/camera.h"
-#include "../../src/renderer/orthographic_camera.h"
+#include "renderer/vertex_array.h"
+#include "renderer/buffers.h"
+#include "renderer/shader.h"
+#include "renderer/renderer3d.h"
+#include "renderer/camera.h"
+#include "renderer/orthographic_camera.h"

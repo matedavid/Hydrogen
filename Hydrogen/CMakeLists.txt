@@ -21,7 +21,7 @@ target_sources(${PROJECT_NAME} PRIVATE
         src/renderer/vertex_array.cpp
         src/renderer/buffers.cpp
         src/renderer/shader.cpp
-        src/renderer/renderer.cpp
+        src/renderer/renderer3d.cpp
         src/renderer/camera.cpp
         src/renderer/orthographic_camera.cpp
         )

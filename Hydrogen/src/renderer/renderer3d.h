@@ -14,7 +14,7 @@
 
 namespace Hydrogen {
 
-class HG_API Renderer {
+class HG_API Renderer3D {
   public:
     static void init();
     static void free();
@@ -26,8 +26,8 @@ class HG_API Renderer {
     static void draw(const VertexArray* vao, const Shader* shader);
 
     // Primitives
-    static void draw_quad(float x, float y, float width, float height, Shader* shader);
-    static void draw_quad(float x, float y, float width, float height, const glm::vec3& color);
+    static void draw_cube(const glm::vec3& pos, const glm::vec3& dim, Shader* shader);
+    static void draw_cube(const glm::vec3& pos, const glm::vec3& dim, const glm::vec3& color);
 
   private:
     struct RendererResources {
