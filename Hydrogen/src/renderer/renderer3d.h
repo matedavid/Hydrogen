@@ -19,11 +19,8 @@ class HG_API Renderer3D {
     static void init();
     static void free();
 
-    static void clear(const glm::vec3& color);
     static void begin_scene(const Camera& camera);
     static void end_scene();
-
-    static void draw(const VertexArray* vao, const Shader* shader);
 
     // Primitives
     static void draw_cube(const glm::vec3& pos, const glm::vec3& dim, Shader* shader);

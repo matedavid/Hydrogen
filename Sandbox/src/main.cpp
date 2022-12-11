@@ -3,7 +3,8 @@
 class Sandbox : public Hydrogen::Application {
   public:
     Sandbox(int width, int height, const std::string& title)
-        : Hydrogen::Application(width, height, title) {
+        : Hydrogen::Application(width, height, title)
+    {
         bind_event_callback_func(Hydrogen::EventType::MouseMoved, BIND_EVENT_FUNC(on_mouse_moved));
 
         m_camera.set_position({0.0f, 0.0f, 0.0f});

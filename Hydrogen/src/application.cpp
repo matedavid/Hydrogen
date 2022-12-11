@@ -1,6 +1,7 @@
 #include "application.h"
 
 #include <utility>
+#include "renderer/renderer_api.h"
 
 namespace Hydrogen {
 
@@ -25,7 +26,7 @@ void Application::run() {
         double ts = current_time - last_time;
         last_time = current_time;
 
-        Renderer3D::clear(glm::vec3(0.f, 0.f, 0.f));
+        RendererAPI::clear(glm::vec3(0.f, 0.f, 0.f));
 
         on_update(ts);
 
