@@ -7,6 +7,7 @@ namespace Hydrogen {
 
 Application::Application(int width, int height, const std::string& title) {
     m_window = new Window(width, height, title);
+    Renderer2D::init();
     Renderer3D::init();
 
     m_instance = this;

@@ -22,6 +22,7 @@ target_sources(${PROJECT_NAME} PRIVATE
         src/renderer/buffers.cpp
         src/renderer/shader.cpp
         src/renderer/renderer_api.cpp
+        src/renderer/renderer2d.cpp
         src/renderer/renderer3d.cpp
         src/renderer/camera.cpp
         src/renderer/orthographic_camera.cpp

@@ -12,9 +12,12 @@ class Sandbox : public Hydrogen::Application {
     }
 
     void on_update(double ts) override {
-        Hydrogen::Renderer3D::begin_scene(m_camera);
-        Hydrogen::Renderer3D::draw_cube({0.0f, 0.0f, 0.0f}, {1.0f, 1.0f, 1.0f}, glm::vec3(0.2f, 0.3f, 0.2f));
-        Hydrogen::Renderer3D::end_scene();
+        //Hydrogen::Renderer3D::begin_scene(m_camera);
+        //Hydrogen::Renderer3D::draw_cube({0.0f, 0.0f, 0.0f}, {1.0f, 1.0f, 1.0f}, glm::vec3(0.2f, 0.3f, 0.2f));
+        //Hydrogen::Renderer3D::end_scene();
+        Hydrogen::Renderer2D::begin_scene(m_camera);
+        Hydrogen::Renderer2D::draw_quad({0.0f, 0.0f}, {1.0f, 1.0f}, glm::vec3(0.2f, 0.3f, 0.2f));
+        Hydrogen::Renderer2D::end_scene();
     }
 
     void on_mouse_moved(Hydrogen::Event& event) {
