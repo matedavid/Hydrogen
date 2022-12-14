@@ -9,6 +9,7 @@ void Renderer2D::init() {
     m_resources->quad = create_quad();
     m_resources->flat_color_shader = Shader::from_file("../../Hydrogen/assets/vertex.glsl",
                                                        "../../Hydrogen/assets/fragment.glsl");
+    m_resources->white_texture = Texture::white();
 }
 
 void Renderer2D::free() {
@@ -18,8 +19,7 @@ void Renderer2D::free() {
 
 void Renderer2D::begin_scene(const Camera& camera) {
     m_resources->flat_color_shader->bind();
-    m_resources->flat_color_shader->set_uniform_mat4(camera.get_view_projection(),
-                                                     "ViewProjection");
+    m_resources->flat_color_shader->set_uniform_mat4(camera.get_view_projection(), "ViewProjection");
 }
 
 void Renderer2D::end_scene() {
@@ -42,6 +42,8 @@ void Renderer2D::draw_quad(const glm::vec2& pos, const glm::vec2& dim, const Tex
 }
 
 void Renderer2D::draw_quad(const glm::vec2& pos, const glm::vec2& dim, const glm::vec3& color) {
+    m_resources->white_texture->bind(0);
+    m_resources->flat_color_shader->set_uniform_int(0, "Texture");
     m_resources->flat_color_shader->set_uniform_vec3(color, "Color");
     Renderer2D::draw_quad(pos, dim, m_resources->flat_color_shader);
 }
@@ -53,10 +55,11 @@ VertexArray* Renderer2D::create_quad() {
 
     // Create Vertex Buffer and Index Buffer
     float vertices[] = {
-        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
-         0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
-         0.5f,  0.5f, 0.0f, 1.0f, 1.0f,
-        -0.5f,  0.5f, 0.0f, 0.0f, 1.0f
+        //     Position    ||  Texture Coords
+        -0.5f, -0.5f, 0.0f,     0.0f, 0.0f,
+         0.5f, -0.5f, 0.0f,     1.0f, 0.0f,
+         0.5f,  0.5f, 0.0f,     1.0f, 1.0f,
+        -0.5f,  0.5f, 0.0f,     0.0f, 1.0f
     };
 
     unsigned int indices[] = {0, 1, 3, 2, 3, 1};

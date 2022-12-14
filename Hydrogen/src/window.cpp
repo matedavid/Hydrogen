@@ -23,6 +23,7 @@ Window::Window(int width, int height, const std::string& title) {
     }
     glfwMakeContextCurrent(m_window);
 
+    // FIXME: Glad should be initialized in RendererAPI not here
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         std::cerr << "Failed to initialize GLAD\n";
         glfwTerminate();
