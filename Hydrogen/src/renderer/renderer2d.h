@@ -11,7 +11,7 @@
 #include "vertex_array.h"
 #include "buffers.h"
 #include "shader.h"
-
+#include "texture.h"
 
 namespace Hydrogen {
 
@@ -25,6 +25,7 @@ class HG_API Renderer2D {
 
     // Primitives
     static void draw_quad(const glm::vec2& pos, const glm::vec2& dim, Shader* shader);
+    static void draw_quad(const glm::vec2& pos, const glm::vec2& dim, const Texture* texture);
     static void draw_quad(const glm::vec2& pos, const glm::vec2& dim, const glm::vec3& color);
 
   private:
@@ -32,6 +33,7 @@ class HG_API Renderer2D {
         VertexArray* quad;
 
         Shader* flat_color_shader;
+        Texture* white_texture;
     };
     inline static RendererResources* m_resources;
 

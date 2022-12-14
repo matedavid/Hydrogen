@@ -18,6 +18,7 @@ class HG_API Shader {
     void bind() const;
     void unbind() const;
 
+    void set_uniform_int(int value, const std::string& name);
     void set_uniform_vec3(const glm::vec3& value, const std::string& name);
     void set_uniform_mat4(const glm::mat4& value, const std::string& name);
 

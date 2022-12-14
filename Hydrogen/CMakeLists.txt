@@ -21,6 +21,7 @@ target_sources(${PROJECT_NAME} PRIVATE
         src/renderer/vertex_array.cpp
         src/renderer/buffers.cpp
         src/renderer/shader.cpp
+        src/renderer/texture.cpp
         src/renderer/renderer_api.cpp
         src/renderer/renderer2d.cpp
         src/renderer/renderer3d.cpp
@@ -55,3 +56,6 @@ target_link_libraries(${PROJECT_NAME} OpenGL::GL)
 # Glm
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/vendor/glm)
 target_link_libraries(${PROJECT_NAME} glm::glm)
+
+# stb libraries
+target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/vendor/stb/)

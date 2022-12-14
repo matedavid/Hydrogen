@@ -34,6 +34,13 @@ void Renderer2D::draw_quad(const glm::vec2& pos, const glm::vec2& dim, Shader* s
     RendererAPI::send(m_resources->quad, shader);
 }
 
+void Renderer2D::draw_quad(const glm::vec2& pos, const glm::vec2& dim, const Texture* texture) {
+    texture->bind(0);
+    m_resources->flat_color_shader->set_uniform_int(0, "Texture");
+    m_resources->flat_color_shader->set_uniform_vec3(glm::vec3(1.0f, 1.0f, 1.0f), "Color");
+    Renderer2D::draw_quad(pos, dim, m_resources->flat_color_shader);
+}
+
 void Renderer2D::draw_quad(const glm::vec2& pos, const glm::vec2& dim, const glm::vec3& color) {
     m_resources->flat_color_shader->set_uniform_vec3(color, "Color");
     Renderer2D::draw_quad(pos, dim, m_resources->flat_color_shader);
@@ -46,16 +53,19 @@ VertexArray* Renderer2D::create_quad() {
 
     // Create Vertex Buffer and Index Buffer
     float vertices[] = {
-        -0.5f, -0.5f, 0.0f,
-         0.5f, -0.5f, 0.0f,
-         0.5f,  0.5f, 0.0f,
-        -0.5f,  0.5f, 0.0f,
+        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
+         0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+         0.5f,  0.5f, 0.0f, 1.0f, 1.0f,
+        -0.5f,  0.5f, 0.0f, 0.0f, 1.0f
     };
 
     unsigned int indices[] = {0, 1, 3, 2, 3, 1};
 
     auto* vbo = new VertexBuffer(vertices, sizeof(vertices));
-    vbo->set_layout({{.type = ShaderType::Float32, .count = 3, .normalized = false}});
+    vbo->set_layout({
+        {.type = ShaderType::Float32, .count = 3, .normalized = false},
+        {.type = ShaderType::Float32, .count = 2, .normalized = false}
+    });
 
     const auto* ebo = new IndexBuffer(indices, 6);
     ebo->bind();

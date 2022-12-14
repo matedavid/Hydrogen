@@ -51,6 +51,17 @@ void Shader::unbind() const {
     glUseProgram(0);
 }
 
+void Shader::set_uniform_int(int value, const std::string& name) {
+    bind();
+    if (!m_uniform_location.contains(name)) {
+        int uniform_location = glGetUniformLocation(ID, name.c_str());
+        m_uniform_location.insert({name, uniform_location});
+    }
+
+    int uniform_location = m_uniform_location[name];
+    glUniform1i(uniform_location, value);
+}
+
 void Shader::set_uniform_vec3(const glm::vec3& value, const std::string& name) {
     bind();
     if (!m_uniform_location.contains(name)) {
