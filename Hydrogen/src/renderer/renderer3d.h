@@ -11,6 +11,7 @@
 #include "vertex_array.h"
 #include "buffers.h"
 #include "shader.h"
+#include "texture.h"
 
 namespace Hydrogen {
 
@@ -31,6 +32,7 @@ class HG_API Renderer3D {
         VertexArray* quad;
 
         Shader* flat_color_shader;
+        Texture* white_texture;
     };
     inline static RendererResources* m_resources;
 

@@ -14,7 +14,9 @@ Application::Application(int width, int height, const std::string& title) {
 }
 
 Application::~Application() {
+    Renderer2D::free();
     Renderer3D::free();
+
     delete m_window;
     m_instance = nullptr;
 }

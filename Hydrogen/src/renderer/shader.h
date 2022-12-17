@@ -12,6 +12,7 @@ class HG_API Shader {
   public:
     static Shader* from_string(const std::string& vertex_src, const std::string& fragment_src);
     static Shader* from_file(const std::string& vertex_path, const std::string& fragment_path);
+    static Shader* default_();
 
     ~Shader();
 

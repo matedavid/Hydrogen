@@ -7,8 +7,9 @@ namespace Hydrogen {
 void Renderer2D::init() {
     m_resources = new RendererResources();
     m_resources->quad = create_quad();
-    m_resources->flat_color_shader = Shader::from_file("../../Hydrogen/assets/vertex.glsl",
-                                                       "../../Hydrogen/assets/fragment.glsl");
+    //m_resources->flat_color_shader = Shader::from_file("assets/vertex.glsl", "assets/fragment.glsl");
+    m_resources->flat_color_shader = Shader::default_();
+
     m_resources->white_texture = Texture::white();
 }
 

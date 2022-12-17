@@ -8,8 +8,10 @@ namespace Hydrogen {
 void Renderer3D::init() {
     m_resources = new RendererResources();
     m_resources->quad = create_quad();
-    m_resources->flat_color_shader = Shader::from_file("../../Hydrogen/assets/vertex.glsl",
-                                                       "../../Hydrogen/assets/fragment.glsl");
+    //m_resources->flat_color_shader = Shader::from_file("../../Hydrogen/assets/vertex.glsl", "../../Hydrogen/assets/fragment.glsl");
+    m_resources->flat_color_shader = Shader::default_();
+
+    m_resources->white_texture = Texture::white();
 }
 
 void Renderer3D::free() {
@@ -35,6 +37,8 @@ void Renderer3D::draw_cube(const glm::vec3& pos, const glm::vec3& dim, Shader* s
 }
 
 void Renderer3D::draw_cube(const glm::vec3& pos, const glm::vec3& dim, const glm::vec3& color) {
+    m_resources->white_texture->bind(0);
+    m_resources->flat_color_shader->set_uniform_int(0, "Texture");
     m_resources->flat_color_shader->set_uniform_vec3(color, "Color");
     Renderer3D::draw_cube(pos, dim, m_resources->flat_color_shader);
 }

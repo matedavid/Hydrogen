@@ -29,8 +29,6 @@ target_sources(${PROJECT_NAME} PRIVATE
         src/renderer/orthographic_camera.cpp
         )
 
-# target_include_directories(${PROJECT_NAME} PRIVATE src/)
-
 # Include Interface
 target_include_directories(${PROJECT_NAME} PUBLIC src/
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/>

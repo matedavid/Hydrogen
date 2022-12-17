@@ -43,6 +43,43 @@ Shader* Shader::from_file(const std::string& vertex_path, const std::string& fra
     return Shader::from_string(vertex_source, fragment_source);
 }
 
+Shader* Shader::default_() {
+    const std::string& vertex_src = R"(
+#version 330 core
+
+layout (location = 0) in vec3 aPos;
+layout (location = 1) in vec2 aTexCoord;
+
+out vec2 v_TexCoord;
+
+uniform mat4 Model;
+uniform mat4 ViewProjection;
+
+void main()
+{
+    gl_Position = ViewProjection * Model * vec4(aPos, 1.0f);
+    v_TexCoord = aTexCoord;
+}
+)";
+
+    const std::string& fragment_src = R"(
+#version 330 core
+
+in vec2 v_TexCoord;
+out vec4 FragColor;
+
+uniform vec3 Color;
+uniform sampler2D Texture;
+
+void main()
+{
+    FragColor = texture(Texture, v_TexCoord) * vec4(Color, 1.0f);
+}
+)";
+
+    return Shader::from_string(vertex_src, fragment_src);
+}
+
 void Shader::bind() const {
     glUseProgram(ID);
 }
