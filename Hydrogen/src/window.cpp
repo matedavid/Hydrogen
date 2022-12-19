@@ -23,7 +23,7 @@ Window::Window(int width, int height, const std::string& title) {
     }
     glfwMakeContextCurrent(m_window);
 
-    // FIXME: Glad should be initialized in RendererAPI not here
+    // FIXME: Glad should be initialized in RendererAPI not here maybe??
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         std::cerr << "Failed to initialize GLAD\n";
         glfwTerminate();
@@ -32,6 +32,7 @@ Window::Window(int width, int height, const std::string& title) {
     // Set VSync
     glfwSwapInterval(1);
     glViewport(0, 0, width, height);
+    glEnable(GL_DEPTH_TEST);
 
     //
     // Window data

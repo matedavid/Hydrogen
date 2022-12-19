@@ -6,7 +6,7 @@ namespace Hydrogen {
 
 void RendererAPI::clear(const glm::vec3& color) {
     glClearColor(color.r, color.g, color.b, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void RendererAPI::send(const VertexArray* vao, const Shader* shader) {
