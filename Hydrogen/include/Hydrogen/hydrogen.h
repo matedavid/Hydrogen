@@ -12,3 +12,4 @@
 #include "renderer/renderer3d.h"
 #include "renderer/camera.h"
 #include "renderer/orthographic_camera.h"
+#include "renderer/perspective_camera.h"

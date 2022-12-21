@@ -7,24 +7,20 @@ class Sandbox : public Hydrogen::Application {
     {
         bind_event_callback_func(Hydrogen::EventType::MouseMoved, BIND_EVENT_FUNC(on_mouse_moved));
 
-        m_camera.set_position({0.0f, 0.0f, 0.0f});
-        m_camera = Hydrogen::OrthographicCamera(-1.0f, 1.0f, -1.0f, 1.0f, -2.5f, 10.0f);
+        //m_camera = Hydrogen::OrthographicCamera(-5.0f, 5.0f, -5.0f, 5.0f, 0.1f, 100.0f);
+        float ratio = float(get_window()->get_width()) / float(get_window()->get_height());
+        m_camera = Hydrogen::PerspectiveCamera(glm::radians(60.0f), ratio, 0.1f, 100.0f);
+        m_camera.set_position({0.0f, 0.0f, 10.0f});
 
-        m_texture = new Hydrogen::Texture("../../Hydrogen/assets/textures/smiley.png");
+        // m_texture = new Hydrogen::Texture("../../Hydrogen/assets/textures/smiley.png");
     }
 
     void on_update(double ts) override {
-        /*
         Hydrogen::Renderer3D::begin_scene(m_camera);
-        Hydrogen::Renderer3D::draw_cube({0.0f, 0.0f, 0.0f}, {1.0f, 1.0f, 1.0f}, glm::vec3(0.2f, 0.3f, 0.2f));
+        Hydrogen::Renderer3D::draw_cube({0.0f, 0.0f, 1.0f}, {1.0f, 1.0f, 1.0f}, glm::vec3(0.2f, 0.7f, 0.2f));
+        Hydrogen::Renderer3D::draw_cube({2.0f, 0.0f, -2.0f}, {1.0f, 1.0f, 1.0f}, glm::vec3(0.8f, 0.3f, 0.2f));
+        Hydrogen::Renderer3D::draw_cube({-2.0f, 2.0f, 0.0f}, {1.0f, 1.0f, 1.0f}, glm::vec3(0.2f, 0.3f, 0.7f));
         Hydrogen::Renderer3D::end_scene();
-        */
-
-        Hydrogen::Renderer2D::begin_scene(m_camera);
-        Hydrogen::Renderer2D::draw_quad({0.0f, 0.0f}, {1.0f, 1.0f}, m_texture);
-        // Hydrogen::Renderer2D::draw_quad({0.0f, 0.0f}, {1.0f, 1.0f}, glm::vec3(0.2f, 0.3f, 0.2f));
-        Hydrogen::Renderer2D::end_scene();
-
     }
 
     void on_mouse_moved(Hydrogen::Event& event) {
@@ -56,7 +52,7 @@ class Sandbox : public Hydrogen::Application {
     }
 
   private:
-    Hydrogen::OrthographicCamera m_camera;
+    Hydrogen::Camera m_camera;
     glm::vec2 m_mouse_position{};
 
     Hydrogen::Texture* m_texture;

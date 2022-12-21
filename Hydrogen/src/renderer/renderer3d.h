@@ -25,6 +25,7 @@ class HG_API Renderer3D {
 
     // Primitives
     static void draw_cube(const glm::vec3& pos, const glm::vec3& dim, Shader* shader);
+    static void draw_cube(const glm::vec3& pos, const glm::vec3& dim, const Texture* texture);
     static void draw_cube(const glm::vec3& pos, const glm::vec3& dim, const glm::vec3& color);
 
   private:

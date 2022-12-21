@@ -17,4 +17,4 @@ OrthographicCamera::OrthographicCamera(float left, float right, float bottom, fl
     m_projection = glm::ortho(left, right, bottom, top, znear, zfar);
 }
 
-}
+} // namespace Hydrogen

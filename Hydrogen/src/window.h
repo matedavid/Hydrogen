@@ -35,6 +35,10 @@ class Window {
     void on_update() const;
 
     GLFWwindow* get_native_window() const { return m_window; }
+
+    int get_width() const { return m_data.width; }
+    int get_height() const { return m_data.height; }
+
     void bind_event_func(EventType event, EventCallbackFunc func);
 
   private:
