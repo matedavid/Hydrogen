@@ -7,12 +7,10 @@ class Sandbox : public Hydrogen::Application {
     {
         bind_event_callback_func(Hydrogen::EventType::MouseMoved, BIND_EVENT_FUNC(on_mouse_moved));
 
-        //m_camera = Hydrogen::OrthographicCamera(-5.0f, 5.0f, -5.0f, 5.0f, 0.1f, 100.0f);
+//        m_camera = Hydrogen::Camera::orthogonal(-5.0f, 5.0f, -5.0f, 5.0f, 0.1f, 100.0f);
         float ratio = float(get_window()->get_width()) / float(get_window()->get_height());
-        m_camera = Hydrogen::PerspectiveCamera(glm::radians(60.0f), ratio, 0.1f, 100.0f);
+        m_camera = Hydrogen::Camera::perspective(glm::radians(60.0f), ratio, 0.1f, 100.0f);
         m_camera.set_position({0.0f, 0.0f, 10.0f});
-
-        // m_texture = new Hydrogen::Texture("../../Hydrogen/assets/textures/smiley.png");
     }
 
     void on_update(double ts) override {
@@ -54,8 +52,6 @@ class Sandbox : public Hydrogen::Application {
   private:
     Hydrogen::Camera m_camera;
     glm::vec2 m_mouse_position{};
-
-    Hydrogen::Texture* m_texture;
 };
 
 int main() {
