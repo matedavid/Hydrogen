@@ -28,7 +28,7 @@ struct WindowData {
 
 class Window {
   public:
-    Window(int width, int height, const std::string& title);
+    Window(int width, int height, std::string&& title);
     ~Window();
 
     bool should_close() const;

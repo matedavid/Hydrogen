@@ -4,7 +4,7 @@
 
 namespace Hydrogen {
 
-Window::Window(int width, int height, const std::string& title) {
+Window::Window(int width, int height, std::string&& title) {
     //
     // Setup GLFW
     //
