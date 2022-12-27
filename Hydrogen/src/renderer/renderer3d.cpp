@@ -38,6 +38,8 @@ void Renderer3D::draw_cube(const glm::vec3& pos, const glm::vec3& dim, Shader* s
 
 void Renderer3D::draw_cube(const glm::vec3& pos, const glm::vec3& dim, const Texture* texture) {
     texture->bind(0);
+    m_resources->flat_color_shader->bind();
+
     m_resources->flat_color_shader->set_uniform_int(0, "Texture");
     m_resources->flat_color_shader->set_uniform_vec3(glm::vec3(1.0f, 1.0f, 1.0f), "Color");
     Renderer3D::draw_cube(pos, dim, m_resources->flat_color_shader);
@@ -45,6 +47,8 @@ void Renderer3D::draw_cube(const glm::vec3& pos, const glm::vec3& dim, const Tex
 
 void Renderer3D::draw_cube(const glm::vec3& pos, const glm::vec3& dim, const glm::vec3& color) {
     m_resources->white_texture->bind(0);
+    m_resources->flat_color_shader->bind();
+
     m_resources->flat_color_shader->set_uniform_int(0, "Texture");
     m_resources->flat_color_shader->set_uniform_vec3(color, "Color");
     Renderer3D::draw_cube(pos, dim, m_resources->flat_color_shader);

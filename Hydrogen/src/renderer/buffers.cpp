@@ -1,6 +1,7 @@
 #include "buffers.h"
 
-#include "glad/glad.h"
+#include <glad/glad.h>
+#include <cassert>
 
 namespace Hydrogen {
 
@@ -27,12 +28,13 @@ static int get_type_size(const ShaderType& type) {
         case ShaderType::Bool:
             return 1;
     }
+    return 0;
 }
 
 //
 // Vertex Buffer
 //
-VertexBuffer::VertexBuffer(const float* vertices, unsigned int size) {
+VertexBuffer::VertexBuffer(const void* vertices, unsigned int size) {
     glGenBuffers(1, &ID);
     bind();
 
