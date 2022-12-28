@@ -2,8 +2,6 @@
 
 #include <iostream>
 
-#include "renderer/texture.h"
-
 namespace Hydrogen {
 
 Model::Model(const std::string& path) {
@@ -20,9 +18,15 @@ Model::Model(const std::string& path) {
     process_node_r(scene->mRootNode, scene);
 }
 
+Model::~Model() {
+    for (auto* mesh : m_meshes) {
+        delete mesh;
+    }
+}
+
 void Model::draw(Shader* shader) {
     for (auto& mesh : m_meshes) {
-        mesh.draw(shader);
+        mesh->draw(shader);
     }
 }
 
@@ -30,7 +34,7 @@ void Model::process_node_r(aiNode* node, const aiScene* scene) {
     for (unsigned int i = 0; i < node->mNumMeshes; ++i) {
         const aiMesh* m = scene->mMeshes[node->mMeshes[i]];
 
-        Mesh mesh(m);
+        auto* mesh = new Mesh(m, scene, m_directory);
         m_meshes.push_back(mesh);
     }
 

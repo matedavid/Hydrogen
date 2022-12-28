@@ -12,6 +12,7 @@ enum class EventType {
     MouseMoved,
     MouseButtonPressed,
     MouseButtonReleased,
+    MouseScrolled,
     // Keyboard Events
     KeyPressed,
     KeyReleased,
@@ -73,6 +74,21 @@ class MouseReleasedEvent : public Event {
 
   private:
     int m_button, m_mods;
+};
+
+class MouseScrolledEvent : public Event {
+  public:
+    MouseScrolledEvent(double xoffset, double yoffset) : m_xoffset(xoffset), m_yoffset(yoffset) {}
+
+    EventType get_type() const override { return EventType::MouseScrolled; }
+
+    double get_xoffset() const { return  m_xoffset; }
+    double get_yoffset() const { return  m_yoffset; }
+
+    std::pair<double, double> get_offset() const { return {m_xoffset, m_yoffset}; }
+
+  private:
+    double m_xoffset, m_yoffset;
 };
 
 class KeyPressedEvent : public Event {

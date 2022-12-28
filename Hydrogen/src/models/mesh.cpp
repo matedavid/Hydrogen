@@ -4,7 +4,7 @@
 
 namespace Hydrogen {
 
-Mesh::Mesh(const aiMesh* mesh) {
+Mesh::Mesh(const aiMesh* mesh, const aiScene* scene, const std::string& directory) {
     // Vertices
     for (unsigned int i = 0; i < mesh->mNumVertices; ++i) {
         Vertex vertex{};
@@ -16,7 +16,7 @@ Mesh::Mesh(const aiMesh* mesh) {
         vertex.position.z = vs.z;
 
         // Color
-        if (mesh->mColors[0] != nullptr) {
+        if (mesh->HasVertexColors(0)) {
             const auto& cs = mesh->mColors[0][i];
             vertex.color.r = cs.r;
             vertex.color.g = cs.g;
@@ -25,7 +25,7 @@ Mesh::Mesh(const aiMesh* mesh) {
         }
 
         // Normals
-        if (mesh->mNormals != nullptr) {
+        if (mesh->HasNormals()) {
             const auto& ns = mesh->mNormals[i];
             vertex.normal.x = ns.x;
             vertex.normal.y = ns.y;
@@ -33,7 +33,7 @@ Mesh::Mesh(const aiMesh* mesh) {
         }
 
         // Texture coordinates
-        if (mesh->mTextureCoords[0] != nullptr) {
+        if (mesh->HasTextureCoords(0)) {
             const auto& tc = mesh->mTextureCoords[0][i];
             vertex.texture_coordinates.x = tc.x;
             vertex.texture_coordinates.y = tc.y;
@@ -45,15 +45,46 @@ Mesh::Mesh(const aiMesh* mesh) {
     // Indices
     for (unsigned int i = 0; i < mesh->mNumFaces; ++i) {
         const aiFace& face = mesh->mFaces[i];
+
         for (unsigned int index = 0; index < face.mNumIndices; ++index) {
             indices.push_back(face.mIndices[index]);
         }
     }
 
+    const aiMaterial* mat = scene->mMaterials[mesh->mMaterialIndex];
+
+    // Diffuse texture
+    aiString ai_path;
+    if (mat->GetTexture(aiTextureType_DIFFUSE, 0, &ai_path) == aiReturn_SUCCESS) {
+        std::string path = directory + std::string(ai_path.C_Str());
+        auto* texture = new Texture(path);
+        textures.push_back(texture);
+    }
+
+    /*
+    ai_path.Clear();
+    if (mat->GetTexture(aiTextureType_SPECULAR, 0, &ai_path) == aiReturn_SUCCESS) {
+        std::string path = directory + std::string(ai_path.C_Str());
+        auto* texture = new Texture(path);
+        textures.push_back(texture);
+    }
+     */
+
     setup_mesh();
 }
 
+Mesh::~Mesh() {
+    delete VAO;
+    for (auto* texture : textures) {
+        delete texture;
+    }
+}
+
 void Mesh::draw(Shader* shader) {
+    if (textures.size() > 0) {
+        textures[0]->bind(0);
+        shader->set_uniform_int(0, "Texture");
+    }
     RendererAPI::send(VAO, shader);
 
     /*
@@ -98,7 +129,7 @@ void Mesh::setup_mesh() {
         {.type = ShaderType::Float32, .count = 2, .normalized = false}
     });
 
-    const auto* EBO = new IndexBuffer(&indices[0], (int)indices.size() * (int)sizeof(unsigned int));
+    const auto* EBO = new IndexBuffer(&indices[0], (int)indices.size());
 
     VAO->add_vertex_buffer(VBO);
     VAO->set_index_buffer(EBO);

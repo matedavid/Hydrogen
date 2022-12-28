@@ -1,7 +1,6 @@
 #include "buffers.h"
 
 #include <glad/glad.h>
-#include <cassert>
 
 namespace Hydrogen {
 
@@ -76,11 +75,11 @@ void VertexBuffer::set_layout(const std::vector<VertexLayout>& layout) {
 //
 // Index Buffer
 //
-IndexBuffer::IndexBuffer(const unsigned int* indices, int count) : m_count(count) {
+IndexBuffer::IndexBuffer(const unsigned int* indices, int number_indices) : m_count(number_indices) {
     glGenBuffers(1, &ID);
     bind();
 
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * 4, indices, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, number_indices * sizeof(unsigned int), indices, GL_STATIC_DRAW);
 }
 
 IndexBuffer::~IndexBuffer() {

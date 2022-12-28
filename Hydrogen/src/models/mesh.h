@@ -26,16 +26,15 @@ class HG_API Mesh {
   public:
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
-    std::vector<Texture> textures;
+    std::vector<Texture*> textures;
 
-    Mesh(const aiMesh* mesh);
+    Mesh(const aiMesh* mesh, const aiScene* scene, const std::string& directory);
+    ~Mesh();
 
     void draw(Shader* shader);
 
   private:
     VertexArray* VAO;
-    // VertexBuffer* VBO;
-    // IndexBuffer* EBO;
 
     void setup_mesh();
 };

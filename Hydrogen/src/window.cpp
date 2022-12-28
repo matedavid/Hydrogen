@@ -80,6 +80,13 @@ Window::Window(int width, int height, std::string&& title) {
         }
     });
 
+    glfwSetScrollCallback(m_window, [](GLFWwindow* window, double xoffset, double yoffset) {
+        auto data = (WindowData*)glfwGetWindowUserPointer(window);
+
+        MouseScrolledEvent event(xoffset, yoffset);
+        data->event_callback(event);
+    });
+
     // Keyboard events
     glfwSetKeyCallback(
         m_window, [](GLFWwindow* window, int key, int scancode, int action, int mods) {

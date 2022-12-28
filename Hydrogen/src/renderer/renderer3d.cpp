@@ -92,7 +92,7 @@ VertexArray* Renderer3D::create_quad() {
         {.type = ShaderType::Float32, .count = 3, .normalized = false},
     });
 
-    const auto* ebo = new IndexBuffer(indices, sizeof(indices));
+    const auto* ebo = new IndexBuffer(indices, sizeof(indices) / sizeof(unsigned int));
     ebo->bind();
 
     // Add Vertex Buffer and Index Buffer to Vertex Array

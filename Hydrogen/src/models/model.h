@@ -15,11 +15,12 @@ namespace Hydrogen {
 class HG_API Model {
   public:
     Model(const std::string& path);
+    ~Model();
 
     void draw(Shader* shader);
 
   private:
-    std::vector<Mesh> m_meshes;
+    std::vector<Mesh*> m_meshes;
     std::string m_directory;
 
     void process_node_r(aiNode* node, const aiScene* scene);

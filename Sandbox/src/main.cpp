@@ -4,17 +4,18 @@ class Sandbox : public Hydrogen::Application {
   public:
     Sandbox(int width, int height, std::string&& title)
         : Hydrogen::Application(width, height, std::move(title)),
-          m_model("../../Hydrogen/assets/bunny.obj")
+          m_model("../../Hydrogen/assets/backpack/backpack.obj")
     {
         bind_event_callback_func(Hydrogen::EventType::MouseMoved, BIND_EVENT_FUNC(on_mouse_moved));
         bind_event_callback_func(Hydrogen::EventType::KeyPressed, BIND_EVENT_FUNC(on_key_pressed));
+        bind_event_callback_func(Hydrogen::EventType::MouseScrolled, BIND_EVENT_FUNC(on_mouse_scrolled));
 
 
-        m_camera_position = {0.0f, 0.0f, 0.0f};
+        m_camera_position = {0.0f, 0.0f, 6.0f};
 
-//        float ratio = float(get_window()->get_width()) / float(get_window()->get_height());
-//        m_camera = Hydrogen::Camera::perspective(glm::radians(60.0f), ratio, 0.1f, 100.0f);
-//        m_camera.set_position(m_camera_position);
+        float ratio = float(get_window()->get_width()) / float(get_window()->get_height());
+        m_camera = Hydrogen::Camera::perspective(glm::radians(m_fov), ratio, 0.1f, 100.0f);
+        m_camera.set_position(m_camera_position);
 
         m_shader = Hydrogen::Shader::from_file("../../Hydrogen/assets/model_loading.vert", "../../Hydrogen/assets/model_loading.frag");
     }
@@ -23,7 +24,9 @@ class Sandbox : public Hydrogen::Application {
         // Hydrogen::Renderer3D::begin_scene(m_camera)model_loading;
 
         m_shader->set_uniform_mat4(m_camera.get_view_projection(), "ViewProjection");
-        m_shader->set_uniform_mat4(glm::scale(glm::mat4(1.0f), glm::vec3(2.0f, 2.0f, 2.0f)), "Model");
+
+        auto scale_factor = glm::vec3(1.0f);
+        m_shader->set_uniform_mat4(glm::scale(glm::mat4(1.0f), scale_factor), "Model");
 
         m_model.draw(m_shader);
 
@@ -93,12 +96,27 @@ class Sandbox : public Hydrogen::Application {
         }
     }
 
+    void on_mouse_scrolled(Hydrogen::Event& event) {
+        auto scrolled = dynamic_cast<Hydrogen::MouseScrolledEvent&>(event);
+
+        double yoffset = scrolled.get_yoffset();
+        m_fov -= (float)yoffset;
+
+        m_fov = std::max(m_fov, 0.0f);
+        m_fov = std::min(m_fov, 120.0f);
+
+        float ratio = float(get_window()->get_width()) / float(get_window()->get_height());
+        m_camera = Hydrogen::Camera::perspective(glm::radians(m_fov), ratio, 0.1f, 100.0f);
+        m_camera.set_position(m_camera_position);
+    }
+
   private:
     Hydrogen::Camera m_camera;
     glm::vec2 m_mouse_position{};
 
     Hydrogen::Shader* m_shader;
     glm::vec3 m_camera_position;
+    float m_fov = 60.0f;
     Hydrogen::Model m_model;
 };
 
