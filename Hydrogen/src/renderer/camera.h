@@ -8,16 +8,7 @@ namespace Hydrogen {
 
 class HG_API Camera {
   public:
-    Camera();
-    ~Camera() = default;
-
-    // Orthogonal cameras
-    static Camera orthogonal();
-    static Camera orthogonal(float left, float right, float bottom, float top);
-    static Camera orthogonal(float left, float right, float bottom, float top, float znear, float zfar);
-
-    // Perspective camera
-    static Camera perspective(float fov, float aspect, float znear, float zfar);
+    virtual ~Camera() {}
 
     void set_position(const glm::vec3& pos);
     void rotate(const glm::vec2& rotation);
@@ -29,14 +20,13 @@ class HG_API Camera {
 
   protected:
     glm::mat4 m_projection;
-    glm::mat4 m_view;
+    glm::mat4 m_view{1.0f};
 
-    glm::vec3 m_position;
-    glm::vec2 m_rotation;
-
-    Camera(const glm::mat4& proj);
+    glm::vec3 m_position{0.0f, 0.0f, 0.0f};
+    glm::vec2 m_rotation{0.0f, 0.0f};
 
     void recalculate_view_matrix();
+    virtual void recalculate_projection_matrix() = 0;
 };
 
 } // namespace Hydrogen

@@ -30,6 +30,8 @@ target_sources(${PROJECT_NAME} PRIVATE
         src/renderer/renderer2d.cpp
         src/renderer/renderer3d.cpp
         src/renderer/camera.cpp
+        src/renderer/orthographic_camera.cpp
+        src/renderer/perspective_camera.cpp
         )
 
 # Include Interface
