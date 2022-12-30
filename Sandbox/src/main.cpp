@@ -4,7 +4,8 @@ class Sandbox : public Hydrogen::Application {
   public:
     Sandbox(int width, int height, std::string&& title)
         : Hydrogen::Application(width, height, std::move(title)),
-          m_model("../../Hydrogen/assets/backpack/backpack.obj", true)
+          // m_model("../../Hydrogen/assets/backpack/backpack.obj", true)
+          m_model("../../Hydrogen/assets/PistolBeretta/Pistol_Model.obj", false)
     {
         bind_event_callback_func(Hydrogen::EventType::MouseMoved, BIND_EVENT_FUNC(on_mouse_moved));
         bind_event_callback_func(Hydrogen::EventType::KeyPressed, BIND_EVENT_FUNC(on_key_pressed));
@@ -26,6 +27,12 @@ class Sandbox : public Hydrogen::Application {
 
         auto scale_factor = glm::vec3(1.0f);
         m_shader->set_uniform_mat4(glm::scale(glm::mat4(1.0f), scale_factor), "Model");
+
+        // Light
+        m_shader->set_uniform_vec3(glm::vec3(1.0f, 1.0f, 1.0f), "LightColor");
+        m_shader->set_uniform_vec3(glm::vec3(1.0f, 2.0f, 0.0f), "LightPosition");
+
+        m_shader->set_uniform_vec3(m_camera_position, "CameraPosition");
 
         m_model.draw(m_shader);
 
