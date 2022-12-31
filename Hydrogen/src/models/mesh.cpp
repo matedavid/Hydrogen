@@ -52,23 +52,30 @@ Mesh::Mesh(const aiMesh* mesh, const aiScene* scene, const std::string& director
     }
 
     const aiMaterial* mat = scene->mMaterials[mesh->mMaterialIndex];
+    if (white_texture == nullptr) {
+        white_texture = Texture::white();
+    }
 
     // Diffuse texture
     aiString ai_path;
     if (mat->GetTexture(aiTextureType_DIFFUSE, 0, &ai_path) == aiReturn_SUCCESS) {
         std::string path = directory + std::string(ai_path.C_Str());
-        auto* texture = new Texture(path);
-        textures.push_back(texture);
+        // auto* texture = new Texture(path);
+        // textures.push_back(texture);
+        diffuse_texture = new Texture(path);
+    } else {
+        diffuse_texture = white_texture;
     }
 
-    /*
     ai_path.Clear();
     if (mat->GetTexture(aiTextureType_SPECULAR, 0, &ai_path) == aiReturn_SUCCESS) {
         std::string path = directory + std::string(ai_path.C_Str());
-        auto* texture = new Texture(path);
-        textures.push_back(texture);
+        // auto* texture = new Texture(path);
+        // textures.push_back(texture);
+        specular_texture = new Texture(path);
+    } else {
+        specular_texture = white_texture;
     }
-     */
 
     // Material
     aiColor3D color;
@@ -109,20 +116,34 @@ Mesh::Mesh(const aiMesh* mesh, const aiScene* scene, const std::string& director
 
 Mesh::~Mesh() {
     delete VAO;
-    for (auto* texture : textures) {
-        delete texture;
+//    for (auto* texture : textures) {
+//        delete texture;
+//    }
+
+    if (diffuse_texture != white_texture) {
+        delete diffuse_texture;
+    }
+    if (specular_texture != white_texture) {
+        delete white_texture;
     }
 }
 
 void Mesh::draw(Shader* shader) {
+    /*
     if (textures.size() > 0) {
         textures[0]->bind(0);
         shader->set_uniform_int(0, "Texture");
     }
+     */
 
-    shader->set_uniform_vec3(material.ambient, "Material.ambient");
-    shader->set_uniform_vec3(material.diffuse, "Material.diffuse");
-    shader->set_uniform_vec3(material.specular, "Material.specular");
+    diffuse_texture->bind(0);
+    shader->set_uniform_int(0, "Material.diffuse");
+    specular_texture->bind(1);
+    shader->set_uniform_int(1, "Material.Specular");
+
+    // shader->set_uniform_vec3(material.ambient, "Material.ambient");
+    // shader->set_uniform_vec3(material.diffuse, "Material.diffuse");
+    // shader->set_uniform_vec3(material.specular, "Material.specular");
     shader->set_uniform_float(material.shininess, "Material.shininess");
 
     RendererAPI::send(VAO, shader);

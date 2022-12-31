@@ -29,11 +29,16 @@ struct Material {
     float shininess;
 };
 
+static Texture* white_texture = nullptr;
+
 class HG_API Mesh {
   public:
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
-    std::vector<Texture*> textures;
+
+    Texture* diffuse_texture;
+    Texture* specular_texture;
+
     Material material;
 
     Mesh(const aiMesh* mesh, const aiScene* scene, const std::string& directory);

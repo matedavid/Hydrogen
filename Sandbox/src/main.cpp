@@ -4,7 +4,7 @@ class Sandbox : public Hydrogen::Application {
   public:
     Sandbox(int width, int height, std::string&& title)
         : Hydrogen::Application(width, height, std::move(title)),
-//           m_model("../../Hydrogen/assets/backpack/backpack.obj", true)
+          // m_model("../../Hydrogen/assets/backpack/backpack.obj", true)
           m_model("../../Hydrogen/assets/PistolBeretta/Pistol_Model.obj", false)
     {
         bind_event_callback_func(Hydrogen::EventType::MouseMoved, BIND_EVENT_FUNC(on_mouse_moved));
