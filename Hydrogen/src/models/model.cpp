@@ -4,10 +4,13 @@
 
 namespace Hydrogen {
 
-Model::Model(const std::string& path) {
+Model::Model(const std::string& path, bool flip_uvs) {
     Assimp::Importer importer;
 
-    const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+    unsigned int flags = aiProcess_Triangulate;
+    if (flip_uvs) flags |= aiProcess_FlipUVs;
+
+    const aiScene* scene = importer.ReadFile(path, flags);
 
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE) {
         std::cout << "Error loading model " << path << ": " << importer.GetErrorString() << std::endl;

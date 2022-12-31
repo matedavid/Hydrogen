@@ -22,11 +22,19 @@ struct Vertex {
     glm::vec2 texture_coordinates;
 };
 
+struct Material {
+    glm::vec3 ambient;
+    glm::vec3 diffuse;
+    glm::vec3 specular;
+    float shininess;
+};
+
 class HG_API Mesh {
   public:
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
     std::vector<Texture*> textures;
+    Material material;
 
     Mesh(const aiMesh* mesh, const aiScene* scene, const std::string& directory);
     ~Mesh();

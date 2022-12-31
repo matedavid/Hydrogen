@@ -14,7 +14,7 @@ namespace Hydrogen {
 
 class HG_API Model {
   public:
-    Model(const std::string& path);
+    Model(const std::string& path, bool flip_uvs);
     ~Model();
 
     void draw(Shader* shader);

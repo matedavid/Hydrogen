@@ -70,6 +70,40 @@ Mesh::Mesh(const aiMesh* mesh, const aiScene* scene, const std::string& director
     }
      */
 
+    // Material
+    aiColor3D color;
+    if (mat->Get(AI_MATKEY_COLOR_AMBIENT, color) == aiReturn_SUCCESS) {
+        material.ambient.r = color.r;
+        material.ambient.g = color.g;
+        material.ambient.b = color.b;
+    }
+
+    if (mat->Get(AI_MATKEY_COLOR_DIFFUSE, color) == aiReturn_SUCCESS) {
+        material.diffuse.r = color.r;
+        material.diffuse.g = color.g;
+        material.diffuse.b = color.b;
+    }
+
+    if (mat->Get(AI_MATKEY_COLOR_SPECULAR, color) == aiReturn_SUCCESS) {
+        material.specular.r = color.r;
+        material.specular.g = color.g;
+        material.specular.b = color.b;
+    }
+
+    ai_real shininess;
+    if (mat->Get(AI_MATKEY_SHININESS, shininess) == aiReturn_SUCCESS) {
+        material.shininess = shininess;
+    } else {
+        material.shininess = 1.0f;
+    }
+
+    std::cout << "Mesh:\n";
+    std::cout << material.ambient.r << " " << material.ambient.g << " " << material.ambient.b << "\n";
+    std::cout << material.diffuse.r << " " << material.diffuse.g << " " << material.diffuse.b << "\n";
+    std::cout << material.specular.r << " " << material.specular.g << " " << material.specular.b << "\n";
+    std::cout << material.shininess << "\n";
+    std::cout << "\n";
+
     setup_mesh();
 }
 
@@ -85,6 +119,12 @@ void Mesh::draw(Shader* shader) {
         textures[0]->bind(0);
         shader->set_uniform_int(0, "Texture");
     }
+
+    shader->set_uniform_vec3(material.ambient, "Material.ambient");
+    shader->set_uniform_vec3(material.diffuse, "Material.diffuse");
+    shader->set_uniform_vec3(material.specular, "Material.specular");
+    shader->set_uniform_float(material.shininess, "Material.shininess");
+
     RendererAPI::send(VAO, shader);
 
     /*
