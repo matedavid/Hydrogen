@@ -4,8 +4,8 @@ class Sandbox : public Hydrogen::Application {
   public:
     Sandbox(int width, int height, std::string&& title)
         : Hydrogen::Application(width, height, std::move(title)),
-          // m_model("../../Hydrogen/assets/backpack/backpack.obj", true)
-          m_model("../../Hydrogen/assets/PistolBeretta/Pistol_Model.obj", false)
+          // m_model("../../Hydrogen/assets/models/backpack/backpack.obj", true)
+          m_model("../../Hydrogen/assets/models/PistolBeretta/Pistol_Model.obj", false)
     {
         bind_event_callback_func(Hydrogen::EventType::MouseMoved, BIND_EVENT_FUNC(on_mouse_moved));
         bind_event_callback_func(Hydrogen::EventType::KeyPressed, BIND_EVENT_FUNC(on_key_pressed));
@@ -21,7 +21,7 @@ class Sandbox : public Hydrogen::Application {
     }
 
     void on_update([[maybe_unused]] double ts) override {
-        // Hydrogen::Renderer3D::begin_scene(m_camera)model_loading;
+        // Hydrogen::Renderer3D::begin_scene(m_camera);
 
         m_shader->set_uniform_mat4(m_camera.get_view_projection(), "ViewProjection");
 
