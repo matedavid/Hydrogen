@@ -1,6 +1,6 @@
 #include "buffers.h"
 
-#include "glad/glad.h"
+#include <glad/glad.h>
 
 namespace Hydrogen {
 
@@ -27,12 +27,13 @@ static int get_type_size(const ShaderType& type) {
         case ShaderType::Bool:
             return 1;
     }
+    return 0;
 }
 
 //
 // Vertex Buffer
 //
-VertexBuffer::VertexBuffer(const float* vertices, unsigned int size) {
+VertexBuffer::VertexBuffer(const void* vertices, unsigned int size) {
     glGenBuffers(1, &ID);
     bind();
 
@@ -74,11 +75,11 @@ void VertexBuffer::set_layout(const std::vector<VertexLayout>& layout) {
 //
 // Index Buffer
 //
-IndexBuffer::IndexBuffer(const unsigned int* indices, int count) : m_count(count) {
+IndexBuffer::IndexBuffer(const unsigned int* indices, int number_indices) : m_count(number_indices) {
     glGenBuffers(1, &ID);
     bind();
 
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * 4, indices, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, number_indices * sizeof(unsigned int), indices, GL_STATIC_DRAW);
 }
 
 IndexBuffer::~IndexBuffer() {

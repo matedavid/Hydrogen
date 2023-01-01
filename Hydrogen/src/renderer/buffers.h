@@ -22,7 +22,7 @@ struct HG_API VertexLayout {
 //
 class HG_API VertexBuffer {
   public:
-    VertexBuffer(const float* vertices, unsigned int size);
+    VertexBuffer(const void* vertices, unsigned int size);
     ~VertexBuffer();
 
     void bind() const;
@@ -39,7 +39,7 @@ class HG_API VertexBuffer {
 //
 class HG_API IndexBuffer {
   public:
-    IndexBuffer(const unsigned int* indices, int count);
+    IndexBuffer(const unsigned int* indices, int number_indices);
     ~IndexBuffer();
 
     void bind() const;

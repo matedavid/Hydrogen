@@ -5,8 +5,8 @@
 
 namespace Hydrogen {
 
-Application::Application(int width, int height, const std::string& title) {
-    m_window = new Window(width, height, title);
+Application::Application(int width, int height, std::string&& title) {
+    m_window = new Window(width, height, std::move(title));
     Renderer2D::init();
     Renderer3D::init();
 
@@ -29,7 +29,7 @@ void Application::run() {
         double ts = current_time - last_time;
         last_time = current_time;
 
-        RendererAPI::clear(glm::vec3(0.f, 0.f, 0.f));
+        RendererAPI::clear(glm::vec3(0.2f, 0.3f, 0.3f));
 
         on_update(ts);
 

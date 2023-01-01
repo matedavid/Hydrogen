@@ -4,19 +4,23 @@ project(Hydrogen)
 
 set(CMAKE_CXX_STANDARD 20)
 
-# Compiler flags
-add_compile_options(-Wall -Wpedantic -Wextra -Wshadow -Wconversion)
-set(CMAKE_CXX_VISIBILITY_PRESET hidden)
-set(CMAKE_VISIBILITY_INLINES_HIDDEN YES)
 
 # Create executable
-add_library(${PROJECT_NAME} SHARED)
+add_library(${PROJECT_NAME} STATIC)
+
+# Compiler flags
+target_compile_options(${PROJECT_NAME} BEFORE PUBLIC -Wall -Wpedantic -Wextra -Wshadow -Wconversion)
+set(CMAKE_CXX_VISIBILITY_PRESET hidden)
+set(CMAKE_VISIBILITY_INLINES_HIDDEN YES)
 
 # Sources
 target_sources(${PROJECT_NAME} PRIVATE
         src/application.cpp
         src/window.cpp
         src/input.cpp
+
+        src/models/model.cpp
+        src/models/mesh.cpp
 
         src/renderer/vertex_array.cpp
         src/renderer/buffers.cpp
@@ -26,6 +30,8 @@ target_sources(${PROJECT_NAME} PRIVATE
         src/renderer/renderer2d.cpp
         src/renderer/renderer3d.cpp
         src/renderer/camera.cpp
+        src/renderer/orthographic_camera.cpp
+        src/renderer/perspective_camera.cpp
         )
 
 # Include Interface
@@ -56,3 +62,7 @@ target_link_libraries(${PROJECT_NAME} glm::glm)
 
 # stb libraries
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/vendor/stb/)
+
+# assimp
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/vendor/assimp)
+target_link_libraries(${PROJECT_NAME} assimp)

@@ -1,9 +1,10 @@
 #include "shader.h"
 
-#include "glad/glad.h"
+#include <glad/glad.h>
 
 #include <cassert>
 #include <fstream>
+#include <vector>
 
 namespace Hydrogen {
 
@@ -99,6 +100,17 @@ void Shader::set_uniform_int(int value, const std::string& name) {
     glUniform1i(uniform_location, value);
 }
 
+void Shader::set_uniform_float(float value, const std::string& name) {
+    bind();
+    if (!m_uniform_location.contains(name)) {
+        int uniform_location = glGetUniformLocation(ID, name.c_str());
+        m_uniform_location.insert({name, uniform_location});
+    }
+
+    int uniform_location = m_uniform_location[name];
+    glUniform1f(uniform_location, value);
+}
+
 void Shader::set_uniform_vec3(const glm::vec3& value, const std::string& name) {
     bind();
     if (!m_uniform_location.contains(name)) {
@@ -134,6 +146,24 @@ unsigned int Shader::compile(const std::string& source, unsigned int type) {
     const char* shader_source = source.c_str();
     glShaderSource(shader, 1, &shader_source, NULL);
     glCompileShader(shader);
+
+    GLint compiled;
+    glGetShaderiv(shader, GL_COMPILE_STATUS, &compiled);
+
+    if (compiled == GL_FALSE) {
+        GLint max_length = 0;
+        glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &max_length);
+
+        // The maxLength includes the NULL character
+        std::vector<GLchar> error_log(max_length);
+        glGetShaderInfoLog(shader, max_length, &max_length, &error_log[0]);
+
+        std::string str_type = (type == GL_VERTEX_SHADER) ? "Vertex: " : "Fragment: ";
+
+        std::string message(error_log.begin(), error_log.end());
+        throw std::runtime_error(str_type + message);
+    }
+
     return shader;
 }
 

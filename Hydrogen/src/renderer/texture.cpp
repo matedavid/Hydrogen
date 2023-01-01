@@ -1,6 +1,7 @@
 #include "texture.h"
 
 #include <glad/glad.h>
+#include <filesystem>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
@@ -29,6 +30,8 @@ Texture::Texture(const unsigned char* data, int width, int height)
 Texture::Texture(const std::string& path)
     : m_file_path(path), m_width(0), m_height(0), m_BPP(0)
 {
+    HG_ASSERT(std::filesystem::exists(path), "Could not open " + path);
+
     stbi_set_flip_vertically_on_load(true);
     unsigned char* local_buffer = stbi_load(path.c_str(), &m_width, &m_height, &m_BPP, 4);
 

@@ -4,7 +4,7 @@
 
 namespace Hydrogen {
 
-Window::Window(int width, int height, const std::string& title) {
+Window::Window(int width, int height, std::string&& title) {
     //
     // Setup GLFW
     //
@@ -78,6 +78,13 @@ Window::Window(int width, int height, const std::string& title) {
             MouseReleasedEvent event(button, mods);
             data->event_callback(event);
         }
+    });
+
+    glfwSetScrollCallback(m_window, [](GLFWwindow* window, double xoffset, double yoffset) {
+        auto data = (WindowData*)glfwGetWindowUserPointer(window);
+
+        MouseScrolledEvent event(xoffset, yoffset);
+        data->event_callback(event);
     });
 
     // Keyboard events
