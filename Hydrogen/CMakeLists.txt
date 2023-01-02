@@ -66,3 +66,9 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/v
 # assimp
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/vendor/assimp)
 target_link_libraries(${PROJECT_NAME} assimp)
+
+# spdlog
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/vendor/spdlog )
+target_link_libraries(${PROJECT_NAME} spdlog::spdlog)
+set_target_properties(spdlog PROPERTIES POSITION_INDEPENDENT_CODE ON)
+target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendor/spdlog/include/)

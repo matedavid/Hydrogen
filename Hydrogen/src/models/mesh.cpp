@@ -59,7 +59,7 @@ Mesh::Mesh(const aiMesh* mesh, const aiScene* scene, const std::string& director
     // Diffuse texture
     aiString ai_path;
     if (mat->GetTexture(aiTextureType_DIFFUSE, 0, &ai_path) == aiReturn_SUCCESS) {
-        std::string path = directory + std::string(ai_path.C_Str());
+        const std::string path = directory + std::string(ai_path.C_Str());
         // auto* texture = new Texture(path);
         // textures.push_back(texture);
         diffuse_texture = new Texture(path);
@@ -69,7 +69,7 @@ Mesh::Mesh(const aiMesh* mesh, const aiScene* scene, const std::string& director
 
     ai_path.Clear();
     if (mat->GetTexture(aiTextureType_SPECULAR, 0, &ai_path) == aiReturn_SUCCESS) {
-        std::string path = directory + std::string(ai_path.C_Str());
+        const std::string path = directory + std::string(ai_path.C_Str());
         // auto* texture = new Texture(path);
         // textures.push_back(texture);
         specular_texture = new Texture(path);

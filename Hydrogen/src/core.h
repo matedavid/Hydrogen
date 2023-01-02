@@ -3,10 +3,16 @@
 #include <iostream>
 #include <cassert>
 
+#include <spdlog/spdlog.h>
+
 namespace Hydrogen {
 
 #define HG_API __attribute__((visibility("default")))
 
-#define HG_ASSERT(condition, message) if (!condition) { std::cout << "HG_ASSERT: " << message << "\n"; assert(condition); }
+#define HG_LOG_INFO(...)  spdlog::info(__VA_ARGS__)
+#define HG_LOG_WARN(...)  spdlog::warn(__VA_ARGS__)
+#define HG_LOG_ERROR(...) spdlog::error(__VA_ARGS__)
+
+#define HG_ASSERT(condition, message) if (!condition) { HG_LOG_ERROR(message); exit(-1); }
 
 }
