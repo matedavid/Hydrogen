@@ -89,7 +89,7 @@ void Shader::unbind() const {
     glUseProgram(0);
 }
 
-void Shader::set_uniform_int(int value, const std::string& name) {
+void Shader::set_uniform_int(const std::string& name, int value) {
     bind();
     if (!m_uniform_location.contains(name)) {
         int uniform_location = glGetUniformLocation(ID, name.c_str());
@@ -100,7 +100,7 @@ void Shader::set_uniform_int(int value, const std::string& name) {
     glUniform1i(uniform_location, value);
 }
 
-void Shader::set_uniform_float(float value, const std::string& name) {
+void Shader::set_uniform_float(const std::string& name, float value) {
     bind();
     if (!m_uniform_location.contains(name)) {
         int uniform_location = glGetUniformLocation(ID, name.c_str());
@@ -111,7 +111,7 @@ void Shader::set_uniform_float(float value, const std::string& name) {
     glUniform1f(uniform_location, value);
 }
 
-void Shader::set_uniform_vec3(const glm::vec3& value, const std::string& name) {
+void Shader::set_uniform_vec3(const std::string& name, const glm::vec3& value) {
     bind();
     if (!m_uniform_location.contains(name)) {
         int uniform_location = glGetUniformLocation(ID, name.c_str());
@@ -122,7 +122,7 @@ void Shader::set_uniform_vec3(const glm::vec3& value, const std::string& name) {
     glUniform3f(uniform_location, value.x, value.y, value.z);
 }
 
-void Shader::set_uniform_mat4(const glm::mat4& value, const std::string& name) {
+void Shader::set_uniform_mat4(const std::string& name, const glm::mat4& value) {
     bind();
     if (!m_uniform_location.contains(name)) {
         int uniform_location = glGetUniformLocation(ID, name.c_str());

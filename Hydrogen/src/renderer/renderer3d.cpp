@@ -21,7 +21,7 @@ void Renderer3D::free() {
 
 void Renderer3D::begin_scene(const Camera& camera) {
     m_resources->flat_color_shader->bind();
-    m_resources->flat_color_shader->set_uniform_mat4(camera.get_view_projection(), "ViewProjection");
+    m_resources->flat_color_shader->set_uniform_mat4("ViewProjection", camera.get_view_projection());
 }
 
 void Renderer3D::end_scene() {
@@ -32,7 +32,7 @@ void Renderer3D::draw_cube(const glm::vec3& pos, const glm::vec3& dim, Shader* s
     model = glm::translate(model, glm::vec3(pos.x, pos.y, pos.z));
     model = glm::scale(model, glm::vec3(dim.x, dim.y, dim.z));
 
-    shader->set_uniform_mat4(model, "Model");
+    shader->set_uniform_mat4("Model", model);
     RendererAPI::send(m_resources->quad, shader);
 }
 
@@ -40,8 +40,8 @@ void Renderer3D::draw_cube(const glm::vec3& pos, const glm::vec3& dim, const Tex
     texture->bind(0);
     m_resources->flat_color_shader->bind();
 
-    m_resources->flat_color_shader->set_uniform_int(0, "Texture");
-    m_resources->flat_color_shader->set_uniform_vec3(glm::vec3(1.0f, 1.0f, 1.0f), "Color");
+    m_resources->flat_color_shader->set_uniform_int("Texture", 0);
+    m_resources->flat_color_shader->set_uniform_vec3("Color", glm::vec3(1.0f, 1.0f, 1.0f));
     Renderer3D::draw_cube(pos, dim, m_resources->flat_color_shader);
 }
 
@@ -49,8 +49,8 @@ void Renderer3D::draw_cube(const glm::vec3& pos, const glm::vec3& dim, const glm
     m_resources->white_texture->bind(0);
     m_resources->flat_color_shader->bind();
 
-    m_resources->flat_color_shader->set_uniform_int(0, "Texture");
-    m_resources->flat_color_shader->set_uniform_vec3(color, "Color");
+    m_resources->flat_color_shader->set_uniform_int("Texture", 0);
+    m_resources->flat_color_shader->set_uniform_vec3("Color", color);
     Renderer3D::draw_cube(pos, dim, m_resources->flat_color_shader);
 }
 

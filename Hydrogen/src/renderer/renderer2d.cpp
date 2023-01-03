@@ -20,7 +20,7 @@ void Renderer2D::free() {
 
 void Renderer2D::begin_scene(const Camera& camera) {
     m_resources->flat_color_shader->bind();
-    m_resources->flat_color_shader->set_uniform_mat4(camera.get_view_projection(), "ViewProjection");
+    m_resources->flat_color_shader->set_uniform_mat4("ViewProjection", camera.get_view_projection());
 }
 
 void Renderer2D::end_scene() {
@@ -31,21 +31,21 @@ void Renderer2D::draw_quad(const glm::vec2& pos, const glm::vec2& dim, Shader* s
     model = glm::translate(model, glm::vec3(pos.x, pos.y, 0.0f));
     model = glm::scale(model, glm::vec3(dim.x, dim.y, 1.0f));
 
-    shader->set_uniform_mat4(model, "Model");
+    shader->set_uniform_mat4("Model", model);
     RendererAPI::send(m_resources->quad, shader);
 }
 
 void Renderer2D::draw_quad(const glm::vec2& pos, const glm::vec2& dim, const Texture* texture) {
     texture->bind(0);
-    m_resources->flat_color_shader->set_uniform_int(0, "Texture");
-    m_resources->flat_color_shader->set_uniform_vec3(glm::vec3(1.0f, 1.0f, 1.0f), "Color");
+    m_resources->flat_color_shader->set_uniform_int("Texture", 0);
+    m_resources->flat_color_shader->set_uniform_vec3("Color", glm::vec3(1.0f, 1.0f, 1.0f));
     Renderer2D::draw_quad(pos, dim, m_resources->flat_color_shader);
 }
 
 void Renderer2D::draw_quad(const glm::vec2& pos, const glm::vec2& dim, const glm::vec3& color) {
     m_resources->white_texture->bind(0);
-    m_resources->flat_color_shader->set_uniform_int(0, "Texture");
-    m_resources->flat_color_shader->set_uniform_vec3(color, "Color");
+    m_resources->flat_color_shader->set_uniform_int("Texture", 0);
+    m_resources->flat_color_shader->set_uniform_vec3("Color", color);
     Renderer2D::draw_quad(pos, dim, m_resources->flat_color_shader);
 }
 

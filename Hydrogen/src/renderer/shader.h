@@ -19,10 +19,10 @@ class HG_API Shader {
     void bind() const;
     void unbind() const;
 
-    void set_uniform_int(int value, const std::string& name);
-    void set_uniform_float(float value, const std::string& name);
-    void set_uniform_vec3(const glm::vec3& value, const std::string& name);
-    void set_uniform_mat4(const glm::mat4& value, const std::string& name);
+    void set_uniform_int(const std::string& name, int value);
+    void set_uniform_float(const std::string& name, float value);
+    void set_uniform_vec3(const std::string& name, const glm::vec3& value);
+    void set_uniform_mat4(const std::string& name, const glm::mat4& value);
 
   private:
     unsigned int ID;

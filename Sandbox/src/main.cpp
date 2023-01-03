@@ -23,7 +23,7 @@ class Sandbox : public Hydrogen::Application {
     void on_update([[maybe_unused]] double ts) override {
         // Hydrogen::Renderer3D::begin_scene(m_camera);
 
-        m_shader->set_uniform_mat4(m_camera.get_view_projection(), "ViewProjection");
+        m_shader->set_uniform_mat4("ViewProjection", m_camera.get_view_projection());
 
         // Point lights
         const int number = 2;
@@ -34,43 +34,41 @@ class Sandbox : public Hydrogen::Application {
         const glm::vec3 light_color = glm::vec3(1.0f, 1.0f, 1.0f);
 
         for (int i = 0; i < number; ++i) {
-            const auto light_position = light_positions[i];
+            const auto& light_position = light_positions[i];
             const std::string prefix = "PointLights[" + std::to_string(i) + "]";
 
-            m_shader->set_uniform_vec3(light_position, prefix + ".position");
-            m_shader->set_uniform_vec3({0.2f, 0.2f, 0.2f}, prefix + ".ambient");
-            m_shader->set_uniform_vec3(light_color, prefix + ".diffuse");
-            m_shader->set_uniform_vec3({1.0f, 1.0f, 1.0f}, prefix + ".specular");
-            m_shader->set_uniform_float(1.0f, prefix + ".constant");
-            m_shader->set_uniform_float(0.09f, prefix + ".linear");
-            m_shader->set_uniform_float(0.032f, prefix + ".quadratic");
+            m_shader->set_uniform_vec3(prefix + ".position", light_position);
+            m_shader->set_uniform_vec3(prefix + ".ambient", {0.2f, 0.2f, 0.2f});
+            m_shader->set_uniform_vec3(prefix + ".diffuse", light_color);
+            m_shader->set_uniform_vec3(prefix + ".specular", {1.0f, 1.0f, 1.0f});
+            m_shader->set_uniform_float(prefix + ".constant", 1.0f);
+            m_shader->set_uniform_float(prefix + ".linear", 0.09f);
+            m_shader->set_uniform_float(prefix + ".quadratic", 0.032f);
+
+            // Draw light quad
+            Hydrogen::Renderer3D::begin_scene(m_camera);
+            Hydrogen::Renderer3D::draw_cube(light_position, glm::vec3(0.5f, 0.5f, 0.5f), light_color);
+            Hydrogen::Renderer3D::end_scene();
         }
 
         // Directional light
-        m_shader->set_uniform_vec3(glm::vec3(1.0f, -1.0f, 0.0f), "DirLight.direction");
-        m_shader->set_uniform_vec3({0.2f, 0.2f, 0.2f}, "DirLight.ambient");
-        m_shader->set_uniform_vec3(light_color, "DirLight.diffuse");
-        m_shader->set_uniform_vec3({1.0f, 1.0f, 1.0f}, "DirLight.specular");
+        m_shader->set_uniform_vec3("DirLight.direction", glm::vec3(1.0f, -1.0f, 0.0f));
+        m_shader->set_uniform_vec3("DirLight.ambient", {0.2f, 0.2f, 0.2f});
+        m_shader->set_uniform_vec3("DirLight.diffuse", light_color);
+        m_shader->set_uniform_vec3("DirLight.specular", {1.0f, 1.0f, 1.0f});
 
         // Camera Position
-        m_shader->set_uniform_vec3(m_camera_position, "CameraPosition");
+        m_shader->set_uniform_vec3("CameraPosition", m_camera_position);
 
         // Draw the model
-        m_shader->set_uniform_mat4(glm::translate(glm::mat4(1.0f), glm::vec3(2.f, 0.0f, -10.0f)), "Model");
+        m_shader->set_uniform_mat4("Model", glm::translate(glm::mat4(1.0f), glm::vec3(2.f, 0.0f, -10.0f)));
         m_model.draw(m_shader);
 
-        m_shader->set_uniform_mat4(glm::translate(glm::mat4(1.0f), glm::vec3(-4.f, 0.0f, -10.0f)), "Model");
+        m_shader->set_uniform_mat4("Model", glm::translate(glm::mat4(1.0f), glm::vec3(-4.f, 0.0f, -10.0f)));
         m_model.draw(m_shader);
 
-        m_shader->set_uniform_mat4(glm::translate(glm::mat4(1.0f), glm::vec3(-1.f, -7.0f, -20.0f)), "Model");
+        m_shader->set_uniform_mat4("Model", glm::translate(glm::mat4(1.0f), glm::vec3(-1.f, -7.0f, -20.0f)));
         m_model.draw(m_shader);
-
-        // Draw the point
-        for (int i = 0; i < number; ++i) {
-            Hydrogen::Renderer3D::begin_scene(m_camera);
-            Hydrogen::Renderer3D::draw_cube(light_positions[i], glm::vec3(0.5f, 0.5f, 0.5f), light_color);
-            Hydrogen::Renderer3D::end_scene();
-        }
 
 
 //        m_shader->set_uniform_vec3(glm::vec3(0.2f, 0.7f, 0.2f), "Color");
