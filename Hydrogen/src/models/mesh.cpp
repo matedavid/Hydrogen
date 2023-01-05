@@ -1,6 +1,7 @@
 #include "mesh.h"
 
 #include "renderer/renderer_api.h"
+#include "systems/texture_system.h"
 
 namespace Hydrogen {
 
@@ -52,25 +53,23 @@ Mesh::Mesh(const aiMesh* mesh, const aiScene* scene, const std::string& director
     }
 
     const aiMaterial* mat = scene->mMaterials[mesh->mMaterialIndex];
-    if (white_texture == nullptr) {
-        white_texture = Texture::white();
-    }
+    auto* system = TextureSystem::get();
 
     // Diffuse texture
     aiString ai_path;
     if (mat->GetTexture(aiTextureType_DIFFUSE, 0, &ai_path) == aiReturn_SUCCESS) {
         const std::string path = directory + std::string(ai_path.C_Str());
-        diffuse_texture = new Texture(path);
+        diffuse_texture = system->acquire(path);
     } else {
-        diffuse_texture = white_texture;
+        diffuse_texture = system->default_texture();
     }
 
     ai_path.Clear();
     if (mat->GetTexture(aiTextureType_SPECULAR, 0, &ai_path) == aiReturn_SUCCESS) {
         const std::string path = directory + std::string(ai_path.C_Str());
-        specular_texture = new Texture(path);
+        specular_texture = system->acquire(path);
     } else {
-        specular_texture = white_texture;
+        specular_texture = system->default_texture();
     }
 
     // Material
@@ -106,19 +105,24 @@ Mesh::Mesh(const aiMesh* mesh, const aiScene* scene, const std::string& director
 Mesh::~Mesh() {
     delete VAO;
 
-    if (diffuse_texture != white_texture) {
-        delete diffuse_texture;
-    }
-    if (specular_texture != white_texture) {
-        delete white_texture;
-    }
+    auto* system = TextureSystem::get();
+    system->release(diffuse_texture);
+    system->release(specular_texture);
+
+    // NOTE: Responsibility moved to TextureSystem
+//    if (diffuse_texture != white_texture) {
+//        delete diffuse_texture;
+//    }
+//    if (specular_texture != white_texture) {
+//        delete white_texture;
+//    }
 }
 
 void Mesh::draw(Shader* shader) {
     diffuse_texture->bind(0);
     shader->set_uniform_int("Material.diffuse", 0);
     specular_texture->bind(1);
-    shader->set_uniform_int("Material.Specular", 1);
+    shader->set_uniform_int("Material.specular", 1);
 
     shader->set_uniform_float("Material.shininess", material.shininess);
 

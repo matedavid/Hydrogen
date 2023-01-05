@@ -6,6 +6,8 @@
 #include "models/model.h"
 #include "models/mesh.h"
 
+#include "systems/texture_system.h"
+
 #include "renderer/vertex_array.h"
 #include "renderer/buffers.h"
 #include "renderer/shader.h"

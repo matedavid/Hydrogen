@@ -17,6 +17,8 @@ class HG_API Texture {
     int get_width() const { return m_width; }
     int get_height() const { return m_height; }
 
+    const std::string& get_path() const { return m_file_path; }
+
     void bind(unsigned int slot = 0) const;
     void unbind() const;
 

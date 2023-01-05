@@ -29,8 +29,6 @@ struct Material {
     float shininess;
 };
 
-static Texture* white_texture = nullptr;
-
 class HG_API Mesh {
   public:
     std::vector<Vertex> vertices;

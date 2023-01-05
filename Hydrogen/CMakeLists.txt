@@ -22,6 +22,8 @@ target_sources(${PROJECT_NAME} PRIVATE
         src/models/model.cpp
         src/models/mesh.cpp
 
+        src/systems/texture_system.cpp
+
         src/renderer/vertex_array.cpp
         src/renderer/buffers.cpp
         src/renderer/shader.cpp
