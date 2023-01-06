@@ -13,6 +13,6 @@ namespace Hydrogen {
 #define HG_LOG_WARN(...)  spdlog::warn(__VA_ARGS__)
 #define HG_LOG_ERROR(...) spdlog::error(__VA_ARGS__)
 
-#define HG_ASSERT(condition, message) if (!condition) { HG_LOG_ERROR(message); exit(-1); }
+#define HG_ASSERT(condition, ...) if (!condition) { HG_LOG_ERROR(__VA_ARGS__); exit(-1); }
 
 }

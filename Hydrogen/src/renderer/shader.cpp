@@ -2,7 +2,6 @@
 
 #include <glad/glad.h>
 
-#include <cassert>
 #include <fstream>
 #include <vector>
 
@@ -29,12 +28,12 @@ Shader* Shader::from_string(const std::string& vertex_src, const std::string& fr
 
 Shader* Shader::from_file(const std::string& vertex_path, const std::string& fragment_path) {
     std::ifstream vertex_file(vertex_path);
-    assert(vertex_file.is_open());
+    HG_ASSERT(vertex_file.is_open(), "Could not open vertex shader file: {}", vertex_path);
     std::string vertex_source((std::istreambuf_iterator<char>(vertex_file)),
                               std::istreambuf_iterator<char>());
 
     std::ifstream fragment_file(fragment_path);
-    assert(fragment_file.is_open());
+    HG_ASSERT(fragment_file.is_open(), "Could not open fragment shader file: {}", vertex_path);
     std::string fragment_source((std::istreambuf_iterator<char>(fragment_file)),
                                 std::istreambuf_iterator<char>());
 
