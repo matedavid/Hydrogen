@@ -24,6 +24,8 @@ class HG_API Shader {
     void set_uniform_vec3(const std::string& name, const glm::vec3& value);
     void set_uniform_mat4(const std::string& name, const glm::mat4& value);
 
+    unsigned int get_id() const { return ID; }
+
   private:
     unsigned int ID;
 
