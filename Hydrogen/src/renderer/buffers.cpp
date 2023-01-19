@@ -94,4 +94,34 @@ void IndexBuffer::unbind() const {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
+//
+// Uniform Buffer
+//
+UniformBuffer::UniformBuffer(unsigned int size) {
+    glGenBuffers(1, &ID);
+
+    bind();
+    glBufferData(GL_UNIFORM_BUFFER, size, NULL, GL_STREAM_DRAW);
+
+    // TODO: Make this configurable
+    glBindBufferBase(GL_UNIFORM_BUFFER, 0, ID);
+}
+
+UniformBuffer::~UniformBuffer() {
+    glDeleteBuffers(1, &ID);
+}
+
+//template <typename T>
+//void UniformBuffer::set_data(unsigned int offset, const T& data) {
+//    glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(T), glm::value_ptr(data));
+//}
+
+void UniformBuffer::bind() const {
+    glBindBuffer(GL_UNIFORM_BUFFER, ID);
+}
+
+void UniformBuffer::unbind() const {
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
+}
+
 } // namespace renderer

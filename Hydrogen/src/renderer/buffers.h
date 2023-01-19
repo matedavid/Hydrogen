@@ -2,6 +2,9 @@
 
 #include "core.h"
 
+#include <glad/glad.h>
+#include <glm/gtc/type_ptr.hpp>
+
 #include <vector>
 
 namespace Hydrogen {
@@ -50,6 +53,26 @@ class HG_API IndexBuffer {
   private:
     unsigned int ID;
     int m_count;
+};
+
+//
+// Uniform Buffer
+//
+class HG_API UniformBuffer {
+  public:
+    UniformBuffer(unsigned int size);
+    ~UniformBuffer();
+
+    template<typename T>
+    void set_data(unsigned int offset, const T& data) {
+        glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(T), glm::value_ptr(data));
+    }
+
+    void bind() const;
+    void unbind() const;
+
+  private:
+    unsigned int ID;
 };
 
 } // namespace Hydrogen

@@ -33,15 +33,8 @@ class Sandbox : public Hydrogen::Application {
         glUniformBlockBinding(m_shader_blue->get_id(), uniform_block_blue, 0);
 
         // Setup uniform buffer
-        glGenBuffers(1, &m_uniform_buffer);
-        glBindBuffer(GL_UNIFORM_BUFFER, m_uniform_buffer);
-        glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), NULL, GL_STREAM_DRAW);
-        glBindBuffer(GL_UNIFORM_BUFFER, 0);
-
-        glBindBufferBase(GL_UNIFORM_BUFFER, 0, m_uniform_buffer);
-
-        glBindBuffer(GL_UNIFORM_BUFFER, m_uniform_buffer);
-        glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), &m_camera.get_view_projection()[0][0]);
+        m_uniform_buffer = new Hydrogen::UniformBuffer(sizeof(glm::mat4));
+        m_uniform_buffer->set_data(0, m_camera.get_view_projection());
     }
 
     void on_update([[maybe_unused]] double ts) override {
@@ -80,7 +73,7 @@ class Sandbox : public Hydrogen::Application {
         }
 
         // Update uniform buffer data
-        glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), &m_camera.get_view_projection()[0][0]);
+        m_uniform_buffer->set_data(0, m_camera.get_view_projection());
 
         m_mouse_position = glm::vec2(x, y);
     }
@@ -109,7 +102,7 @@ class Sandbox : public Hydrogen::Application {
         }
 
         // Update uniform buffer data
-        glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), &m_camera.get_view_projection()[0][0]);
+        m_uniform_buffer->set_data(0, m_camera.get_view_projection());
     }
 
     void on_mouse_scrolled(Hydrogen::Event& event) {
@@ -126,7 +119,7 @@ class Sandbox : public Hydrogen::Application {
         m_camera.set_fov(glm::radians(fov));
 
         // Update uniform buffer data
-        glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), &m_camera.get_view_projection()[0][0]);
+        m_uniform_buffer->set_data(0, m_camera.get_view_projection());
     }
 
   private:
@@ -138,8 +131,7 @@ class Sandbox : public Hydrogen::Application {
     Hydrogen::Shader* m_shader_red;
     Hydrogen::Shader* m_shader_green;
     Hydrogen::Shader* m_shader_blue;
-
-    unsigned int m_uniform_buffer;
+    Hydrogen::UniformBuffer* m_uniform_buffer;
 };
 
 int main() {
