@@ -24,6 +24,7 @@ class Sandbox : public Hydrogen::Application {
         m_shader_blue = Hydrogen::Shader::from_file("../../Hydrogen/assets/shaders/uniform_test.vert",
                                                     "../../Hydrogen/assets/shaders/uniform_test_blue.frag");
 
+        /*
         unsigned int uniform_block_red   = glGetUniformBlockIndex(m_shader_red->get_id(), "Camera");
         unsigned int uniform_block_green = glGetUniformBlockIndex(m_shader_green->get_id(), "Camera");
         unsigned int uniform_block_blue  = glGetUniformBlockIndex(m_shader_blue->get_id(), "Camera");
@@ -31,10 +32,16 @@ class Sandbox : public Hydrogen::Application {
         glUniformBlockBinding(m_shader_red->get_id(), uniform_block_red, 0);
         glUniformBlockBinding(m_shader_green->get_id(), uniform_block_green, 0);
         glUniformBlockBinding(m_shader_blue->get_id(), uniform_block_blue, 0);
+         */
 
         // Setup uniform buffer
         m_uniform_buffer = new Hydrogen::UniformBuffer(sizeof(glm::mat4));
         m_uniform_buffer->set_data(0, m_camera.get_view_projection());
+
+        // Bind uniform buffer with shaders
+        m_shader_red->assign_uniform_buffer("Camera", m_uniform_buffer, 0);
+        m_shader_green->assign_uniform_buffer("Camera", m_uniform_buffer, 0);
+        m_shader_blue->assign_uniform_buffer("Camera", m_uniform_buffer, 0);
     }
 
     void on_update([[maybe_unused]] double ts) override {

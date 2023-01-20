@@ -88,6 +88,13 @@ void Shader::unbind() const {
     glUseProgram(0);
 }
 
+void Shader::assign_uniform_buffer(const std::string& name, const UniformBuffer* uniform_buffer, unsigned int slot) const {
+    uniform_buffer->assign_slot(slot);
+
+    unsigned int uniform_block = glGetUniformBlockIndex(ID, name.c_str());
+    glUniformBlockBinding(ID, uniform_block, slot);
+}
+
 void Shader::set_uniform_int(const std::string& name, int value) {
     bind();
     if (!m_uniform_location.contains(name)) {

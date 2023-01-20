@@ -102,9 +102,6 @@ UniformBuffer::UniformBuffer(unsigned int size) {
 
     bind();
     glBufferData(GL_UNIFORM_BUFFER, size, NULL, GL_STREAM_DRAW);
-
-    // TODO: Make this configurable
-    glBindBufferBase(GL_UNIFORM_BUFFER, 0, ID);
 }
 
 UniformBuffer::~UniformBuffer() {
@@ -115,6 +112,10 @@ UniformBuffer::~UniformBuffer() {
 //void UniformBuffer::set_data(unsigned int offset, const T& data) {
 //    glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(T), glm::value_ptr(data));
 //}
+
+void UniformBuffer::assign_slot(unsigned int slot) const {
+    glBindBufferBase(GL_UNIFORM_BUFFER, slot, ID);
+}
 
 void UniformBuffer::bind() const {
     glBindBuffer(GL_UNIFORM_BUFFER, ID);
