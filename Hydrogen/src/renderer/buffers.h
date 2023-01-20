@@ -2,10 +2,8 @@
 
 #include "core.h"
 
-#include <glad/glad.h>
-#include <glm/gtc/type_ptr.hpp>
-
-#include <vector>
+#include <glm/glm.hpp>
+#include <array>
 
 namespace Hydrogen {
 
@@ -63,18 +61,28 @@ class HG_API UniformBuffer {
     UniformBuffer(unsigned int size);
     ~UniformBuffer();
 
-    template<typename T>
-    void set_data(unsigned int offset, unsigned int size, const T& data) {
-        glBufferSubData(GL_UNIFORM_BUFFER, offset, size, glm::value_ptr(data));
-    }
+//    template<typename T>
+//    void set_data(unsigned int offset, unsigned int size, const T& data) {
+//        glBufferSubData(GL_UNIFORM_BUFFER, offset, size, glm::value_ptr(data));
+//    }
 
     void assign_slot(unsigned int slot) const;
 
     void bind() const;
     void unbind() const;
 
+    void set_vec3(unsigned int pos, const glm::vec3& data);
+    void set_vec4(unsigned int pos, const glm::vec4& data);
+    void set_mat4(unsigned int pos, const glm::mat4& data);
+
   private:
     unsigned int ID;
+
+    #define MAX_UNIFORM_POSITIONS 10
+    std::array<int, MAX_UNIFORM_POSITIONS> m_position_offset;
+
+    template <typename T>
+    void set_data(unsigned int pos, int size, const T& data);
 };
 
 } // namespace Hydrogen

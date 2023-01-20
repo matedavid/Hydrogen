@@ -1,6 +1,7 @@
 #include "buffers.h"
 
 #include <glad/glad.h>
+#include <glm/gtc/type_ptr.hpp>
 
 namespace Hydrogen {
 
@@ -108,11 +109,6 @@ UniformBuffer::~UniformBuffer() {
     glDeleteBuffers(1, &ID);
 }
 
-//template <typename T>
-//void UniformBuffer::set_data(unsigned int offset, const T& data) {
-//    glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(T), glm::value_ptr(data));
-//}
-
 void UniformBuffer::assign_slot(unsigned int slot) const {
     glBindBufferBase(GL_UNIFORM_BUFFER, slot, ID);
 }
@@ -124,5 +120,28 @@ void UniformBuffer::bind() const {
 void UniformBuffer::unbind() const {
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
+
+void UniformBuffer::set_vec3(unsigned int pos, const glm::vec3& data) {
+    set_data(pos, 16, data);
+}
+
+void UniformBuffer::set_vec4(unsigned int pos, const glm::vec4& data) {
+    set_data(pos, 16, data);
+}
+
+void UniformBuffer::set_mat4(unsigned int pos, const glm::mat4& data) {
+    set_data(pos, sizeof(glm::mat4), data);
+}
+
+template <typename T>
+void UniformBuffer::set_data(unsigned int pos, int size, const T& data) {
+    HG_ASSERT(pos < MAX_UNIFORM_POSITIONS, "You can't use more than {} uniform positions", MAX_UNIFORM_POSITIONS);
+
+    int offset = pos == 0 ? 0 : m_position_offset[pos-1];
+    m_position_offset[pos] = offset + size;
+
+    glBufferSubData(GL_UNIFORM_BUFFER, offset, size, glm::value_ptr(data));
+}
+
 
 } // namespace renderer

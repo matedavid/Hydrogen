@@ -36,8 +36,8 @@ class Sandbox : public Hydrogen::Application {
 
         // Setup uniform buffer
         m_uniform_buffer = new Hydrogen::UniformBuffer(sizeof(glm::mat4) + sizeof(glm::vec4));
-        m_uniform_buffer->set_data(0, sizeof(glm::mat4), m_camera.get_view_projection());
-        m_uniform_buffer->set_data(sizeof(glm::mat4), sizeof(glm::vec4), glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+        m_uniform_buffer->set_mat4(0, m_camera.get_view_projection());
+        m_uniform_buffer->set_vec3(1, glm::vec3(1.0f, 1.0f, 0.0f));
 
         // Bind uniform buffer with shaders
         m_shader_red->assign_uniform_buffer("Camera", m_uniform_buffer, 0);
@@ -81,7 +81,7 @@ class Sandbox : public Hydrogen::Application {
         }
 
         // Update uniform buffer data
-        m_uniform_buffer->set_data(0, sizeof(glm::mat4), m_camera.get_view_projection());
+        m_uniform_buffer->set_mat4(0, m_camera.get_view_projection());
 
         m_mouse_position = glm::vec2(x, y);
     }
@@ -110,7 +110,7 @@ class Sandbox : public Hydrogen::Application {
         }
 
         // Update uniform buffer data
-        m_uniform_buffer->set_data(0, sizeof(glm::mat4), m_camera.get_view_projection());
+        m_uniform_buffer->set_mat4(0, m_camera.get_view_projection());
     }
 
     void on_mouse_scrolled(Hydrogen::Event& event) {
@@ -127,7 +127,7 @@ class Sandbox : public Hydrogen::Application {
         m_camera.set_fov(glm::radians(fov));
 
         // Update uniform buffer data
-        m_uniform_buffer->set_data(0, sizeof(glm::mat4), m_camera.get_view_projection());
+        m_uniform_buffer->set_mat4(0, m_camera.get_view_projection());
     }
 
   private:
