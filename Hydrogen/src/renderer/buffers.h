@@ -64,8 +64,8 @@ class HG_API UniformBuffer {
     ~UniformBuffer();
 
     template<typename T>
-    void set_data(unsigned int offset, const T& data) {
-        glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(T), glm::value_ptr(data));
+    void set_data(unsigned int offset, unsigned int size, const T& data) {
+        glBufferSubData(GL_UNIFORM_BUFFER, offset, size, glm::value_ptr(data));
     }
 
     void assign_slot(unsigned int slot) const;
