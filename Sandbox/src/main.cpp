@@ -3,8 +3,7 @@
 class Sandbox : public Hydrogen::Application {
   public:
     Sandbox(int width, int height, std::string&& title)
-        : Hydrogen::Application(width, height, std::move(title)),
-          m_model("../../Hydrogen/assets/models/backpack/backpack.obj", true)
+        : Hydrogen::Application(width, height, std::move(title))
     {
         bind_event_callback_func(Hydrogen::EventType::MouseMoved, BIND_EVENT_FUNC(on_mouse_moved));
         bind_event_callback_func(Hydrogen::EventType::KeyPressed, BIND_EVENT_FUNC(on_key_pressed));
@@ -16,72 +15,44 @@ class Sandbox : public Hydrogen::Application {
         m_camera = Hydrogen::PerspectiveCamera(glm::radians(60.0f), ratio, 0.1f, 100.0f);
         m_camera.set_position(m_camera_position);
 
-        m_shader = Hydrogen::Shader::from_file("../../Hydrogen/assets/model_loading.vert", "../../Hydrogen/assets/model_loading.frag");
+        m_shader_red = Hydrogen::Shader::from_file("../../Hydrogen/assets/shaders/uniform_test.vert",
+                                                   "../../Hydrogen/assets/shaders/uniform_test_red.frag");
+
+        m_shader_green = Hydrogen::Shader::from_file("../../Hydrogen/assets/shaders/uniform_test.vert",
+                                                     "../../Hydrogen/assets/shaders/uniform_test_green.frag");
+
+        m_shader_blue = Hydrogen::Shader::from_file("../../Hydrogen/assets/shaders/uniform_test.vert",
+                                                    "../../Hydrogen/assets/shaders/uniform_test_blue.frag");
+
+        /*
+        unsigned int uniform_block_red   = glGetUniformBlockIndex(m_shader_red->get_id(), "Camera");
+        unsigned int uniform_block_green = glGetUniformBlockIndex(m_shader_green->get_id(), "Camera");
+        unsigned int uniform_block_blue  = glGetUniformBlockIndex(m_shader_blue->get_id(), "Camera");
+
+        glUniformBlockBinding(m_shader_red->get_id(), uniform_block_red, 0);
+        glUniformBlockBinding(m_shader_green->get_id(), uniform_block_green, 0);
+        glUniformBlockBinding(m_shader_blue->get_id(), uniform_block_blue, 0);
+         */
+
+        // Setup uniform buffer
+        m_uniform_buffer = new Hydrogen::UniformBuffer(sizeof(glm::mat4) + sizeof(glm::vec4));
+        m_uniform_buffer->set_mat4(0, m_camera.get_view_projection());
+        m_uniform_buffer->set_vec3(1, glm::vec3(1.0f, 1.0f, 0.0f));
+
+        // Bind uniform buffer with shaders
+        m_shader_red->assign_uniform_buffer("Camera", m_uniform_buffer, 0);
+        m_shader_green->assign_uniform_buffer("Camera", m_uniform_buffer, 0);
+        m_shader_blue->assign_uniform_buffer("Camera", m_uniform_buffer, 0);
     }
 
     void on_update([[maybe_unused]] double ts) override {
-        // Hydrogen::Renderer3D::begin_scene(m_camera);
+        Hydrogen::Renderer3D::begin_scene(m_camera);
 
-        m_shader->set_uniform_mat4("ViewProjection", m_camera.get_view_projection());
+        Hydrogen::Renderer3D::draw_cube({2.0f, 0.0f, -3.0f}, {1.0f, 1.0f, 1.0f}, m_shader_red);
+        Hydrogen::Renderer3D::draw_cube({-2.0f, 1.0f, -2.0f}, {1.0f, 1.0f, 1.0f}, m_shader_green);
+        Hydrogen::Renderer3D::draw_cube({0.0f, -1.0f, -4.0f}, {1.0f, 1.0f, 1.0f}, m_shader_blue);
 
-        // Point lights
-        const int number = 2;
-        const glm::vec3 light_positions[number] = {
-            glm::vec3(0.0f, -1.0f, -13.0f),
-            glm::vec3(4.0f, 2.0f, -10.0f)
-        };
-        const glm::vec3 light_color = glm::vec3(1.0f, 1.0f, 1.0f);
-
-        for (int i = 0; i < number; ++i) {
-            const auto& light_position = light_positions[i];
-            const std::string prefix = "PointLights[" + std::to_string(i) + "]";
-
-            m_shader->set_uniform_vec3(prefix + ".position", light_position);
-            m_shader->set_uniform_vec3(prefix + ".ambient", {0.2f, 0.2f, 0.2f});
-            m_shader->set_uniform_vec3(prefix + ".diffuse", light_color);
-            m_shader->set_uniform_vec3(prefix + ".specular", {1.0f, 1.0f, 1.0f});
-            m_shader->set_uniform_float(prefix + ".constant", 1.0f);
-            m_shader->set_uniform_float(prefix + ".linear", 0.09f);
-            m_shader->set_uniform_float(prefix + ".quadratic", 0.032f);
-
-            // Draw light quad
-            Hydrogen::Renderer3D::begin_scene(m_camera);
-            Hydrogen::Renderer3D::draw_cube(light_position, glm::vec3(0.5f, 0.5f, 0.5f), light_color);
-            Hydrogen::Renderer3D::end_scene();
-        }
-
-        // Directional light
-        m_shader->set_uniform_vec3("DirLight.direction", glm::vec3(1.0f, -1.0f, 0.0f));
-        m_shader->set_uniform_vec3("DirLight.ambient", {0.2f, 0.2f, 0.2f});
-        m_shader->set_uniform_vec3("DirLight.diffuse", light_color);
-        m_shader->set_uniform_vec3("DirLight.specular", {1.0f, 1.0f, 1.0f});
-
-        // Camera Position
-        m_shader->set_uniform_vec3("CameraPosition", m_camera_position);
-
-        // Draw the models
-        m_shader->set_uniform_mat4("Model", glm::translate(glm::mat4(1.0f), glm::vec3(2.f, 0.0f, -10.0f)));
-        m_model.draw(m_shader);
-
-        m_shader->set_uniform_mat4("Model", glm::translate(glm::mat4(1.0f), glm::vec3(-4.f, 0.0f, -10.0f)));
-        m_model.draw(m_shader);
-
-        m_shader->set_uniform_mat4("Model", glm::translate(glm::mat4(1.0f), glm::vec3(-1.f, -7.0f, -20.0f)));
-        m_model.draw(m_shader);
-
-
-//        m_shader->set_uniform_vec3(glm::vec3(0.2f, 0.7f, 0.2f), "Color");
-//        Hydrogen::Renderer3D::draw_cube({0.0f, 0.0f, 1.0f}, {1.0f, 1.0f, 1.0f}, m_shader);
-//
-//        m_shader->set_uniform_vec3(glm::vec3(1.0f, 0.5f, 0.31f), "Color");
-//        Hydrogen::Renderer3D::draw_cube({2.0f, 0.0f, -2.0f}, {1.0f, 1.0f, 1.0f}, m_shader);
-//
-//        m_shader->set_uniform_vec3(glm::vec3(0.1f, 0.2f, 0.7f), "Color");
-//        Hydrogen::Renderer3D::draw_cube({-2.0f, 2.0f, 0.0f}, {1.0f, 1.0f, 1.0f}, m_shader);
-
-//        m_model.draw(m_shader);
-
-        // Hydrogen::Renderer3D::end_scene();
+        Hydrogen::Renderer3D::end_scene();
     }
 
     void on_mouse_moved(Hydrogen::Event& event) {
@@ -109,6 +80,9 @@ class Sandbox : public Hydrogen::Application {
             m_camera.rotate({x_rotation, y_rotation});
         }
 
+        // Update uniform buffer data
+        m_uniform_buffer->set_mat4(0, m_camera.get_view_projection());
+
         m_mouse_position = glm::vec2(x, y);
     }
 
@@ -134,6 +108,9 @@ class Sandbox : public Hydrogen::Application {
             m_camera_position += glm::vec3({0.0f, 1.0f, 0.0f});
             m_camera.set_position(m_camera_position);
         }
+
+        // Update uniform buffer data
+        m_uniform_buffer->set_mat4(0, m_camera.get_view_projection());
     }
 
     void on_mouse_scrolled(Hydrogen::Event& event) {
@@ -148,15 +125,21 @@ class Sandbox : public Hydrogen::Application {
         fov = std::min(fov, 120.0f);
 
         m_camera.set_fov(glm::radians(fov));
+
+        // Update uniform buffer data
+        m_uniform_buffer->set_mat4(0, m_camera.get_view_projection());
     }
 
   private:
     Hydrogen::PerspectiveCamera m_camera;
     glm::vec2 m_mouse_position{};
 
-    Hydrogen::Shader* m_shader;
     glm::vec3 m_camera_position;
-    Hydrogen::Model m_model;
+
+    Hydrogen::Shader* m_shader_red;
+    Hydrogen::Shader* m_shader_green;
+    Hydrogen::Shader* m_shader_blue;
+    Hydrogen::UniformBuffer* m_uniform_buffer;
 };
 
 int main() {

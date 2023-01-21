@@ -33,7 +33,7 @@ Shader* Shader::from_file(const std::string& vertex_path, const std::string& fra
                               std::istreambuf_iterator<char>());
 
     std::ifstream fragment_file(fragment_path);
-    HG_ASSERT(fragment_file.is_open(), "Could not open fragment shader file: {}", vertex_path);
+    HG_ASSERT(fragment_file.is_open(), "Could not open fragment shader file: {}", fragment_path);
     std::string fragment_source((std::istreambuf_iterator<char>(fragment_file)),
                                 std::istreambuf_iterator<char>());
 
@@ -86,6 +86,13 @@ void Shader::bind() const {
 
 void Shader::unbind() const {
     glUseProgram(0);
+}
+
+void Shader::assign_uniform_buffer(const std::string& name, UniformBuffer* uniform_buffer, unsigned int slot) const {
+    uniform_buffer->assign_slot(slot);
+
+    unsigned int uniform_block = glGetUniformBlockIndex(ID, name.c_str());
+    glUniformBlockBinding(ID, uniform_block, slot);
 }
 
 void Shader::set_uniform_int(const std::string& name, int value) {
