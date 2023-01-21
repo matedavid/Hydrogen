@@ -52,8 +52,11 @@ layout (location = 1) in vec2 aTexCoord;
 
 out vec2 v_TexCoord;
 
+layout(std140) uniform Camera {
+    uniform mat4 ViewProjection;
+};
+
 uniform mat4 Model;
-uniform mat4 ViewProjection;
 
 void main()
 {

@@ -9,19 +9,23 @@ void Renderer3D::init() {
     m_resources = new RendererResources();
     m_resources->quad = create_quad();
     //m_resources->flat_color_shader = Shader::from_file("../../Hydrogen/assets/vertex.glsl", "../../Hydrogen/assets/fragment.glsl");
-    m_resources->flat_color_shader = Shader::default_();
 
+    m_resources->flat_color_shader = Shader::default_();
+    m_resources->camera_ubo = new UniformBuffer(sizeof(glm::mat4)); // glm::mat4 ViewProjection matrix
     m_resources->white_texture = Texture::white();
 }
 
 void Renderer3D::free() {
     delete m_resources->quad;
+    delete m_resources->flat_color_shader;
+    delete m_resources->camera_ubo;
+    delete m_resources->white_texture;
+
     delete m_resources;
 }
 
 void Renderer3D::begin_scene(const Camera& camera) {
-    m_resources->flat_color_shader->bind();
-    m_resources->flat_color_shader->set_uniform_mat4("ViewProjection", camera.get_view_projection());
+    m_resources->camera_ubo->set_mat4(0, camera.get_view_projection());
 }
 
 void Renderer3D::end_scene() {
@@ -33,24 +37,28 @@ void Renderer3D::draw_cube(const glm::vec3& pos, const glm::vec3& dim, Shader* s
     model = glm::scale(model, glm::vec3(dim.x, dim.y, dim.z));
 
     shader->set_uniform_mat4("Model", model);
+    shader->assign_uniform_buffer("Camera", m_resources->camera_ubo, 0);
+
     RendererAPI::send(m_resources->quad, shader);
 }
 
 void Renderer3D::draw_cube(const glm::vec3& pos, const glm::vec3& dim, const Texture* texture) {
     texture->bind(0);
-    m_resources->flat_color_shader->bind();
 
+    m_resources->flat_color_shader->bind();
     m_resources->flat_color_shader->set_uniform_int("Texture", 0);
     m_resources->flat_color_shader->set_uniform_vec3("Color", glm::vec3(1.0f, 1.0f, 1.0f));
+
     Renderer3D::draw_cube(pos, dim, m_resources->flat_color_shader);
 }
 
 void Renderer3D::draw_cube(const glm::vec3& pos, const glm::vec3& dim, const glm::vec3& color) {
     m_resources->white_texture->bind(0);
-    m_resources->flat_color_shader->bind();
 
+    m_resources->flat_color_shader->bind();
     m_resources->flat_color_shader->set_uniform_int("Texture", 0);
     m_resources->flat_color_shader->set_uniform_vec3("Color", color);
+
     Renderer3D::draw_cube(pos, dim, m_resources->flat_color_shader);
 }
 

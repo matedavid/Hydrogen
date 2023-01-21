@@ -14,43 +14,14 @@ class Sandbox : public Hydrogen::Application {
         float ratio = float(get_window()->get_width()) / float(get_window()->get_height());
         m_camera = Hydrogen::PerspectiveCamera(glm::radians(60.0f), ratio, 0.1f, 100.0f);
         m_camera.set_position(m_camera_position);
-
-        m_shader_red = Hydrogen::Shader::from_file("../../Hydrogen/assets/shaders/uniform_test.vert",
-                                                   "../../Hydrogen/assets/shaders/uniform_test_red.frag");
-
-        m_shader_green = Hydrogen::Shader::from_file("../../Hydrogen/assets/shaders/uniform_test.vert",
-                                                     "../../Hydrogen/assets/shaders/uniform_test_green.frag");
-
-        m_shader_blue = Hydrogen::Shader::from_file("../../Hydrogen/assets/shaders/uniform_test.vert",
-                                                    "../../Hydrogen/assets/shaders/uniform_test_blue.frag");
-
-        /*
-        unsigned int uniform_block_red   = glGetUniformBlockIndex(m_shader_red->get_id(), "Camera");
-        unsigned int uniform_block_green = glGetUniformBlockIndex(m_shader_green->get_id(), "Camera");
-        unsigned int uniform_block_blue  = glGetUniformBlockIndex(m_shader_blue->get_id(), "Camera");
-
-        glUniformBlockBinding(m_shader_red->get_id(), uniform_block_red, 0);
-        glUniformBlockBinding(m_shader_green->get_id(), uniform_block_green, 0);
-        glUniformBlockBinding(m_shader_blue->get_id(), uniform_block_blue, 0);
-         */
-
-        // Setup uniform buffer
-        m_uniform_buffer = new Hydrogen::UniformBuffer(sizeof(glm::mat4) + sizeof(glm::vec4));
-        m_uniform_buffer->set_mat4(0, m_camera.get_view_projection());
-        m_uniform_buffer->set_vec3(1, glm::vec3(1.0f, 1.0f, 0.0f));
-
-        // Bind uniform buffer with shaders
-        m_shader_red->assign_uniform_buffer("Camera", m_uniform_buffer, 0);
-        m_shader_green->assign_uniform_buffer("Camera", m_uniform_buffer, 0);
-        m_shader_blue->assign_uniform_buffer("Camera", m_uniform_buffer, 0);
     }
 
     void on_update([[maybe_unused]] double ts) override {
         Hydrogen::Renderer3D::begin_scene(m_camera);
 
-        Hydrogen::Renderer3D::draw_cube({2.0f, 0.0f, -3.0f}, {1.0f, 1.0f, 1.0f}, m_shader_red);
-        Hydrogen::Renderer3D::draw_cube({-2.0f, 1.0f, -2.0f}, {1.0f, 1.0f, 1.0f}, m_shader_green);
-        Hydrogen::Renderer3D::draw_cube({0.0f, -1.0f, -4.0f}, {1.0f, 1.0f, 1.0f}, m_shader_blue);
+        Hydrogen::Renderer3D::draw_cube({2.0f, 0.0f, -3.0f},  {1.0f, 1.0f, 1.0f}, glm::vec3(1.0f, 0.0f, 0.0f));
+        Hydrogen::Renderer3D::draw_cube({-2.0f, 1.0f, -2.0f}, {1.0f, 1.0f, 1.0f}, glm::vec3(0.0f, 1.0f, 0.0f));
+        Hydrogen::Renderer3D::draw_cube({0.0f, -1.0f, -4.0f}, {1.0f, 1.0f, 1.0f}, glm::vec3(0.0f, 0.0f, 1.0f));
 
         Hydrogen::Renderer3D::end_scene();
     }
@@ -80,9 +51,6 @@ class Sandbox : public Hydrogen::Application {
             m_camera.rotate({x_rotation, y_rotation});
         }
 
-        // Update uniform buffer data
-        m_uniform_buffer->set_mat4(0, m_camera.get_view_projection());
-
         m_mouse_position = glm::vec2(x, y);
     }
 
@@ -108,9 +76,6 @@ class Sandbox : public Hydrogen::Application {
             m_camera_position += glm::vec3({0.0f, 1.0f, 0.0f});
             m_camera.set_position(m_camera_position);
         }
-
-        // Update uniform buffer data
-        m_uniform_buffer->set_mat4(0, m_camera.get_view_projection());
     }
 
     void on_mouse_scrolled(Hydrogen::Event& event) {
@@ -125,21 +90,12 @@ class Sandbox : public Hydrogen::Application {
         fov = std::min(fov, 120.0f);
 
         m_camera.set_fov(glm::radians(fov));
-
-        // Update uniform buffer data
-        m_uniform_buffer->set_mat4(0, m_camera.get_view_projection());
     }
 
   private:
     Hydrogen::PerspectiveCamera m_camera;
     glm::vec2 m_mouse_position{};
-
     glm::vec3 m_camera_position;
-
-    Hydrogen::Shader* m_shader_red;
-    Hydrogen::Shader* m_shader_green;
-    Hydrogen::Shader* m_shader_blue;
-    Hydrogen::UniformBuffer* m_uniform_buffer;
 };
 
 int main() {

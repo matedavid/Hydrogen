@@ -34,6 +34,7 @@ class HG_API Renderer3D {
 
         Shader* flat_color_shader;
         Texture* white_texture;
+        UniformBuffer* camera_ubo;
     };
     inline static RendererResources* m_resources;
 
