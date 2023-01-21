@@ -109,7 +109,11 @@ UniformBuffer::~UniformBuffer() {
     glDeleteBuffers(1, &ID);
 }
 
-void UniformBuffer::assign_slot(unsigned int slot) const {
+void UniformBuffer::assign_slot(unsigned int slot) {
+    if (current_slot == slot)
+        return;
+
+    current_slot = slot;
     glBindBufferBase(GL_UNIFORM_BUFFER, slot, ID);
 }
 

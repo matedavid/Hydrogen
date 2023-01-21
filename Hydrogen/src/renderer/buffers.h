@@ -66,7 +66,7 @@ class HG_API UniformBuffer {
 //        glBufferSubData(GL_UNIFORM_BUFFER, offset, size, glm::value_ptr(data));
 //    }
 
-    void assign_slot(unsigned int slot) const;
+    void assign_slot(unsigned int slot);
 
     void bind() const;
     void unbind() const;
@@ -77,6 +77,7 @@ class HG_API UniformBuffer {
 
   private:
     unsigned int ID;
+    unsigned int current_slot;
 
     #define MAX_UNIFORM_POSITIONS 10
     std::array<int, MAX_UNIFORM_POSITIONS> m_position_offset;

@@ -22,7 +22,7 @@ class HG_API Shader {
     void bind() const;
     void unbind() const;
 
-    void assign_uniform_buffer(const std::string& name, const UniformBuffer* uniform_buffer, unsigned int slot) const;
+    void assign_uniform_buffer(const std::string& name, UniformBuffer* uniform_buffer, unsigned int slot) const;
 
     void set_uniform_int(const std::string& name, int value);
     void set_uniform_float(const std::string& name, float value);

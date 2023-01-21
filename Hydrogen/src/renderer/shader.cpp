@@ -88,7 +88,7 @@ void Shader::unbind() const {
     glUseProgram(0);
 }
 
-void Shader::assign_uniform_buffer(const std::string& name, const UniformBuffer* uniform_buffer, unsigned int slot) const {
+void Shader::assign_uniform_buffer(const std::string& name, UniformBuffer* uniform_buffer, unsigned int slot) const {
     uniform_buffer->assign_slot(slot);
 
     unsigned int uniform_block = glGetUniformBlockIndex(ID, name.c_str());
