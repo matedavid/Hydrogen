@@ -3,6 +3,8 @@
 #include "application.h"
 #include "input.h"
 
+#include "material.h"
+
 #include "models/model.h"
 #include "models/mesh.h"
 

@@ -19,6 +19,8 @@ target_sources(${PROJECT_NAME} PRIVATE
         src/window.cpp
         src/input.cpp
 
+        src/material.h
+
         src/models/model.cpp
         src/models/mesh.cpp
 

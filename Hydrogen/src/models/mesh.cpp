@@ -16,15 +16,6 @@ Mesh::Mesh(const aiMesh* mesh, const aiScene* scene, const std::string& director
         vertex.position.y = vs.y;
         vertex.position.z = vs.z;
 
-        // Color
-        if (mesh->HasVertexColors(0)) {
-            const auto& cs = mesh->mColors[0][i];
-            vertex.color.r = cs.r;
-            vertex.color.g = cs.g;
-            vertex.color.b = cs.b;
-            vertex.color.a = cs.a;
-        }
-
         // Normals
         if (mesh->HasNormals()) {
             const auto& ns = mesh->mNormals[i];
@@ -59,20 +50,21 @@ Mesh::Mesh(const aiMesh* mesh, const aiScene* scene, const std::string& director
     aiString ai_path;
     if (mat->GetTexture(aiTextureType_DIFFUSE, 0, &ai_path) == aiReturn_SUCCESS) {
         const std::string path = directory + std::string(ai_path.C_Str());
-        diffuse_texture = system->acquire(path);
+        material.diffuse_map = system->acquire(path);
     } else {
-        diffuse_texture = system->default_texture();
+        material.diffuse_map = system->default_texture();
     }
 
+    // Specular texture
     ai_path.Clear();
     if (mat->GetTexture(aiTextureType_SPECULAR, 0, &ai_path) == aiReturn_SUCCESS) {
         const std::string path = directory + std::string(ai_path.C_Str());
-        specular_texture = system->acquire(path);
+        material.specular_map = system->acquire(path);
     } else {
-        specular_texture = system->default_texture();
+        material.specular_map = system->default_texture();
     }
 
-    // Material
+    // Ambient, diffuse and specular colors
     aiColor3D color;
     if (mat->Get(AI_MATKEY_COLOR_AMBIENT, color) == aiReturn_SUCCESS) {
         material.ambient.r = color.r;
@@ -92,6 +84,7 @@ Mesh::Mesh(const aiMesh* mesh, const aiScene* scene, const std::string& director
         material.specular.b = color.b;
     }
 
+    // Shininess
     ai_real shininess;
     if (mat->Get(AI_MATKEY_SHININESS, shininess) == aiReturn_SUCCESS) {
         material.shininess = shininess;
@@ -106,22 +99,18 @@ Mesh::~Mesh() {
     delete VAO;
 
     auto* system = TextureSystem::get();
-    system->release(diffuse_texture);
-    system->release(specular_texture);
-
-    // NOTE: Responsibility moved to TextureSystem
-//    if (diffuse_texture != white_texture) {
-//        delete diffuse_texture;
-//    }
-//    if (specular_texture != white_texture) {
-//        delete white_texture;
-//    }
+    if (material.diffuse_map != nullptr) {
+        system->release(material.diffuse_map);
+    }
+    if (material.specular_map != nullptr) {
+        system->release(material.specular_map);
+    }
 }
 
 void Mesh::draw(Shader* shader) {
-    diffuse_texture->bind(0);
+    material.diffuse_map->bind(0);
     shader->set_uniform_int("Material.diffuse", 0);
-    specular_texture->bind(1);
+    material.specular_map->bind(1);
     shader->set_uniform_int("Material.specular", 1);
 
     shader->set_uniform_float("Material.shininess", material.shininess);
@@ -155,4 +144,4 @@ void Mesh::setup_mesh() {
     EBO->unbind();
 }
 
-}
+} // namespace Hydrogen

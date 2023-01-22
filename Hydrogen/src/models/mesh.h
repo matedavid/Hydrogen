@@ -8,6 +8,7 @@
 #include <glm/glm.hpp>
 #include <assimp/scene.h>
 
+#include "material.h"
 #include "renderer/vertex_array.h"
 #include "renderer/buffers.h"
 #include "renderer/shader.h"
@@ -22,20 +23,17 @@ struct Vertex {
     glm::vec2 texture_coordinates;
 };
 
-struct Material {
-    glm::vec3 ambient;
-    glm::vec3 diffuse;
-    glm::vec3 specular;
-    float shininess;
-};
+//struct Material {
+//    glm::vec3 ambient;
+//    glm::vec3 diffuse;
+//    glm::vec3 specular;
+//    float shininess;
+//};
 
 class HG_API Mesh {
   public:
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
-
-    Texture* diffuse_texture;
-    Texture* specular_texture;
 
     Material material;
 
