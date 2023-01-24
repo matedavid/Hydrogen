@@ -5,17 +5,61 @@
 #include <glm/glm.hpp>
 
 #include "renderer/texture.h"
+#include "renderer/shader.h"
 
 namespace Hydrogen {
 
-struct HG_API Material {
-    glm::vec3 ambient;
-    glm::vec3 diffuse;
-    glm::vec3 specular;
-    float shininess;
+// ======
+template<typename T>
+class Optional {
+  public:
+    Optional() { m_has_value = false; }
+    Optional(T value) {
+        m_value = value;
+        m_has_value = true;
+    }
 
-    Texture* diffuse_map  = nullptr;
-    Texture* specular_map = nullptr;
+    Optional& operator=(const T& value) {
+        m_value = value;
+        m_has_value = true;
+    }
+
+    const T& get() const {
+        HG_ASSERT(m_has_value, "There must be a value");
+        return m_value;
+    }
+    bool has_value() const { return m_has_value; }
+
+  private:
+    T m_value;
+    bool m_has_value;
+};
+// ======
+
+struct HG_API MaterialValues {
+    glm::vec3 ambient{1.0f, 1.0f, 1.0f};
+    Optional<glm::vec3> diffuse;
+    Optional<glm::vec3> specular;
+    Optional<float> shininess;
+
+    Optional<Texture*> diffuse_map;
+    Optional<Texture*> specular_map;
+};
+
+class HG_API Material {
+  public:
+    MaterialValues values;
+
+    Material();
+    ~Material();
+
+    void build();
+    Shader* get_shader() const;
+
+    void bind() const;
+
+  private:
+    Shader* m_shader;
 };
 
 } // namespace Hydrogen

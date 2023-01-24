@@ -19,11 +19,12 @@ target_sources(${PROJECT_NAME} PRIVATE
         src/window.cpp
         src/input.cpp
 
-        src/material.h
+        src/material.cpp
 
         src/models/model.cpp
         src/models/mesh.cpp
 
+        src/systems/shader_system.cpp
         src/systems/texture_system.cpp
 
         src/renderer/vertex_array.cpp
