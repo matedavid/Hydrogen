@@ -13,8 +13,10 @@ namespace Hydrogen {
 
 class TextureSystem {
   public:
-    ~TextureSystem();
-    static TextureSystem* get();
+    static TextureSystem* instance;
+
+    static void init();
+    static void free();
 
     Texture* acquire(const std::string& texture_path);
     void release(const Texture* texture);
@@ -25,8 +27,8 @@ class TextureSystem {
     std::unordered_map<std::string, Texture*> m_textures;
     std::unordered_map<std::string, int> m_reference_count;
 
-    static TextureSystem* m_instance;
     TextureSystem();
+    ~TextureSystem();
 };
 
 } // namespace Hydrogen
