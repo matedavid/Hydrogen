@@ -62,6 +62,11 @@ void Renderer3D::draw_cube(const glm::vec3& pos, const glm::vec3& dim, const glm
     Renderer3D::draw_cube(pos, dim, m_resources->flat_color_shader);
 }
 
+void Renderer3D::draw_cube(const glm::vec3& pos, const glm::vec3& dim, const Material& material) {
+    Shader* shader = material.bind();
+    Renderer3D::draw_cube(pos, dim, shader);
+}
+
 VertexArray* Renderer3D::create_quad() {
     // Create Vertex Array
     auto* vao = new VertexArray();

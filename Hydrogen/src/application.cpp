@@ -1,7 +1,9 @@
 #include "application.h"
 
 #include <utility>
+
 #include "renderer/renderer_api.h"
+#include "systems/shader_system.h"
 
 namespace Hydrogen {
 
@@ -10,12 +12,16 @@ Application::Application(int width, int height, std::string&& title) {
     Renderer2D::init();
     Renderer3D::init();
 
+    ShaderSystem::init();
+
     m_instance = this;
 }
 
 Application::~Application() {
     Renderer2D::free();
     Renderer3D::free();
+
+    ShaderSystem::free();
 
     delete m_window;
     m_instance = nullptr;

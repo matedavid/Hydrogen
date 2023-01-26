@@ -14,14 +14,20 @@ class Sandbox : public Hydrogen::Application {
         float ratio = float(get_window()->get_width()) / float(get_window()->get_height());
         m_camera = Hydrogen::PerspectiveCamera(glm::radians(60.0f), ratio, 0.1f, 100.0f);
         m_camera.set_position(m_camera_position);
+
+
+        m_material.values.diffuse = glm::vec3(0.4f, 0.3f, 0.4f);
+        m_material.build();
     }
 
     void on_update([[maybe_unused]] double ts) override {
         Hydrogen::Renderer3D::begin_scene(m_camera);
 
-        Hydrogen::Renderer3D::draw_cube({2.0f, 0.0f, -3.0f},  {1.0f, 1.0f, 1.0f}, glm::vec3(1.0f, 0.0f, 0.0f));
-        Hydrogen::Renderer3D::draw_cube({-2.0f, 1.0f, -2.0f}, {1.0f, 1.0f, 1.0f}, glm::vec3(0.0f, 1.0f, 0.0f));
-        Hydrogen::Renderer3D::draw_cube({0.0f, -1.0f, -4.0f}, {1.0f, 1.0f, 1.0f}, glm::vec3(0.0f, 0.0f, 1.0f));
+//        Hydrogen::Renderer3D::draw_cube({2.0f, 0.0f, -3.0f},  {1.0f, 1.0f, 1.0f}, glm::vec3(1.0f, 0.0f, 0.0f));
+//        Hydrogen::Renderer3D::draw_cube({-2.0f, 1.0f, -2.0f}, {1.0f, 1.0f, 1.0f}, glm::vec3(0.0f, 1.0f, 0.0f));
+//        Hydrogen::Renderer3D::draw_cube({0.0f, -1.0f, -4.0f}, {1.0f, 1.0f, 1.0f}, glm::vec3(0.0f, 0.0f, 1.0f));
+
+        Hydrogen::Renderer3D::draw_cube({2.0f, 0.0f, -3.0f},  {1.0f, 1.0f, 1.0f}, m_material.bind());
 
         Hydrogen::Renderer3D::end_scene();
     }
@@ -96,6 +102,8 @@ class Sandbox : public Hydrogen::Application {
     Hydrogen::PerspectiveCamera m_camera;
     glm::vec2 m_mouse_position{};
     glm::vec3 m_camera_position;
+
+    Hydrogen::Material m_material;
 };
 
 int main() {

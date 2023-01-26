@@ -1,58 +1,64 @@
 #include "material.h"
 
+#include "systems/shader_system.h"
+
 namespace Hydrogen {
 
-Material::Material() : m_shader(nullptr) {
+Material::Material() : m_shader_id(), m_built(false) {
 }
 
 Material::~Material() {
+    ShaderSystem::instance->release(m_shader_id);
 }
 
 void Material::build() {
-    // TODO:
+    if (m_built) {
+        HG_LOG_WARN("You can only build a material once");
+        return;
+    }
+
+    m_built = true;
+    m_shader_id = ShaderSystem::instance->acquire_from_material(values);
 }
 
-Shader* Material::get_shader() const {
-    HG_ASSERT(m_shader != nullptr, "You must build the Material before getting the shader");
-    return m_shader;
-}
+Shader* Material::bind() const {
+    HG_ASSERT(m_built, "You must build the Material before getting the shader");
 
-void Material::bind() const {
-    HG_ASSERT(m_shader != nullptr, "You must build the Material before getting the shader");
+    Shader* shader = ShaderSystem::instance->get(m_shader_id);
 
     // Ambient Color
-    m_shader->set_uniform_vec3("Material.Ambient", values.ambient);
+    shader->set_uniform_vec3("Material.ambient", values.ambient);
 
     // Diffuse Color
     if (values.diffuse.has_value()) {
-        m_shader->set_uniform_vec3("Material.Diffuse", values.diffuse.get());
+        shader->set_uniform_vec3("Material.diffuse", values.diffuse.get());
     }
 
     // Specular color
     if (values.specular.has_value()) {
-        m_shader->set_uniform_vec3("Material.Specular", values.specular.get());
+        shader->set_uniform_vec3("Material.specular", values.specular.get());
     }
 
     // Shininess
     if (values.shininess.has_value()) {
-        m_shader->set_uniform_float("Material.Shininess", values.shininess.get());
+        shader->set_uniform_float("Material.shininess", values.shininess.get());
     }
 
     // Diffuse Texture
     if (values.diffuse_map.has_value()) {
         const Texture* diffuse_map = values.diffuse_map.get();
         diffuse_map->bind(0);
-        m_shader->set_uniform_int("Material.DiffuseMap", 0);
+        shader->set_uniform_int("Material.diffuse_map", 0);
     }
 
     // Specular Texture
     if (values.specular_map.has_value()) {
         const Texture* specular_map = values.specular_map.get();
         specular_map->bind(1);
-        m_shader->set_uniform_int("Material.SpecularMap", 1);
+        shader->set_uniform_int("Material.specular_map", 1);
     }
 
-    m_shader->bind();
+    return shader;
 }
 
 } // namespace Hydrogen

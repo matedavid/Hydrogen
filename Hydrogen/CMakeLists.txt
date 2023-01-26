@@ -20,6 +20,7 @@ target_sources(${PROJECT_NAME} PRIVATE
         src/input.cpp
 
         src/material.cpp
+        src/shader_compiler.cpp
 
         src/models/model.cpp
         src/models/mesh.cpp

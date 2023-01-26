@@ -7,6 +7,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
 
+#include "material.h"
+
 #include "camera.h"
 #include "vertex_array.h"
 #include "buffers.h"
@@ -27,6 +29,7 @@ class HG_API Renderer3D {
     static void draw_cube(const glm::vec3& pos, const glm::vec3& dim, Shader* shader);
     static void draw_cube(const glm::vec3& pos, const glm::vec3& dim, const Texture* texture);
     static void draw_cube(const glm::vec3& pos, const glm::vec3& dim, const glm::vec3& color);
+    static void draw_cube(const glm::vec3& pos, const glm::vec3& dim, const Material& material);
 
   private:
     struct RendererResources {

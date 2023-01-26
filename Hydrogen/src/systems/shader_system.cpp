@@ -1,5 +1,7 @@
 #include "shader_system.h"
 
+#include "shader_compiler.h"
+
 namespace Hydrogen {
 
 ShaderSystem* ShaderSystem::instance = nullptr;
@@ -30,7 +32,6 @@ Shader* ShaderSystem::get(ShaderId id) {
         return nullptr;
     }
 
-    m_reference_count[id] += 1;
     return m_shaders[id];
 }
 
@@ -99,7 +100,10 @@ ShaderId ShaderSystem::acquire_from_material(const MaterialValues& material) {
 
     HG_LOG_INFO("Loading new Shader from material: {}", id);
 
-    // TODO: Use ShaderCompiler to create shader
+    Shader* shader = ShaderCompiler::from_material(material);
+    m_reference_count[id] = 1;
+    m_shaders[id] = shader;
+
     return id;
 }
 

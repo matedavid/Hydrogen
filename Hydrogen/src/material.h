@@ -9,6 +9,8 @@
 
 namespace Hydrogen {
 
+using ShaderId = size_t;
+
 // ======
 template<typename T>
 class Optional {
@@ -54,12 +56,11 @@ class HG_API Material {
     ~Material();
 
     void build();
-    Shader* get_shader() const;
-
-    void bind() const;
+    Shader* bind() const;
 
   private:
-    Shader* m_shader;
+    ShaderId m_shader_id;
+    bool m_built;
 };
 
 } // namespace Hydrogen
