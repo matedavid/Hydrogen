@@ -11,7 +11,8 @@ void Renderer3D::init() {
     m_resources->quad = create_quad();
 
     m_resources->flat_color_shader = Shader::default_();
-    m_resources->camera_ubo = new UniformBuffer(sizeof(glm::mat4)); // glm::mat4 ViewProjection matrix
+    // camera_ubo = mat4 + vec3 (which has the same size as vec4)
+    m_resources->camera_ubo = new UniformBuffer(sizeof(glm::mat4) + sizeof(glm::vec4));
     m_resources->white_texture = Texture::white();
 
     // Rendering Context
@@ -30,6 +31,7 @@ void Renderer3D::free() {
 
 void Renderer3D::begin_scene(const Camera& camera) {
     m_resources->camera_ubo->set_mat4(0, camera.get_view_projection());
+    m_resources->camera_ubo->set_vec3(1, camera.get_position());
 }
 
 void Renderer3D::end_scene() {

@@ -2,6 +2,7 @@
 in vec3 FragPosition;
 in vec3 FragNormal;
 in vec2 FragTextureCoords;
+in vec3 FragCameraPosition;
 
 // Material definition and uniform
 struct MaterialStruct {
@@ -46,12 +47,6 @@ struct PointLightStruct {
 uniform int NumberPointLights;
 uniform PointLightStruct[MAX_NUMBER_POINT_LIGHTS] PointLights;
 
-// Camera Information
-struct CameraStruct {
-    vec3 position;
-};
-uniform CameraStruct Camera;
-
 // Fragment Output
 out vec4 ResultColor;
 
@@ -60,7 +55,7 @@ vec3 CalcPointLight(PointLightStruct light, vec3 normal, vec3 fragPos, vec3 view
 
 void main() {
     vec3 normal = normalize(FragNormal);
-    vec3 viewDirection = normalize(Camera.position - FragPosition);
+    vec3 viewDirection = normalize(FragCameraPosition - FragPosition);
 
     vec3 result = vec3(0.0f, 0.0f, 0.0f);
     for (int i = 0; i < NumberPointLights; ++i) {
@@ -87,7 +82,7 @@ vec3 CalcPointLight(PointLightStruct light, vec3 normal, vec3 fragPos, vec3 view
     // attenuation
     float lightDistance = length(light.position - fragPos);
     float attenuation = 1.0f / (light.constant + light.linear * lightDistance +
-                               light.quadratic * (lightDistance * lightDistance));
+                                light.quadratic * (lightDistance * lightDistance));
 
     // combine results
     vec3 ambient = vec3(0.0f, 0.0f, 0.0f);
