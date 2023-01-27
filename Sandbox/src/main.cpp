@@ -3,21 +3,18 @@
 class Sandbox : public Hydrogen::Application {
   public:
     Sandbox(int width, int height, std::string&& title)
-        : Hydrogen::Application(width, height, std::move(title))
+        : Hydrogen::Application(width, height, std::move(title)),
+          m_model("../../Hydrogen/assets/models/backpack/backpack.obj", true)
     {
         bind_event_callback_func(Hydrogen::EventType::MouseMoved, BIND_EVENT_FUNC(on_mouse_moved));
         bind_event_callback_func(Hydrogen::EventType::KeyPressed, BIND_EVENT_FUNC(on_key_pressed));
         bind_event_callback_func(Hydrogen::EventType::MouseScrolled, BIND_EVENT_FUNC(on_mouse_scrolled));
 
-        m_camera_position = {0.0f, 0.0f, 0.0f};
+        m_camera_position = {0.0f, 0.0f, 4.0f};
 
         float ratio = float(get_window()->get_width()) / float(get_window()->get_height());
         m_camera = Hydrogen::PerspectiveCamera(glm::radians(60.0f), ratio, 0.1f, 100.0f);
         m_camera.set_position(m_camera_position);
-
-
-        m_material.values.diffuse = glm::vec3(0.4f, 0.3f, 0.4f);
-        m_material.build();
     }
 
     void on_update([[maybe_unused]] double ts) override {
@@ -27,7 +24,7 @@ class Sandbox : public Hydrogen::Application {
 //        Hydrogen::Renderer3D::draw_cube({-2.0f, 1.0f, -2.0f}, {1.0f, 1.0f, 1.0f}, glm::vec3(0.0f, 1.0f, 0.0f));
 //        Hydrogen::Renderer3D::draw_cube({0.0f, -1.0f, -4.0f}, {1.0f, 1.0f, 1.0f}, glm::vec3(0.0f, 0.0f, 1.0f));
 
-        Hydrogen::Renderer3D::draw_cube({2.0f, 0.0f, -3.0f},  {1.0f, 1.0f, 1.0f}, m_material.bind());
+        Hydrogen::Renderer3D::draw_model(m_model, {0.0f, 0.0f, 0.0f}, {1.0f, 1.0f, 1.0f});
 
         Hydrogen::Renderer3D::end_scene();
     }
@@ -103,7 +100,7 @@ class Sandbox : public Hydrogen::Application {
     glm::vec2 m_mouse_position{};
     glm::vec3 m_camera_position;
 
-    Hydrogen::Material m_material;
+    Hydrogen::Model m_model;
 };
 
 int main() {

@@ -27,11 +27,7 @@ ShaderSystem::~ShaderSystem() {
 }
 
 Shader* ShaderSystem::get(ShaderId id) {
-    if (!m_shaders.contains(id)) {
-        HG_LOG_WARN("Shader with id: {} is not registered in ShaderSystem", id);
-        return nullptr;
-    }
-
+    HG_ASSERT(m_shaders.contains(id), "Shader with id: {} is not registered in ShaderSystem", id);
     return m_shaders[id];
 }
 

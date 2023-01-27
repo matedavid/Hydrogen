@@ -35,6 +35,15 @@ Shader* ShaderCompiler::from_material(const MaterialValues& material) {
     if (material.specular.has_value()) {
         defines += "#define specular_color\n\n";
     }
+    if (material.shininess.has_value()) {
+        defines += "#define shininess_def\n\n";
+    }
+    if (material.diffuse_map.has_value()) {
+        defines += "#define diffuse_texture\n\n";
+    }
+    if (material.specular_map.has_value()) {
+        defines += "#define specular_texture\n\n";
+    }
 
     fragment_source = version + defines + fragment_source;
 

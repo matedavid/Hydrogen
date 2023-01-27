@@ -25,6 +25,7 @@ Shader* Material::bind() const {
     HG_ASSERT(m_built, "You must build the Material before getting the shader");
 
     Shader* shader = ShaderSystem::instance->get(m_shader_id);
+    HG_ASSERT(shader != nullptr, "Unexpected error: shader is null");
 
     // Ambient Color
     shader->set_uniform_vec3("Material.ambient", values.ambient);

@@ -14,10 +14,10 @@ namespace Hydrogen {
 
 class HG_API Model {
   public:
-    Model(const std::string& path, bool flip_uvs);
+    Model(const std::string& path, bool flip_uvs = false);
     ~Model();
 
-    void draw(Shader* shader);
+    const std::vector<Mesh*>& get_meshes() const;
 
   private:
     std::vector<Mesh*> m_meshes;
@@ -26,4 +26,4 @@ class HG_API Model {
     void process_node_r(aiNode* node, const aiScene* scene);
 };
 
-}
+} // namespace Hydrogen

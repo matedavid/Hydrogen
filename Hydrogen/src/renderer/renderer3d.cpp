@@ -33,8 +33,8 @@ void Renderer3D::end_scene() {
 
 void Renderer3D::draw_cube(const glm::vec3& pos, const glm::vec3& dim, Shader* shader) {
     auto model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(pos.x, pos.y, pos.z));
-    model = glm::scale(model, glm::vec3(dim.x, dim.y, dim.z));
+    model = glm::translate(model, pos);
+    model = glm::scale(model, dim);
 
     shader->set_uniform_mat4("Model", model);
     shader->assign_uniform_buffer("Camera", m_resources->camera_ubo, 0);
@@ -65,6 +65,22 @@ void Renderer3D::draw_cube(const glm::vec3& pos, const glm::vec3& dim, const glm
 void Renderer3D::draw_cube(const glm::vec3& pos, const glm::vec3& dim, const Material& material) {
     Shader* shader = material.bind();
     Renderer3D::draw_cube(pos, dim, shader);
+}
+
+void Renderer3D::draw_model(const Model& model, const glm::vec3& pos, const glm::vec3& dim) {
+    for (const auto* mesh : model.get_meshes()) {
+        VertexArray* VAO = mesh->VAO;
+
+        Shader* shader = mesh->material.bind();
+        shader->assign_uniform_buffer("Camera", m_resources->camera_ubo, 0);
+
+        auto m = glm::mat4(1.0f);
+        m = glm::translate(m, pos);
+        m = glm::scale(m, dim);
+        shader->set_uniform_mat4("Model", m);
+
+        RendererAPI::send(VAO, shader);
+    }
 }
 
 VertexArray* Renderer3D::create_quad() {

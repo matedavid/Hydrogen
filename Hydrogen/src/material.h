@@ -24,6 +24,7 @@ class Optional {
     Optional& operator=(const T& value) {
         m_value = value;
         m_has_value = true;
+        return *this;
     }
 
     const T& get() const {

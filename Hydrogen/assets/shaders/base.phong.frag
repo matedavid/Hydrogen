@@ -1,5 +1,7 @@
 // #version 330 core
 
+in vec2 FragTextureCoords;
+
 struct MaterialStruct {
     vec3 ambient;
 
@@ -11,7 +13,7 @@ struct MaterialStruct {
     vec3 specular;
 #endif
 
-#ifdef shininess
+#ifdef shininess_def
     float shininess;
 #endif
 
@@ -29,9 +31,26 @@ uniform MaterialStruct Material;
 out vec4 ResultColor;
 
 void main() {
-#ifdef diffuse_color
-    ResultColor = vec4(Material.diffuse, 1.0f);
+
+#if defined(diffuse_texture)
+    ResultColor = vec4(Material.ambient, 1.0f) * texture(Material.diffuse_map, FragTextureCoords);
 #else
     ResultColor = vec4(Material.ambient, 1.0f);
+#endif
+
+#if defined(diffuse_texture)
+    ResultColor += texture(Material.diffuse_map, FragTextureCoords);
+#endif
+
+#if defined(diffuse_color) && !defined(diffuse_texture)
+    ResultColor += vec4(Material.diffuse, 1.0f);
+#endif
+
+#if defined(specular_texture)
+    ResultColor += texture(Material.specular_map, FragTextureCoords);
+#endif
+
+#if defined(specular_color) && !defined(specular_texture)
+    ResultColor += vec4(Material.specular, 1.0f);
 #endif
 }

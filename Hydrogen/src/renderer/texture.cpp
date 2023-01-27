@@ -32,8 +32,6 @@ Texture::Texture(const std::string& path)
 {
     HG_ASSERT(std::filesystem::exists(path), "Could not open " + path);
 
-    HG_LOG_INFO("Loading new texture: {}", path);
-
     stbi_set_flip_vertically_on_load(true);
     unsigned char* local_buffer = stbi_load(path.c_str(), &m_width, &m_height, &m_BPP, 4);
 

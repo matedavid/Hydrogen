@@ -8,12 +8,13 @@ Model::Model(const std::string& path, bool flip_uvs) {
     Assimp::Importer importer;
 
     unsigned int flags = aiProcess_Triangulate;
-    if (flip_uvs) flags |= aiProcess_FlipUVs;
+    if (flip_uvs)
+        flags |= aiProcess_FlipUVs;
 
     const aiScene* scene = importer.ReadFile(path, flags);
 
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE) {
-        std::cout << "Error loading model " << path << ": " << importer.GetErrorString() << std::endl;
+        HG_LOG_ERROR("Error loading model {} with error: {}", path, importer.GetErrorString());
         return;
     }
 
@@ -27,10 +28,8 @@ Model::~Model() {
     }
 }
 
-void Model::draw(Shader* shader) {
-    for (auto& mesh : m_meshes) {
-        mesh->draw(shader);
-    }
+const std::vector<Mesh*>& Model::get_meshes() const {
+    return m_meshes;
 }
 
 void Model::process_node_r(aiNode* node, const aiScene* scene) {
@@ -46,4 +45,4 @@ void Model::process_node_r(aiNode* node, const aiScene* scene) {
     }
 }
 
-}
+} // namespace Hydrogen
