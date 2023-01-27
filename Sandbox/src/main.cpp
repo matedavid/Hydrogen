@@ -5,6 +5,7 @@ class Sandbox : public Hydrogen::Application {
     Sandbox(int width, int height, std::string&& title)
         : Hydrogen::Application(width, height, std::move(title)),
           m_model("../../Hydrogen/assets/models/backpack/backpack.obj", true)
+          //m_model("../../Hydrogen/assets/models/PistolBeretta/Pistol_Model.obj")
     {
         bind_event_callback_func(Hydrogen::EventType::MouseMoved, BIND_EVENT_FUNC(on_mouse_moved));
         bind_event_callback_func(Hydrogen::EventType::KeyPressed, BIND_EVENT_FUNC(on_key_pressed));
@@ -23,6 +24,35 @@ class Sandbox : public Hydrogen::Application {
 //        Hydrogen::Renderer3D::draw_cube({2.0f, 0.0f, -3.0f},  {1.0f, 1.0f, 1.0f}, glm::vec3(1.0f, 0.0f, 0.0f));
 //        Hydrogen::Renderer3D::draw_cube({-2.0f, 1.0f, -2.0f}, {1.0f, 1.0f, 1.0f}, glm::vec3(0.0f, 1.0f, 0.0f));
 //        Hydrogen::Renderer3D::draw_cube({0.0f, -1.0f, -4.0f}, {1.0f, 1.0f, 1.0f}, glm::vec3(0.0f, 0.0f, 1.0f));
+
+        {
+            auto light = Hydrogen::Light{
+                .position = {2.0f, 2.0f, 0.0f},
+
+                .constant = 1.0f,
+                .linear = 0.09f,
+                .quadratic = 0.032f,
+
+                .ambient = {0.2f, 0.2f, 0.2f},
+                .diffuse = {1.0f, 1.0f, 1.0f},
+                .specular = {1.0f, 1.0f, 1.0f}
+            };
+            Hydrogen::Renderer3D::add_light_source(light);
+        }
+        {
+            auto light = Hydrogen::Light{
+                .position = {-2.0f, -1.0f, -2.0f},
+
+                .constant = 1.0f,
+                .linear = 0.09f,
+                .quadratic = 0.032f,
+
+                .ambient = {0.2f, 0.2f, 0.2f},
+                .diffuse = {1.0f, 1.0f, 1.0f},
+                .specular = {1.0f, 1.0f, 1.0f}
+            };
+            Hydrogen::Renderer3D::add_light_source(light);
+        }
 
         Hydrogen::Renderer3D::draw_model(m_model, {0.0f, 0.0f, 0.0f}, {1.0f, 1.0f, 1.0f});
 

@@ -1,7 +1,9 @@
-// #version 330 core
-
+// Info from Vertex Shader
+in vec3 FragPosition;
+in vec3 FragNormal;
 in vec2 FragTextureCoords;
 
+// Material definition and uniform
 struct MaterialStruct {
     vec3 ambient;
 
@@ -25,32 +27,90 @@ struct MaterialStruct {
     sampler2D specular_map;
 #endif
 };
-
 uniform MaterialStruct Material;
 
+// PointLight definition and values
+struct PointLightStruct {
+    vec3 position;
+
+    float constant;
+    float linear;
+    float quadratic;
+
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+};
+
+#define MAX_NUMBER_POINT_LIGHTS 20
+uniform int NumberPointLights;
+uniform PointLightStruct[MAX_NUMBER_POINT_LIGHTS] PointLights;
+
+// Camera Information
+struct CameraStruct {
+    vec3 position;
+};
+uniform CameraStruct Camera;
+
+// Fragment Output
 out vec4 ResultColor;
 
+// Function definitions
+vec3 CalcPointLight(PointLightStruct light, vec3 normal, vec3 fragPos, vec3 viewDirection);
+
 void main() {
+    vec3 normal = normalize(FragNormal);
+    vec3 viewDirection = normalize(Camera.position - FragPosition);
 
-#if defined(diffuse_texture)
-    ResultColor = vec4(Material.ambient, 1.0f) * texture(Material.diffuse_map, FragTextureCoords);
-#else
-    ResultColor = vec4(Material.ambient, 1.0f);
+    vec3 result = vec3(0.0f, 0.0f, 0.0f);
+    for (int i = 0; i < NumberPointLights; ++i) {
+        result += CalcPointLight(PointLights[i], normal, FragPosition, viewDirection);
+    }
+
+    ResultColor = vec4(result, 1.0f);
+}
+
+vec3 CalcPointLight(PointLightStruct light, vec3 normal, vec3 fragPos, vec3 viewDirection) {
+    vec3 lightDirection = normalize(light.position - fragPos);
+
+    // diffuse shading
+    float diff = max(dot(normal, lightDirection), 0.0);
+
+    // specular shading
+    vec3 reflectDirection = reflect(-lightDirection, normal);
+
+    float spec = 1.0f;
+#if defined(shininess_def)
+    spec = pow(max(dot(viewDirection, reflectDirection), 0.0), Material.shininess);
 #endif
 
-#if defined(diffuse_texture)
-    ResultColor += texture(Material.diffuse_map, FragTextureCoords);
-#endif
+    // attenuation
+    float lightDistance = length(light.position - fragPos);
+    float attenuation = 1.0f / (light.constant + light.linear * lightDistance +
+                               light.quadratic * (lightDistance * lightDistance));
 
-#if defined(diffuse_color) && !defined(diffuse_texture)
-    ResultColor += vec4(Material.diffuse, 1.0f);
+    // combine results
+    vec3 ambient = vec3(0.0f, 0.0f, 0.0f);
+    vec3 diffuse = vec3(0.0f, 0.0f, 0.0f);
+    vec3 specular = vec3(0.0f, 0.0f, 0.0f);
+
+#if defined(diffuse_texture)
+    ambient = light.ambient * vec3(texture(Material.diffuse_map, FragTextureCoords));
+    diffuse = light.diffuse * diff * vec3(texture(Material.diffuse_map, FragTextureCoords));
+#elif defined(diffuse_color)
+    ambient = light.ambient * Material.diffuse;
+    diffuse = light.diffuse * diff * Material.diffuse;
 #endif
 
 #if defined(specular_texture)
-    ResultColor += texture(Material.specular_map, FragTextureCoords);
+    specular = light.specular * spec * vec3(texture(Material.specular_map, FragTextureCoords));
+#elif defined(specular_color)
+    specular = light.specular * spec * Material.specular;
 #endif
 
-#if defined(specular_color) && !defined(specular_texture)
-    ResultColor += vec4(Material.specular, 1.0f);
-#endif
+    ambient *= attenuation;
+    diffuse *= attenuation;
+    specular *= attenuation;
+
+    return (ambient + diffuse + specular);
 }

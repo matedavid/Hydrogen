@@ -38,7 +38,7 @@ void Application::run() {
         double ts = current_time - last_time;
         last_time = current_time;
 
-        RendererAPI::clear(glm::vec3(0.2f, 0.3f, 0.3f));
+        RendererAPI::clear(glm::vec3(0.0f, 0.0f, 0.0f));
 
         on_update(ts);
 

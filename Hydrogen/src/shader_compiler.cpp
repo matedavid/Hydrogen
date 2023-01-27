@@ -30,19 +30,19 @@ Shader* ShaderCompiler::from_material(const MaterialValues& material) {
 
     std::string defines = "";
     if (material.diffuse.has_value()) {
-        defines += "#define diffuse_color\n\n";
+        defines += "#define diffuse_color\n";
     }
     if (material.specular.has_value()) {
-        defines += "#define specular_color\n\n";
+        defines += "#define specular_color\n";
     }
     if (material.shininess.has_value()) {
-        defines += "#define shininess_def\n\n";
+        defines += "#define shininess_def\n";
     }
     if (material.diffuse_map.has_value()) {
-        defines += "#define diffuse_texture\n\n";
+        defines += "#define diffuse_texture\n";
     }
     if (material.specular_map.has_value()) {
-        defines += "#define specular_texture\n\n";
+        defines += "#define specular_texture\n";
     }
 
     fragment_source = version + defines + fragment_source;

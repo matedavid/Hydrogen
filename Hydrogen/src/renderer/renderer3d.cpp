@@ -6,13 +6,16 @@
 namespace Hydrogen {
 
 void Renderer3D::init() {
-    m_resources = new RendererResources();
+    // Rendering Resources
+    m_resources = new RendererResources{};
     m_resources->quad = create_quad();
-    //m_resources->flat_color_shader = Shader::from_file("../../Hydrogen/assets/vertex.glsl", "../../Hydrogen/assets/fragment.glsl");
 
     m_resources->flat_color_shader = Shader::default_();
     m_resources->camera_ubo = new UniformBuffer(sizeof(glm::mat4)); // glm::mat4 ViewProjection matrix
     m_resources->white_texture = Texture::white();
+
+    // Rendering Context
+    m_context = new RenderingContext{};
 }
 
 void Renderer3D::free() {
@@ -22,6 +25,7 @@ void Renderer3D::free() {
     delete m_resources->white_texture;
 
     delete m_resources;
+    delete m_context;
 }
 
 void Renderer3D::begin_scene(const Camera& camera) {
@@ -29,6 +33,18 @@ void Renderer3D::begin_scene(const Camera& camera) {
 }
 
 void Renderer3D::end_scene() {
+    // TEMPORAL: Draw lights
+    for (const Light& light : m_context->lights) {
+        Renderer3D::draw_cube(light.position, {0.25f, 0.25f, 0.25f}, light.diffuse);
+    }
+    // ======
+
+    m_context->lights.clear();
+}
+
+void Renderer3D::add_light_source(const Light& light) {
+    // TODO: Use UBO to pass along lights?
+    m_context->lights.push_back(light);
 }
 
 void Renderer3D::draw_cube(const glm::vec3& pos, const glm::vec3& dim, Shader* shader) {
@@ -78,6 +94,24 @@ void Renderer3D::draw_model(const Model& model, const glm::vec3& pos, const glm:
         m = glm::translate(m, pos);
         m = glm::scale(m, dim);
         shader->set_uniform_mat4("Model", m);
+
+        // Add point lights
+        // TODO: Use UBO to pass along lights?
+        shader->set_uniform_int("NumberPointLights", (int)m_context->lights.size());
+        for (unsigned int i = 0; i < m_context->lights.size(); ++i) {
+            const Light& light = m_context->lights[i];
+
+            const std::string header = "PointLights[" + std::to_string(i) + "]";
+            shader->set_uniform_vec3(header + ".position", light.position);
+
+            shader->set_uniform_float(header + ".constant", light.constant);
+            shader->set_uniform_float(header + ".linear", light.linear);
+            shader->set_uniform_float(header + ".quadratic", light.quadratic);
+
+            shader->set_uniform_vec3(header + ".ambient", light.ambient);
+            shader->set_uniform_vec3(header + ".diffuse", light.diffuse);
+            shader->set_uniform_vec3(header + ".specular", light.specular);
+        }
 
         RendererAPI::send(VAO, shader);
     }
