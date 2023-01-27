@@ -19,12 +19,12 @@
 
 namespace Hydrogen {
 
-struct Light {
+struct HG_API Light {
     glm::vec3 position;
 
-    float constant;
-    float linear;
-    float quadratic;
+    float constant = 1.0f;
+    float linear = 0.09f;
+    float quadratic = 0.032f;
 
     glm::vec3 ambient;
     glm::vec3 diffuse;
