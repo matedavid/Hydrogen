@@ -7,11 +7,11 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
 
-#include "material.h"
-#include "models/model.h"
-#include "models/mesh.h"
+#include "core/material.h"
+#include "core/model.h"
+#include "core/mesh.h"
 
-#include "camera.h"
+#include "core/camera.h"
 #include "vertex_array.h"
 #include "buffers.h"
 #include "shader.h"

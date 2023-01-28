@@ -5,7 +5,7 @@
 #include <unordered_map>
 #include <functional>
 
-#include "material.h"
+#include "core/material.h"
 #include "renderer/shader.h"
 
 namespace Hydrogen {

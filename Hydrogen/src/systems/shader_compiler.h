@@ -2,7 +2,7 @@
 
 #include "core.h"
 
-#include "material.h"
+#include "core/material.h"
 #include "renderer/shader.h"
 
 namespace Hydrogen {

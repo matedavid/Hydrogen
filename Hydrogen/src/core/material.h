@@ -2,7 +2,7 @@
 
 #include "core.h"
 
-#include <glm/glm.hpp>
+#include "glm/glm.hpp"
 
 #include "renderer/texture.h"
 #include "renderer/shader.h"

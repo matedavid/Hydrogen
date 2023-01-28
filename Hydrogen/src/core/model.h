@@ -3,12 +3,12 @@
 #include "core.h"
 
 #include <vector>
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
+#include "assimp/Importer.hpp"
+#include "assimp/scene.h"
+#include "assimp/postprocess.h"
 
 #include "renderer/shader.h"
-#include "models/mesh.h"
+#include "mesh.h"
 
 namespace Hydrogen {
 

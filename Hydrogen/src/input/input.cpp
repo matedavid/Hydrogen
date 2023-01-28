@@ -1,6 +1,6 @@
 #include "input.h"
 
-#include "application.h"
+#include "core/application.h"
 
 namespace Hydrogen {
 

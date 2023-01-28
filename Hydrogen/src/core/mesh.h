@@ -5,8 +5,8 @@
 #include <string>
 #include <vector>
 
-#include <glm/glm.hpp>
-#include <assimp/scene.h>
+#include "glm/glm.hpp"
+#include "assimp/scene.h"
 
 #include "material.h"
 #include "renderer/vertex_array.h"
