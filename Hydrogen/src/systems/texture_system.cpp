@@ -2,7 +2,17 @@
 
 namespace Hydrogen {
 
-TextureSystem* TextureSystem::m_instance = nullptr;
+TextureSystem* TextureSystem::instance = nullptr;
+
+void TextureSystem::init() {
+    HG_ASSERT(instance == nullptr, "You can only initialize ShaderSystem once");
+    instance = new TextureSystem();
+}
+
+void TextureSystem::free() {
+    HG_ASSERT(instance != nullptr, "You must initialize ShaderSystem before it's destroyed");
+    delete instance;
+}
 
 TextureSystem::TextureSystem() {
     m_textures.insert({DEFAULT_TEXTURE_NAME, Texture::white()});
@@ -26,6 +36,8 @@ Texture* TextureSystem::acquire(const std::string& texture_path) {
         return m_textures[texture_path];
     }
 
+    HG_LOG_INFO("Loading new texture: {}", texture_path);
+
     auto* texture = new Texture(texture_path);
     m_textures.insert({texture_path, texture});
     m_reference_count.insert({texture_path, 1});
@@ -47,13 +59,6 @@ void TextureSystem::release(const Texture* texture) {
 
 Texture* TextureSystem::default_texture() const {
     return m_textures.at(DEFAULT_TEXTURE_NAME);
-}
-
-TextureSystem* TextureSystem::get() {
-    if (m_instance == nullptr) {
-        m_instance = new TextureSystem();
-    }
-    return m_instance;
 }
 
 } // namespace Hydrogen

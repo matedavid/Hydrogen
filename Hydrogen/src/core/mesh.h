@@ -5,9 +5,10 @@
 #include <string>
 #include <vector>
 
-#include <glm/glm.hpp>
-#include <assimp/scene.h>
+#include "glm/glm.hpp"
+#include "assimp/scene.h"
 
+#include "material.h"
 #include "renderer/vertex_array.h"
 #include "renderer/buffers.h"
 #include "renderer/shader.h"
@@ -17,35 +18,21 @@ namespace Hydrogen {
 
 struct Vertex {
     glm::vec3 position;
-    glm::vec4 color{1.0f};
     glm::vec3 normal;
     glm::vec2 texture_coordinates;
 };
 
-struct Material {
-    glm::vec3 ambient;
-    glm::vec3 diffuse;
-    glm::vec3 specular;
-    float shininess;
-};
-
 class HG_API Mesh {
   public:
-    std::vector<Vertex> vertices;
-    std::vector<unsigned int> indices;
-
-    Texture* diffuse_texture;
-    Texture* specular_texture;
-
+    VertexArray* VAO;
     Material material;
 
     Mesh(const aiMesh* mesh, const aiScene* scene, const std::string& directory);
     ~Mesh();
 
-    void draw(Shader* shader);
-
   private:
-    VertexArray* VAO;
+    std::vector<Vertex> vertices;
+    std::vector<unsigned int> indices;
 
     void setup_mesh();
 };

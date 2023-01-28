@@ -5,10 +5,10 @@
 #include <string>
 #include <unordered_map>
 #include <functional>
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
+#include "glad/glad.h"
+#include "GLFW/glfw3.h"
 
-#include "events.h"
+#include "input/events.h"
 
 namespace Hydrogen {
 

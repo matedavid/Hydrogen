@@ -3,13 +3,14 @@
 class Sandbox : public Hydrogen::Application {
   public:
     Sandbox(int width, int height, std::string&& title)
-        : Hydrogen::Application(width, height, std::move(title))
+        : Hydrogen::Application(width, height, std::move(title)),
+          m_model("../../Sandbox/models/backpack/backpack.obj", true)
     {
         bind_event_callback_func(Hydrogen::EventType::MouseMoved, BIND_EVENT_FUNC(on_mouse_moved));
         bind_event_callback_func(Hydrogen::EventType::KeyPressed, BIND_EVENT_FUNC(on_key_pressed));
         bind_event_callback_func(Hydrogen::EventType::MouseScrolled, BIND_EVENT_FUNC(on_mouse_scrolled));
 
-        m_camera_position = {0.0f, 0.0f, 0.0f};
+        m_camera_position = {0.0f, 0.0f, 4.0f};
 
         float ratio = float(get_window()->get_width()) / float(get_window()->get_height());
         m_camera = Hydrogen::PerspectiveCamera(glm::radians(60.0f), ratio, 0.1f, 100.0f);
@@ -19,9 +20,41 @@ class Sandbox : public Hydrogen::Application {
     void on_update([[maybe_unused]] double ts) override {
         Hydrogen::Renderer3D::begin_scene(m_camera);
 
-        Hydrogen::Renderer3D::draw_cube({2.0f, 0.0f, -3.0f},  {1.0f, 1.0f, 1.0f}, glm::vec3(1.0f, 0.0f, 0.0f));
-        Hydrogen::Renderer3D::draw_cube({-2.0f, 1.0f, -2.0f}, {1.0f, 1.0f, 1.0f}, glm::vec3(0.0f, 1.0f, 0.0f));
-        Hydrogen::Renderer3D::draw_cube({0.0f, -1.0f, -4.0f}, {1.0f, 1.0f, 1.0f}, glm::vec3(0.0f, 0.0f, 1.0f));
+//        Hydrogen::Renderer3D::draw_cube({2.0f, 0.0f, -3.0f},  {1.0f, 1.0f, 1.0f}, glm::vec3(1.0f, 0.0f, 0.0f));
+//        Hydrogen::Renderer3D::draw_cube({-2.0f, 1.0f, -2.0f}, {1.0f, 1.0f, 1.0f}, glm::vec3(0.0f, 1.0f, 0.0f));
+//        Hydrogen::Renderer3D::draw_cube({0.0f, -1.0f, -4.0f}, {1.0f, 1.0f, 1.0f}, glm::vec3(0.0f, 0.0f, 1.0f));
+
+        {
+            auto light = Hydrogen::Light{
+                .position = {2.0f, 2.0f, 0.0f},
+
+                .constant = 1.0f,
+                .linear = 0.09f,
+                .quadratic = 0.032f,
+
+                .ambient = {0.2f, 0.2f, 0.2f},
+                .diffuse = {1.0f, 1.0f, 1.0f},
+                .specular = {1.0f, 1.0f, 1.0f}
+            };
+            Hydrogen::Renderer3D::add_light_source(light);
+        }
+        {
+            auto light = Hydrogen::Light{
+                .position = {-2.0f, -1.0f, -2.0f},
+
+                .constant = 1.0f,
+                .linear = 0.09f,
+                .quadratic = 0.032f,
+
+                .ambient = {0.2f, 0.2f, 0.2f},
+                .diffuse = {1.0f, 1.0f, 1.0f},
+                .specular = {1.0f, 1.0f, 1.0f}
+            };
+            Hydrogen::Renderer3D::add_light_source(light);
+        }
+
+        Hydrogen::Renderer3D::draw_model(m_model, {0.0f, 0.0f, 0.0f}, {1.0f, 1.0f, 1.0f});
+        Hydrogen::Renderer3D::draw_model(m_model, {5.0f, 2.0f, 1.0f}, {0.75f, 0.75f, 0.75f});
 
         Hydrogen::Renderer3D::end_scene();
     }
@@ -96,6 +129,8 @@ class Sandbox : public Hydrogen::Application {
     Hydrogen::PerspectiveCamera m_camera;
     glm::vec2 m_mouse_position{};
     glm::vec3 m_camera_position;
+
+    Hydrogen::Model m_model;
 };
 
 int main() {

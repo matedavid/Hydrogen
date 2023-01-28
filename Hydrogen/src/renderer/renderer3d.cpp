@@ -6,13 +6,17 @@
 namespace Hydrogen {
 
 void Renderer3D::init() {
-    m_resources = new RendererResources();
+    // Rendering Resources
+    m_resources = new RendererResources{};
     m_resources->quad = create_quad();
-    //m_resources->flat_color_shader = Shader::from_file("../../Hydrogen/assets/vertex.glsl", "../../Hydrogen/assets/fragment.glsl");
 
     m_resources->flat_color_shader = Shader::default_();
-    m_resources->camera_ubo = new UniformBuffer(sizeof(glm::mat4)); // glm::mat4 ViewProjection matrix
+    // camera_ubo = mat4 + vec3 (which has the same size as vec4)
+    m_resources->camera_ubo = new UniformBuffer(sizeof(glm::mat4) + sizeof(glm::vec4));
     m_resources->white_texture = Texture::white();
+
+    // Rendering Context
+    m_context = new RenderingContext{};
 }
 
 void Renderer3D::free() {
@@ -22,19 +26,33 @@ void Renderer3D::free() {
     delete m_resources->white_texture;
 
     delete m_resources;
+    delete m_context;
 }
 
 void Renderer3D::begin_scene(const Camera& camera) {
     m_resources->camera_ubo->set_mat4(0, camera.get_view_projection());
+    m_resources->camera_ubo->set_vec3(1, camera.get_position());
 }
 
 void Renderer3D::end_scene() {
+    // TEMPORAL: Draw lights
+    for (const Light& light : m_context->lights) {
+        Renderer3D::draw_cube(light.position, {0.25f, 0.25f, 0.25f}, light.diffuse);
+    }
+    // ======
+
+    m_context->lights.clear();
+}
+
+void Renderer3D::add_light_source(const Light& light) {
+    // TODO: Use UBO to pass along lights?
+    m_context->lights.push_back(light);
 }
 
 void Renderer3D::draw_cube(const glm::vec3& pos, const glm::vec3& dim, Shader* shader) {
     auto model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(pos.x, pos.y, pos.z));
-    model = glm::scale(model, glm::vec3(dim.x, dim.y, dim.z));
+    model = glm::translate(model, pos);
+    model = glm::scale(model, dim);
 
     shader->set_uniform_mat4("Model", model);
     shader->assign_uniform_buffer("Camera", m_resources->camera_ubo, 0);
@@ -60,6 +78,45 @@ void Renderer3D::draw_cube(const glm::vec3& pos, const glm::vec3& dim, const glm
     m_resources->flat_color_shader->set_uniform_vec3("Color", color);
 
     Renderer3D::draw_cube(pos, dim, m_resources->flat_color_shader);
+}
+
+void Renderer3D::draw_cube(const glm::vec3& pos, const glm::vec3& dim, const Material& material) {
+    Shader* shader = material.bind();
+    Renderer3D::draw_cube(pos, dim, shader);
+}
+
+void Renderer3D::draw_model(const Model& model, const glm::vec3& pos, const glm::vec3& dim) {
+    for (const auto* mesh : model.get_meshes()) {
+        VertexArray* VAO = mesh->VAO;
+
+        Shader* shader = mesh->material.bind();
+        shader->assign_uniform_buffer("Camera", m_resources->camera_ubo, 0);
+
+        auto m = glm::mat4(1.0f);
+        m = glm::translate(m, pos);
+        m = glm::scale(m, dim);
+        shader->set_uniform_mat4("Model", m);
+
+        // Add point lights
+        // TODO: Use UBO to pass along lights?
+        shader->set_uniform_int("NumberPointLights", (int)m_context->lights.size());
+        for (unsigned int i = 0; i < m_context->lights.size(); ++i) {
+            const Light& light = m_context->lights[i];
+
+            const std::string header = "PointLights[" + std::to_string(i) + "]";
+            shader->set_uniform_vec3(header + ".position", light.position);
+
+            shader->set_uniform_float(header + ".constant", light.constant);
+            shader->set_uniform_float(header + ".linear", light.linear);
+            shader->set_uniform_float(header + ".quadratic", light.quadratic);
+
+            shader->set_uniform_vec3(header + ".ambient", light.ambient);
+            shader->set_uniform_vec3(header + ".diffuse", light.diffuse);
+            shader->set_uniform_vec3(header + ".specular", light.specular);
+        }
+
+        RendererAPI::send(VAO, shader);
+    }
 }
 
 VertexArray* Renderer3D::create_quad() {

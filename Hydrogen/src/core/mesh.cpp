@@ -16,15 +16,6 @@ Mesh::Mesh(const aiMesh* mesh, const aiScene* scene, const std::string& director
         vertex.position.y = vs.y;
         vertex.position.z = vs.z;
 
-        // Color
-        if (mesh->HasVertexColors(0)) {
-            const auto& cs = mesh->mColors[0][i];
-            vertex.color.r = cs.r;
-            vertex.color.g = cs.g;
-            vertex.color.b = cs.b;
-            vertex.color.a = cs.a;
-        }
-
         // Normals
         if (mesh->HasNormals()) {
             const auto& ns = mesh->mNormals[i];
@@ -53,80 +44,48 @@ Mesh::Mesh(const aiMesh* mesh, const aiScene* scene, const std::string& director
     }
 
     const aiMaterial* mat = scene->mMaterials[mesh->mMaterialIndex];
-    auto* system = TextureSystem::get();
 
     // Diffuse texture
     aiString ai_path;
     if (mat->GetTexture(aiTextureType_DIFFUSE, 0, &ai_path) == aiReturn_SUCCESS) {
         const std::string path = directory + std::string(ai_path.C_Str());
-        diffuse_texture = system->acquire(path);
-    } else {
-        diffuse_texture = system->default_texture();
+        material.values.diffuse_map = TextureSystem::instance->acquire(path);
     }
 
+    // Specular texture
     ai_path.Clear();
     if (mat->GetTexture(aiTextureType_SPECULAR, 0, &ai_path) == aiReturn_SUCCESS) {
         const std::string path = directory + std::string(ai_path.C_Str());
-        specular_texture = system->acquire(path);
-    } else {
-        specular_texture = system->default_texture();
+        material.values.specular_map = TextureSystem::instance->acquire(path);
     }
 
-    // Material
+    // Ambient, diffuse and specular colors
     aiColor3D color;
     if (mat->Get(AI_MATKEY_COLOR_AMBIENT, color) == aiReturn_SUCCESS) {
-        material.ambient.r = color.r;
-        material.ambient.g = color.g;
-        material.ambient.b = color.b;
+        material.values.ambient = glm::vec3(color.r, color.g, color.b);
     }
 
     if (mat->Get(AI_MATKEY_COLOR_DIFFUSE, color) == aiReturn_SUCCESS) {
-        material.diffuse.r = color.r;
-        material.diffuse.g = color.g;
-        material.diffuse.b = color.b;
+        material.values.diffuse = glm::vec3(color.r, color.g, color.b);
     }
 
     if (mat->Get(AI_MATKEY_COLOR_SPECULAR, color) == aiReturn_SUCCESS) {
-        material.specular.r = color.r;
-        material.specular.g = color.g;
-        material.specular.b = color.b;
+        material.values.specular = glm::vec3(color.r, color.g, color.b);
     }
 
+    // Shininess
     ai_real shininess;
     if (mat->Get(AI_MATKEY_SHININESS, shininess) == aiReturn_SUCCESS) {
-        material.shininess = shininess;
-    } else {
-        material.shininess = 1.0f;
+        material.values.shininess = shininess;
     }
+
+    material.build();
 
     setup_mesh();
 }
 
 Mesh::~Mesh() {
     delete VAO;
-
-    auto* system = TextureSystem::get();
-    system->release(diffuse_texture);
-    system->release(specular_texture);
-
-    // NOTE: Responsibility moved to TextureSystem
-//    if (diffuse_texture != white_texture) {
-//        delete diffuse_texture;
-//    }
-//    if (specular_texture != white_texture) {
-//        delete white_texture;
-//    }
-}
-
-void Mesh::draw(Shader* shader) {
-    diffuse_texture->bind(0);
-    shader->set_uniform_int("Material.diffuse", 0);
-    specular_texture->bind(1);
-    shader->set_uniform_int("Material.specular", 1);
-
-    shader->set_uniform_float("Material.shininess", material.shininess);
-
-    RendererAPI::send(VAO, shader);
 }
 
 void Mesh::setup_mesh() {
@@ -137,8 +96,6 @@ void Mesh::setup_mesh() {
     VBO->set_layout({
         // Vertex positions
         {.type = ShaderType::Float32, .count = 3, .normalized = false},
-        // Color
-        {.type = ShaderType::Float32, .count = 4, .normalized = false},
         // Vertex normals
         {.type = ShaderType::Float32, .count = 3, .normalized = false},
         // Vertex texture coords
@@ -155,4 +112,4 @@ void Mesh::setup_mesh() {
     EBO->unbind();
 }
 
-}
+} // namespace Hydrogen

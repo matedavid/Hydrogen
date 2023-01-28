@@ -15,13 +15,19 @@ set(CMAKE_VISIBILITY_INLINES_HIDDEN YES)
 
 # Sources
 target_sources(${PROJECT_NAME} PRIVATE
-        src/application.cpp
-        src/window.cpp
-        src/input.cpp
+        src/core/application.cpp
+        src/core/window.cpp
+        src/core/model.cpp
+        src/core/mesh.cpp
+        src/core/material.cpp
+        src/core/camera.cpp
+        src/core/orthographic_camera.cpp
+        src/core/perspective_camera.cpp
 
-        src/models/model.cpp
-        src/models/mesh.cpp
+        src/input/input.cpp
 
+        src/systems/shader_system.cpp
+        src/systems/shader_compiler.cpp
         src/systems/texture_system.cpp
 
         src/renderer/vertex_array.cpp
@@ -31,9 +37,7 @@ target_sources(${PROJECT_NAME} PRIVATE
         src/renderer/renderer_api.cpp
         src/renderer/renderer2d.cpp
         src/renderer/renderer3d.cpp
-        src/renderer/camera.cpp
-        src/renderer/orthographic_camera.cpp
-        src/renderer/perspective_camera.cpp
+
         )
 
 # Include Interface

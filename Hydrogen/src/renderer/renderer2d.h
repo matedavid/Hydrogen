@@ -7,7 +7,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
 
-#include "camera.h"
+#include "core/camera.h"
 #include "vertex_array.h"
 #include "buffers.h"
 #include "shader.h"
