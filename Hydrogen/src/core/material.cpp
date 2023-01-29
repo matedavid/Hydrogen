@@ -32,29 +32,29 @@ Shader* Material::bind() const {
 
     // Diffuse Color
     if (values.diffuse.has_value()) {
-        shader->set_uniform_vec3("Material.diffuse", values.diffuse.get());
+        shader->set_uniform_vec3("Material.diffuse", values.diffuse.value());
     }
 
     // Specular color
     if (values.specular.has_value()) {
-        shader->set_uniform_vec3("Material.specular", values.specular.get());
+        shader->set_uniform_vec3("Material.specular", values.specular.value());
     }
 
     // Shininess
     if (values.shininess.has_value()) {
-        shader->set_uniform_float("Material.shininess", values.shininess.get());
+        shader->set_uniform_float("Material.shininess", values.shininess.value());
     }
 
     // Diffuse Texture
     if (values.diffuse_map.has_value()) {
-        const Texture* diffuse_map = values.diffuse_map.get();
+        const Texture* diffuse_map = values.diffuse_map.value();
         diffuse_map->bind(0);
         shader->set_uniform_int("Material.diffuse_map", 0);
     }
 
     // Specular Texture
     if (values.specular_map.has_value()) {
-        const Texture* specular_map = values.specular_map.get();
+        const Texture* specular_map = values.specular_map.value();
         specular_map->bind(1);
         shader->set_uniform_int("Material.specular_map", 1);
     }
