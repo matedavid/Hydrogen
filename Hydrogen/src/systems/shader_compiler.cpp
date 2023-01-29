@@ -6,8 +6,8 @@
 
 namespace Hydrogen {
 
-std::string ShaderCompiler::BASE_VERTEX_PATH = "../../Hydrogen/assets/shaders/base.phong.vert";
-std::string ShaderCompiler::BASE_FRAGMENT_PATH = "../../Hydrogen/assets/shaders/base.phong.frag";
+std::string ShaderCompiler::BASE_VERTEX_PATH = "shaders/base.phong.vert";
+std::string ShaderCompiler::BASE_FRAGMENT_PATH = "shaders/base.phong.frag";
 
 Shader* ShaderCompiler::from_material(const MaterialValues& material) {
     // TODO: Move to FileSystem module (once it's implemented)

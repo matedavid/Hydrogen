@@ -37,8 +37,18 @@ target_sources(${PROJECT_NAME} PRIVATE
         src/renderer/renderer_api.cpp
         src/renderer/renderer2d.cpp
         src/renderer/renderer3d.cpp
-
         )
+
+set(SHADERS_PATH ${CMAKE_CURRENT_SOURCE_DIR}/assets/shaders/ PARENT_SCOPE)
+
+function(configure_assets TARGET_NAME TARGET_PATH)
+    message("====== SHADERS_PATH: " ${SHADERS_PATH})
+    file(MAKE_DIRECTORY ${TARGET_PATH}/shaders/)
+    add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            ${SHADERS_PATH}/*
+            ${TARGET_PATH}/shaders/)
+endfunction(configure_assets)
 
 # Include Interface
 target_include_directories(${PROJECT_NAME} PUBLIC src/
@@ -74,7 +84,7 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/vendor/assimp)
 target_link_libraries(${PROJECT_NAME} assimp)
 
 # spdlog
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/vendor/spdlog )
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/vendor/spdlog)
 target_link_libraries(${PROJECT_NAME} spdlog::spdlog)
 set_target_properties(spdlog PROPERTIES POSITION_INDEPENDENT_CODE ON)
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/vendor/spdlog/include/)
