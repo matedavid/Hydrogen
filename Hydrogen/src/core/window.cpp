@@ -50,12 +50,15 @@ Window::Window(int width, int height, std::string&& title) {
     //
 
     // Window events
-    glfwSetWindowSizeCallback(m_window, [](GLFWwindow* window, int width, int height) {
+    glfwSetWindowSizeCallback(m_window, [](GLFWwindow* window, int _width, int _height) {
         auto data = (WindowData*)glfwGetWindowUserPointer(window);
-        data->width = width;
-        data->height = height;
+        data->width = _width;
+        data->height = _height;
 
-        WindowResizeEvent event(width, height);
+        glfwSetWindowSize(window, _width, _height);
+        glViewport(0, 0, _width, _height);
+
+        WindowResizeEvent event(_width, _height);
         data->event_callback(event);
     });
 
@@ -130,11 +133,6 @@ void Window::on_event(Event& event) {
 
     // Default callback functions
     switch (event.get_type()) {
-        case EventType::WindowResize: {
-            auto resize = dynamic_cast<WindowResizeEvent&>(event);
-            glfwSetWindowSize(m_window, resize.get_width(), resize.get_height());
-            break;
-        }
         default:
             break;
     }

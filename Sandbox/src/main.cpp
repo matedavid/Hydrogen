@@ -4,16 +4,18 @@ class Sandbox : public Hydrogen::Application {
   public:
     Sandbox(int width, int height, std::string&& title)
         : Hydrogen::Application(width, height, std::move(title)),
+          m_fov(60),
           m_model("../../Sandbox/models/backpack/backpack.obj", true)
     {
         bind_event_callback_func(Hydrogen::EventType::MouseMoved, BIND_EVENT_FUNC(on_mouse_moved));
         bind_event_callback_func(Hydrogen::EventType::KeyPressed, BIND_EVENT_FUNC(on_key_pressed));
         bind_event_callback_func(Hydrogen::EventType::MouseScrolled, BIND_EVENT_FUNC(on_mouse_scrolled));
+        bind_event_callback_func(Hydrogen::EventType::WindowResize, BIND_EVENT_FUNC(on_window_resized));
 
         m_camera_position = {0.0f, 0.0f, 4.0f};
 
         float ratio = float(get_window()->get_width()) / float(get_window()->get_height());
-        m_camera = Hydrogen::PerspectiveCamera(glm::radians(60.0f), ratio, 0.1f, 100.0f);
+        m_camera = Hydrogen::PerspectiveCamera(glm::radians(m_fov), ratio, 0.1f, 100.0f);
         m_camera.set_position(m_camera_position);
     }
 
@@ -116,19 +118,37 @@ class Sandbox : public Hydrogen::Application {
 
         double yoffset = scrolled.get_yoffset();
 
-        float fov = glm::degrees(m_camera.get_fov());
-        fov -= (float)yoffset;
+        m_fov = glm::degrees(m_camera.get_fov());
+        m_fov -= (float)yoffset;
 
-        fov = std::max(fov, 0.0f);
-        fov = std::min(fov, 120.0f);
+        m_fov = std::max(m_fov, 0.0f);
+        m_fov = std::min(m_fov, 120.0f);
 
-        m_camera.set_fov(glm::radians(fov));
+        m_camera.set_fov(glm::radians(m_fov));
+    }
+
+    void on_window_resized(Hydrogen::Event& event) {
+        auto resized = dynamic_cast<Hydrogen::WindowResizeEvent&>(event);
+
+        int width = resized.get_width();
+        int height = resized.get_height();
+
+        float aspect = (float)width / (float)height;
+        if (aspect < 1.0f) {
+            float vFov = 2.0f * glm::atan(glm::tan(glm::radians(m_fov)*0.5f) / aspect);
+            m_camera.set_fov(vFov);
+        } else {
+            m_camera.set_fov(glm::radians(m_fov));
+        }
+
+        m_camera.set_aspect_ratio(aspect);
     }
 
   private:
     Hydrogen::PerspectiveCamera m_camera;
     glm::vec2 m_mouse_position{};
     glm::vec3 m_camera_position;
+    float m_fov;
 
     Hydrogen::Model m_model;
 };
