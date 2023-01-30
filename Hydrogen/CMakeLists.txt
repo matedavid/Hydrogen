@@ -4,7 +4,6 @@ project(Hydrogen)
 
 set(CMAKE_CXX_STANDARD 20)
 
-
 # Create executable
 add_library(${PROJECT_NAME} STATIC)
 
@@ -57,12 +56,12 @@ target_include_directories(${PROJECT_NAME} PUBLIC src/
         )
 
 # GLFW
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/vendor/glfw-3.3.8)
-target_link_libraries(${PROJECT_NAME} glfw)
-
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/vendor/glfw-3.3.8)
+target_link_libraries(${PROJECT_NAME} glfw)
 
 # Glad
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/vendor/glad)
@@ -80,6 +79,7 @@ target_link_libraries(${PROJECT_NAME} glm::glm)
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/vendor/stb/)
 
 # assimp
+set(ASSIMP_BUILD_TESTS OFF)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/vendor/assimp)
 target_link_libraries(${PROJECT_NAME} assimp)
 
