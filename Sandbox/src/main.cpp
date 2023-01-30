@@ -134,13 +134,6 @@ class Sandbox : public Hydrogen::Application {
         int height = resized.get_height();
 
         float aspect = (float)width / (float)height;
-        if (aspect < 1.0f) {
-            float vFov = 2.0f * glm::atan(glm::tan(glm::radians(m_fov)*0.5f) / aspect);
-            m_camera.set_fov(vFov);
-        } else {
-            m_camera.set_fov(glm::radians(m_fov));
-        }
-
         m_camera.set_aspect_ratio(aspect);
     }
 

@@ -15,7 +15,7 @@ class HG_API PerspectiveCamera : public Camera {
     void set_fov(float fov) { m_fov = fov; recalculate_projection_matrix(); }
     float get_fov() const { return m_fov; }
 
-    void set_aspect_ratio(float aspect) { m_aspect = aspect; recalculate_projection_matrix(); }
+    void set_aspect_ratio(float aspect);
 
   private:
     float m_fov, m_aspect, m_znear, m_zfar;
