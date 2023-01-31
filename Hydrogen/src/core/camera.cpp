@@ -9,6 +9,11 @@ void Camera::set_position(const glm::vec3& pos) {
     recalculate_view_matrix();
 }
 
+glm::vec3 Camera::get_position() const {
+    glm::vec3 position = glm::vec3(m_view * glm::vec4(m_position, 1.0f));
+    return position;
+}
+
 void Camera::rotate(const glm::vec2& rotation) {
     m_rotation += rotation;
     recalculate_view_matrix();

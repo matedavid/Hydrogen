@@ -13,7 +13,7 @@ class HG_API Camera {
     void set_position(const glm::vec3& pos);
     void rotate(const glm::vec2& rotation);
 
-    const glm::vec3& get_position() const { return m_position; }
+    glm::vec3 get_position() const;
 
     const glm::mat4& get_view() const { return m_view; }
     const glm::mat4& get_projection() const { return m_projection; }
