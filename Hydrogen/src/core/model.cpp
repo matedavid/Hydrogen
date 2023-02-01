@@ -7,7 +7,7 @@ namespace Hydrogen {
 Model::Model(const std::string& path, bool flip_uvs) {
     Assimp::Importer importer;
 
-    unsigned int flags = aiProcess_Triangulate;
+    unsigned int flags = aiProcess_Triangulate | aiProcess_CalcTangentSpace;
     if (flip_uvs)
         flags |= aiProcess_FlipUVs;
 

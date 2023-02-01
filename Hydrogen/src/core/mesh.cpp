@@ -31,6 +31,14 @@ Mesh::Mesh(const aiMesh* mesh, const aiScene* scene, const std::string& director
             vertex.texture_coordinates.y = tc.y;
         }
 
+        // Tangents
+        if (mesh->HasTangentsAndBitangents()) {
+            const auto ts = mesh->mTangents[i];
+            vertex.tangent.x = ts.x;
+            vertex.tangent.y = ts.y;
+            vertex.tangent.z = ts.z;
+        }
+
         vertices.push_back(vertex);
     }
 
@@ -57,6 +65,13 @@ Mesh::Mesh(const aiMesh* mesh, const aiScene* scene, const std::string& director
     if (mat->GetTexture(aiTextureType_SPECULAR, 0, &ai_path) == aiReturn_SUCCESS) {
         const std::string path = directory + std::string(ai_path.C_Str());
         material.values.specular_map = TextureSystem::instance->acquire(path);
+    }
+
+    // Normal texture
+    ai_path.Clear();
+    if (mat->GetTexture(aiTextureType_HEIGHT, 0, &ai_path) == aiReturn_SUCCESS) {
+        const std::string path = directory + std::string(ai_path.C_Str());
+        material.values.normal_map = TextureSystem::instance->acquire(path);
     }
 
     // Ambient, diffuse and specular colors
@@ -99,7 +114,9 @@ void Mesh::setup_mesh() {
         // Vertex normals
         {.type = ShaderType::Float32, .count = 3, .normalized = false},
         // Vertex texture coords
-        {.type = ShaderType::Float32, .count = 2, .normalized = false}
+        {.type = ShaderType::Float32, .count = 2, .normalized = false},
+        // Vertex tangents
+        {.type = ShaderType::Float32, .count = 3, .normalized = false}
     });
 
     const auto* EBO = new IndexBuffer(&indices[0], (int)indices.size());

@@ -28,7 +28,7 @@ Shader* ShaderCompiler::from_material(const MaterialValues& material) {
 
     const std::string version = "#version 330 core\n\n";
 
-    std::string defines = "";
+    std::string defines;
     if (material.diffuse.has_value()) {
         defines += "#define diffuse_color\n";
     }
@@ -43,6 +43,9 @@ Shader* ShaderCompiler::from_material(const MaterialValues& material) {
     }
     if (material.specular_map.has_value()) {
         defines += "#define specular_texture\n";
+    }
+    if (material.normal_map.has_value()) {
+        defines += "#define normal_texture\n";
     }
 
     fragment_source = version + defines + fragment_source;

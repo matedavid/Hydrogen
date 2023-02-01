@@ -21,6 +21,7 @@ struct HG_API MaterialValues {
 
     std::optional<Texture*> diffuse_map;
     std::optional<Texture*> specular_map;
+    std::optional<Texture*> normal_map;
 };
 
 class HG_API Material {

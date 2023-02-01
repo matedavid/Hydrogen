@@ -41,7 +41,7 @@ target_sources(${PROJECT_NAME} PRIVATE
 set(SHADERS_PATH ${CMAKE_CURRENT_SOURCE_DIR}/assets/shaders/ PARENT_SCOPE)
 
 function(configure_assets TARGET_NAME TARGET_PATH)
-    message("====== SHADERS_PATH: " ${SHADERS_PATH})
+    message("Copying assets to: ${TARGET_PATH}")
     file(MAKE_DIRECTORY ${TARGET_PATH}/shaders/)
     add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E copy_if_different

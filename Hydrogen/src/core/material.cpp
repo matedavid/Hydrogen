@@ -22,7 +22,7 @@ void Material::build() {
 }
 
 Shader* Material::bind() const {
-    HG_ASSERT(m_built, "You must build the Material before getting the shader");
+    HG_ASSERT(m_built, "You must build the Material before binding it");
 
     Shader* shader = ShaderSystem::instance->get(m_shader_id);
     HG_ASSERT(shader != nullptr, "Unexpected error: shader is null");
@@ -57,6 +57,13 @@ Shader* Material::bind() const {
         const Texture* specular_map = values.specular_map.value();
         specular_map->bind(1);
         shader->set_uniform_int("Material.specular_map", 1);
+    }
+
+    // Normal Texture
+    if (values.normal_map.has_value()) {
+        const Texture* normal_map = values.normal_map.value();
+        normal_map->bind(2);
+        shader->set_uniform_int("Material.normal_map", 2);
     }
 
     return shader;

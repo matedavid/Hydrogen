@@ -3,6 +3,7 @@ in vec3 FragPosition;
 in vec3 FragNormal;
 in vec2 FragTextureCoords;
 in vec3 FragCameraPosition;
+in mat3 FragTBN;
 
 // Material definition and uniform
 struct MaterialStruct {
@@ -26,6 +27,10 @@ struct MaterialStruct {
 
 #ifdef specular_texture
     sampler2D specular_map;
+#endif
+
+#ifdef normal_texture
+    sampler2D normal_map;
 #endif
 };
 uniform MaterialStruct Material;
@@ -54,7 +59,14 @@ out vec4 ResultColor;
 vec3 CalcPointLight(PointLightStruct light, vec3 normal, vec3 fragPos, vec3 viewDirection);
 
 void main() {
+#if defined(normal_texture)
+    vec3 normal = texture(Material.normal_map, FragTextureCoords).rgb;
+    normal = normal * 2.0f - 1.0f; // convert from [0,1] to [-1, 1]
+    normal = normalize(FragTBN * normal);
+#else
     vec3 normal = normalize(FragNormal);
+#endif
+
     vec3 viewDirection = normalize(FragCameraPosition - FragPosition);
 
     vec3 result = vec3(0.0f, 0.0f, 0.0f);
