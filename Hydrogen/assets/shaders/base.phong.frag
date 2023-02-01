@@ -71,12 +71,10 @@ vec3 CalcPointLight(PointLightStruct light, vec3 normal, vec3 fragPos, vec3 view
     // diffuse shading
     float diff = max(dot(normal, lightDirection), 0.0);
 
-    // specular shading
-    vec3 reflectDirection = reflect(-lightDirection, normal);
-
     float spec = 1.0f;
 #if defined(shininess_def)
-    spec = pow(max(dot(viewDirection, reflectDirection), 0.0), Material.shininess);
+    vec3 halfwayDirection = normalize(lightDirection + viewDirection);
+    spec = pow(max(dot(viewDirection, halfwayDirection), 0.0), Material.shininess);
 #endif
 
     // attenuation
