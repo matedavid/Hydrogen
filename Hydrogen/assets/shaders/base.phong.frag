@@ -61,7 +61,7 @@ vec3 CalcPointLight(PointLightStruct light, vec3 normal, vec3 fragPos, vec3 view
 void main() {
 #if defined(normal_texture)
     vec3 normal = texture(Material.normal_map, FragTextureCoords).rgb;
-    normal = normal * 2.0f - 1.0f; // convert from [0,1] to [-1, 1]
+    normal = normal * 2.0f - 1.0f; // convert from [0,1] to [-1,1]
     normal = normalize(FragTBN * normal);
 #else
     vec3 normal = normalize(FragNormal);

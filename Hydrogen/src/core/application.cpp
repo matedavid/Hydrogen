@@ -10,11 +10,12 @@ namespace Hydrogen {
 
 Application::Application(int width, int height, std::string&& title) {
     m_window = new Window(width, height, std::move(title));
-    Renderer2D::init();
-    Renderer3D::init();
 
     ShaderSystem::init();
     TextureSystem::init();
+
+    Renderer2D::init();
+    Renderer3D::init();
 
     m_instance = this;
 }
