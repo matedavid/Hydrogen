@@ -1,6 +1,7 @@
 #pragma once
 
 #include "core.h"
+#include "input/keycodes.h"
 
 namespace Hydrogen {
 
@@ -52,28 +53,30 @@ class MouseMovedEvent : public Event {
 
 class MousePressedEvent : public Event {
   public:
-    MousePressedEvent(int button, int mods) : m_button(button), m_mods(mods) {}
+    MousePressedEvent(MouseButton button, int mods) : m_button(button), m_mods(mods) {}
 
     EventType get_type() const override { return EventType::MouseButtonPressed; }
 
-    int get_button() const { return m_button; }
+    MouseButton get_button() const { return m_button; }
     int get_mods() const { return m_mods; }
 
   private:
-    int m_button, m_mods;
+    MouseButton m_button;
+    int m_mods;
 };
 
 class MouseReleasedEvent : public Event {
   public:
-    MouseReleasedEvent(int button, int mods) : m_button(button), m_mods(mods) {}
+    MouseReleasedEvent(MouseButton button, int mods) : m_button(button), m_mods(mods) {}
 
     EventType get_type() const override { return EventType::MouseButtonReleased; }
 
-    int get_button() const { return m_button; }
+    MouseButton get_button() const { return m_button; }
     int get_mods() const { return m_mods; }
 
   private:
-    int m_button, m_mods;
+    MouseButton m_button;
+    int m_mods;
 };
 
 class MouseScrolledEvent : public Event {
@@ -82,8 +85,8 @@ class MouseScrolledEvent : public Event {
 
     EventType get_type() const override { return EventType::MouseScrolled; }
 
-    double get_xoffset() const { return  m_xoffset; }
-    double get_yoffset() const { return  m_yoffset; }
+    double get_xoffset() const { return m_xoffset; }
+    double get_yoffset() const { return m_yoffset; }
 
     std::pair<double, double> get_offset() const { return {m_xoffset, m_yoffset}; }
 
@@ -93,47 +96,50 @@ class MouseScrolledEvent : public Event {
 
 class KeyPressedEvent : public Event {
   public:
-    KeyPressedEvent(int key, int scancode, int mods)
+    KeyPressedEvent(Key key, int scancode, int mods)
         : m_key(key), m_scancode(scancode), m_mods(mods) {}
 
     EventType get_type() const override { return EventType::KeyPressed; }
 
-    int get_key() const { return m_key; }
+    Key get_key() const { return m_key; }
     int get_scancode() const { return m_scancode; }
     int get_mods() const { return m_mods; }
 
   private:
-    int m_key, m_scancode, m_mods;
+    Key m_key;
+    int m_scancode, m_mods;
 };
 
 class KeyReleasedEvent : public Event {
   public:
-    KeyReleasedEvent(int key, int scancode, int mods)
+    KeyReleasedEvent(Key key, int scancode, int mods)
         : m_key(key), m_scancode(scancode), m_mods(mods) {}
 
     EventType get_type() const override { return EventType::KeyReleased; }
 
-    int get_key() const { return m_key; }
+    Key get_key() const { return m_key; }
     int get_scancode() const { return m_scancode; }
     int get_mods() const { return m_mods; }
 
   private:
-    int m_key, m_scancode, m_mods;
+    Key m_key;
+    int m_scancode, m_mods;
 };
 
 class KeyRepeatEvent : public Event {
   public:
-    KeyRepeatEvent(int key, int scancode, int mods)
+    KeyRepeatEvent(Key key, int scancode, int mods)
         : m_key(key), m_scancode(scancode), m_mods(mods) {}
 
     EventType get_type() const override { return EventType::KeyRepeated; }
 
-    int get_key() const { return m_key; }
+    Key get_key() const { return m_key; }
     int get_scancode() const { return m_scancode; }
     int get_mods() const { return m_mods; }
 
   private:
-    int m_key, m_scancode, m_mods;
+    Key m_key;
+    int m_scancode, m_mods;
 };
 
-} // namespace renderer
+} // namespace Hydrogen

@@ -77,11 +77,12 @@ Window::Window(int width, int height, std::string&& title) {
     glfwSetMouseButtonCallback(m_window, [](GLFWwindow* window, int button, int action, int mods) {
         auto data = (WindowData*)glfwGetWindowUserPointer(window);
 
+        MouseButton mouse_button = static_cast<MouseButton>(button);
         if (action == GLFW_PRESS) {
-            MousePressedEvent event(button, mods);
+            MousePressedEvent event(mouse_button, mods);
             data->event_callback(event);
         } else if (action == GLFW_RELEASE) {
-            MouseReleasedEvent event(button, mods);
+            MouseReleasedEvent event(mouse_button, mods);
             data->event_callback(event);
         }
     });
@@ -95,8 +96,10 @@ Window::Window(int width, int height, std::string&& title) {
 
     // Keyboard events
     glfwSetKeyCallback(
-        m_window, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
+        m_window, [](GLFWwindow* window, int _key, int scancode, int action, int mods) {
             auto data = (WindowData*)glfwGetWindowUserPointer(window);
+
+            Key key = static_cast<Key>(_key);
             if (action == GLFW_PRESS) {
                 KeyPressedEvent event(key, scancode, mods);
                 data->event_callback(event);

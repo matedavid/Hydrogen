@@ -11,6 +11,7 @@
 
 #include "input/events.h"
 #include "input/input.h"
+#include "input/keycodes.h"
 
 #include "renderer/vertex_array.h"
 #include "renderer/buffers.h"

@@ -1,7 +1,5 @@
 #include "Hydrogen/hydrogen.h"
 
-#include "GLFW/glfw3.h"
-
 class Sandbox : public Hydrogen::Application {
   public:
     Sandbox(int width, int height, std::string&& title)
@@ -69,7 +67,7 @@ class Sandbox : public Hydrogen::Application {
         double x = mouse_moved.get_xpos();
         double y = mouse_moved.get_ypos();
 
-        if (Hydrogen::Input::is_mouse_button_pressed(GLFW_MOUSE_BUTTON_LEFT)) {
+        if (Hydrogen::Input::is_mouse_button_pressed(Hydrogen::MouseButton::Left)) {
             float x_rotation = 0.0f;
             float y_rotation = 0.0f;
 
@@ -94,22 +92,22 @@ class Sandbox : public Hydrogen::Application {
     void on_key_pressed(Hydrogen::Event& event) {
         auto key_pressed = dynamic_cast<Hydrogen::KeyPressedEvent&>(event);
 
-        if (key_pressed.get_key() == GLFW_KEY_W) {
+        if (key_pressed.get_key() == Hydrogen::Key::W) {
             m_camera_position += glm::vec3({0.0f, 0.0f, -1.0f});
             m_camera.set_position(m_camera_position);
-        } else if (key_pressed.get_key() == GLFW_KEY_S) {
+        } else if (key_pressed.get_key() == Hydrogen::Key::S) {
             m_camera_position += glm::vec3({0.0f, 0.0f, 1.0f});
             m_camera.set_position(m_camera_position);
-        } else if (key_pressed.get_key() == GLFW_KEY_A) {
+        } else if (key_pressed.get_key() == Hydrogen::Key::A) {
             m_camera_position += glm::vec3({-1.0f, 0.0f, 0.0f});
             m_camera.set_position(m_camera_position);
-        } else if (key_pressed.get_key() == GLFW_KEY_D) {
+        } else if (key_pressed.get_key() == Hydrogen::Key::D) {
             m_camera_position += glm::vec3({1.0f, 0.0f, 0.0f});
             m_camera.set_position(m_camera_position);
-        } else if (key_pressed.get_key() == GLFW_KEY_Q) {
+        } else if (key_pressed.get_key() == Hydrogen::Key::Q) {
             m_camera_position += glm::vec3({0.0f, -1.0f, 0.0f});
             m_camera.set_position(m_camera_position);
-        } else if (key_pressed.get_key() == GLFW_KEY_E) {
+        } else if (key_pressed.get_key() == Hydrogen::Key::E) {
             m_camera_position += glm::vec3({0.0f, 1.0f, 0.0f});
             m_camera.set_position(m_camera_position);
         }
