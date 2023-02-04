@@ -14,14 +14,12 @@ Application::Application(int width, int height, std::string&& title) {
     ShaderSystem::init();
     TextureSystem::init();
 
-    Renderer2D::init();
     Renderer3D::init();
 
     m_instance = this;
 }
 
 Application::~Application() {
-    Renderer2D::free();
     Renderer3D::free();
 
     ShaderSystem::free();

@@ -4,7 +4,7 @@
 
 namespace Hydrogen {
 
-enum class Key {
+enum class HG_API Key {
     Space = 32,
 
     // Keyboard
@@ -50,14 +50,14 @@ enum class Key {
 
 };
 
-enum class MouseButton {
+enum class HG_API MouseButton {
     Left = 0,
     Right = 1,
     Middle = 3,
 };
 
 // TODO:
-// enum class ModifierKey {
+// enum class HG_API ModifierKey {
 //    Shift = 0x01,
 //    Control = 0x02,
 //    Alt = 0x04,

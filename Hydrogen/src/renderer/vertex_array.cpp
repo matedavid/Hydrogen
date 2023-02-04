@@ -6,6 +6,7 @@ namespace Hydrogen {
 
 VertexArray::VertexArray() {
     glGenVertexArrays(1, &ID);
+    bind();
 }
 
 VertexArray::~VertexArray() {

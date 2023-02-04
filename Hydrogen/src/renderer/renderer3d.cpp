@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include "renderer_api.h"
+#include <glm/gtx/transform.hpp>
 
 namespace Hydrogen {
 

@@ -3,7 +3,6 @@
 #include "core.h"
 
 #include "window.h"
-#include "renderer/renderer2d.h"
 #include "renderer/renderer3d.h"
 
 namespace Hydrogen {

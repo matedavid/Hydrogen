@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD 20)
 add_library(${PROJECT_NAME} STATIC)
 
 # Compiler flags
-target_compile_options(${PROJECT_NAME} BEFORE PUBLIC -Wall -Wpedantic -Wextra -Wshadow -Wconversion)
+target_compile_options(${PROJECT_NAME} BEFORE PRIVATE -Wall -Wpedantic -Wextra -Wshadow -Wconversion)
 set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 set(CMAKE_VISIBILITY_INLINES_HIDDEN YES)
 
@@ -34,10 +34,11 @@ target_sources(${PROJECT_NAME} PRIVATE
         src/renderer/shader.cpp
         src/renderer/texture.cpp
         src/renderer/renderer_api.cpp
-        src/renderer/renderer2d.cpp
         src/renderer/renderer3d.cpp
         )
 
+
+# Function to configure assets, such as builtin shaders
 set(SHADERS_PATH ${CMAKE_CURRENT_SOURCE_DIR}/assets/shaders/ PARENT_SCOPE)
 
 function(configure_assets TARGET_NAME TARGET_PATH)
@@ -55,6 +56,10 @@ target_include_directories(${PROJECT_NAME} PUBLIC src/
         $<INSTALL_INTERFACE:include/Hydrogen>
         )
 
+# OpenGL
+#find_package(OpenGL REQUIRED)
+#target_link_libraries(${PROJECT_NAME} OpenGL::GL)
+
 # GLFW
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
@@ -67,10 +72,6 @@ target_link_libraries(${PROJECT_NAME} glfw)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/vendor/glad)
 target_link_libraries(${PROJECT_NAME} glad)
 
-# OpenGL
-find_package(OpenGL REQUIRED)
-target_link_libraries(${PROJECT_NAME} OpenGL::GL)
-
 # Glm
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/vendor/glm)
 target_link_libraries(${PROJECT_NAME} glm::glm)
@@ -79,7 +80,7 @@ target_link_libraries(${PROJECT_NAME} glm::glm)
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/vendor/stb/)
 
 # assimp
-set(ASSIMP_BUILD_TESTS OFF)
+set(ASSIMP_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/vendor/assimp)
 target_link_libraries(${PROJECT_NAME} assimp)
 

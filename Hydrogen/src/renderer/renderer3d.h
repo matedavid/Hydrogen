@@ -5,7 +5,6 @@
 #include <glad/glad.h>
 
 #include <glm/glm.hpp>
-#include <glm/gtx/transform.hpp>
 
 #include "core/material.h"
 #include "core/model.h"

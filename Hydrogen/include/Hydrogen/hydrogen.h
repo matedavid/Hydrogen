@@ -17,7 +17,6 @@
 #include "renderer/buffers.h"
 #include "renderer/shader.h"
 #include "renderer/texture.h"
-#include "renderer/renderer2d.h"
 #include "renderer/renderer3d.h"
 #include "renderer/renderer_api.h"
 
