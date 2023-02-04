@@ -2,6 +2,8 @@
 
 #include "core/application.h"
 
+#include "GLFW/glfw3.h"
+
 namespace Hydrogen {
 
 bool Input::is_key_pressed(int keycode) {

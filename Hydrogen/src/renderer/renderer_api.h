@@ -11,6 +11,8 @@ namespace Hydrogen {
 
 class RendererAPI {
   public:
+    static bool init(void* loader);
+    static void resize(int width, int height);
     static void clear(const glm::vec3& color);
     static void send(const VertexArray* vao, const Shader* shader);
 };

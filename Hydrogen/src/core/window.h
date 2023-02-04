@@ -5,10 +5,11 @@
 #include <string>
 #include <unordered_map>
 #include <functional>
-#include "glad/glad.h"
-#include "GLFW/glfw3.h"
 
 #include "input/events.h"
+
+// Forward declare
+struct GLFWwindow;
 
 namespace Hydrogen {
 
@@ -35,6 +36,8 @@ class Window {
     void on_update() const;
 
     GLFWwindow* get_native_window() const { return m_window; }
+
+    double get_current_time() const;
 
     int get_width() const { return m_data.width; }
     int get_height() const { return m_data.height; }

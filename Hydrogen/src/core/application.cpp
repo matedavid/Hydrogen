@@ -32,10 +32,10 @@ Application::~Application() {
 }
 
 void Application::run() {
-    double last_time = glfwGetTime();
+    double last_time = m_window->get_current_time();
 
     while (!m_window->should_close()) {
-        double current_time = glfwGetTime();
+        double current_time = m_window->get_current_time();
         double ts = current_time - last_time;
         last_time = current_time;
 

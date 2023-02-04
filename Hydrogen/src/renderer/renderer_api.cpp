@@ -4,6 +4,17 @@
 
 namespace Hydrogen {
 
+bool RendererAPI::init(void* loader) {
+    if (!gladLoadGLLoader((GLADloadproc)loader))
+        return false;
+    glEnable(GL_DEPTH_TEST);
+    return true;
+}
+
+void RendererAPI::resize(int width, int height) {
+    glViewport(0, 0, width, height);
+}
+
 void RendererAPI::clear(const glm::vec3& color) {
     glClearColor(color.r, color.g, color.b, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

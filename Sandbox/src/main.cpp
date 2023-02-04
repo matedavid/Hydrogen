@@ -1,5 +1,7 @@
 #include "Hydrogen/hydrogen.h"
 
+#include "GLFW/glfw3.h"
+
 class Sandbox : public Hydrogen::Application {
   public:
     Sandbox(int width, int height, std::string&& title)

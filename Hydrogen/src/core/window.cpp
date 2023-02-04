@@ -1,12 +1,14 @@
 #include "window.h"
 
 #include <iostream>
+#include "renderer/renderer_api.h"
+#include "GLFW/glfw3.h"
 
 namespace Hydrogen {
 
 Window::Window(int width, int height, std::string&& title) {
     //
-    // Setup GLFW
+    // Setup GLFW and RendererAPI
     //
     if (!glfwInit()) {
         std::cerr << "Error initializing glfw\n";
@@ -18,21 +20,22 @@ Window::Window(int width, int height, std::string&& title) {
 
     m_window = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
     if (!m_window) {
-        std::cerr << "Error creating window\n";
+        HG_LOG_ERROR("Error creating window!");
         glfwTerminate();
+        return;
     }
     glfwMakeContextCurrent(m_window);
 
-    // FIXME: Glad should be initialized in RendererAPI not here maybe??
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-        std::cerr << "Failed to initialize GLAD\n";
+    bool success = RendererAPI::init((void*)glfwGetProcAddress);
+    if (!success) {
+        HG_LOG_ERROR("Failed to initialize!");
         glfwTerminate();
+        return;
     }
+    RendererAPI::resize(width, height);
 
-    // Set VSync
+    // Set VSync on
     glfwSwapInterval(1);
-    glViewport(0, 0, width, height);
-    glEnable(GL_DEPTH_TEST);
 
     //
     // Window data
@@ -56,7 +59,7 @@ Window::Window(int width, int height, std::string&& title) {
         data->height = _height;
 
         glfwSetWindowSize(window, _width, _height);
-        glViewport(0, 0, _width, _height);
+        RendererAPI::resize(_width, _height);
 
         WindowResizeEvent event(_width, _height);
         data->event_callback(event);
@@ -119,6 +122,10 @@ bool Window::should_close() const {
 void Window::on_update() const {
     glfwSwapBuffers(m_window);
     glfwPollEvents();
+}
+
+double Window::get_current_time() const {
+    return glfwGetTime();
 }
 
 void Window::bind_event_func(EventType event, EventCallbackFunc func) {
