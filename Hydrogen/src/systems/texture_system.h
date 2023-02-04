@@ -25,7 +25,7 @@ class TextureSystem {
 
   private:
     std::unordered_map<std::string, Texture*> m_textures;
-    std::unordered_map<std::string, int> m_reference_count;
+    std::unordered_map<std::string, i32> m_reference_count;
 
     TextureSystem();
     ~TextureSystem();

@@ -7,7 +7,7 @@ namespace Hydrogen {
 
 Mesh::Mesh(const aiMesh* mesh, const aiScene* scene, const std::string& directory) {
     // Vertices
-    for (unsigned int i = 0; i < mesh->mNumVertices; ++i) {
+    for (u32 i = 0; i < mesh->mNumVertices; ++i) {
         Vertex vertex{};
 
         // Position
@@ -43,10 +43,10 @@ Mesh::Mesh(const aiMesh* mesh, const aiScene* scene, const std::string& director
     }
 
     // Indices
-    for (unsigned int i = 0; i < mesh->mNumFaces; ++i) {
+    for (u32 i = 0; i < mesh->mNumFaces; ++i) {
         const aiFace& face = mesh->mFaces[i];
 
-        for (unsigned int index = 0; index < face.mNumIndices; ++index) {
+        for (u32 index = 0; index < face.mNumIndices; ++index) {
             indices.push_back(face.mIndices[index]);
         }
     }
@@ -107,7 +107,7 @@ void Mesh::setup_mesh() {
     VAO = new VertexArray();
     VAO->bind();
 
-    auto* VBO = new VertexBuffer(&vertices[0], (unsigned int)vertices.size() * sizeof(Vertex));
+    auto* VBO = new VertexBuffer(&vertices[0], (u32)vertices.size() * sizeof(Vertex));
     VBO->set_layout({
         // Vertex positions
         {.type = ShaderType::Float32, .count = 3, .normalized = false},

@@ -9,11 +9,11 @@ namespace Hydrogen {
 
 class HG_API Application {
   public:
-    Application(int width, int height, std::string&& title);
+    Application(i32 width, i32 height, std::string&& title);
     ~Application();
 
     void run();
-    virtual void on_update(double ts) = 0;
+    virtual void on_update(f64 ts) = 0;
 
     void bind_event_callback_func(EventType event, EventCallbackFunc func);
     const Window* get_window() const { return m_window; };

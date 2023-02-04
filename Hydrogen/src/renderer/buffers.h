@@ -14,7 +14,7 @@ enum class HG_API ShaderType { Float32, UnsignedInt, Bool };
 
 struct HG_API VertexLayout {
     ShaderType type;
-    int count;
+    u32 count;
     bool normalized;
 };
 
@@ -23,16 +23,16 @@ struct HG_API VertexLayout {
 //
 class HG_API VertexBuffer {
   public:
-    VertexBuffer(const void* vertices, unsigned int size);
+    VertexBuffer(const void* vertices, u32 size);
     ~VertexBuffer();
 
     void bind() const;
     void unbind() const;
 
-    void set_layout(const std::vector<VertexLayout>& layout);
+    void set_layout(const std::vector<VertexLayout>& layout) const;
 
   private:
-    unsigned int ID;
+    u32 ID;
 };
 
 //
@@ -40,17 +40,17 @@ class HG_API VertexBuffer {
 //
 class HG_API IndexBuffer {
   public:
-    IndexBuffer(const unsigned int* indices, int number_indices);
+    IndexBuffer(const u32* indices, u32 number_indices);
     ~IndexBuffer();
 
     void bind() const;
     void unbind() const;
 
-    int get_count() const { return m_count; }
+    u32 get_count() const { return m_count; }
 
   private:
-    unsigned int ID;
-    int m_count;
+    u32 ID;
+    u32 m_count;
 };
 
 //
@@ -58,32 +58,32 @@ class HG_API IndexBuffer {
 //
 class HG_API UniformBuffer {
   public:
-    UniformBuffer(unsigned int size);
+    UniformBuffer(u32 size);
     ~UniformBuffer();
 
 //    template<typename T>
-//    void set_data(unsigned int offset, unsigned int size, const T& data) {
+//    void set_data(u32 offset, u32 size, const T& data) {
 //        glBufferSubData(GL_UNIFORM_BUFFER, offset, size, glm::value_ptr(data));
 //    }
 
-    void assign_slot(unsigned int slot);
+    void assign_slot(u32 slot);
 
     void bind() const;
     void unbind() const;
 
-    void set_vec3(unsigned int pos, const glm::vec3& data);
-    void set_vec4(unsigned int pos, const glm::vec4& data);
-    void set_mat4(unsigned int pos, const glm::mat4& data);
+    void set_vec3(u32 pos, const glm::vec3& data);
+    void set_vec4(u32 pos, const glm::vec4& data);
+    void set_mat4(u32 pos, const glm::mat4& data);
 
   private:
-    unsigned int ID;
-    unsigned int current_slot;
+    u32 ID;
+    u32 current_slot;
 
     #define MAX_UNIFORM_POSITIONS 10
-    std::array<int, MAX_UNIFORM_POSITIONS> m_position_offset;
+    std::array<i32, MAX_UNIFORM_POSITIONS> m_position_offset;
 
     template <typename T>
-    void set_data(unsigned int pos, int size, const T& data);
+    void set_data(u32 pos, i32 size, const T& data);
 };
 
 } // namespace Hydrogen

@@ -11,13 +11,13 @@
 
 namespace Hydrogen {
 
-using ShaderId = size_t;
+using ShaderId = usize;
 
 struct HG_API MaterialValues {
     glm::vec3 ambient{1.0f, 1.0f, 1.0f};
     std::optional<glm::vec3> diffuse;
     std::optional<glm::vec3> specular;
-    std::optional<float> shininess;
+    std::optional<f32> shininess;
 
     std::optional<Texture*> diffuse_map;
     std::optional<Texture*> specular_map;

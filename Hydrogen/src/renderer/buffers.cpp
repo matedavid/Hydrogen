@@ -8,7 +8,7 @@ namespace Hydrogen {
 //
 // Attribute Data
 //
-static unsigned int get_opengl_type(const ShaderType& type) {
+static u32 get_opengl_type(const ShaderType& type) {
     switch (type) {
         case ShaderType::Float32:
             return GL_FLOAT;
@@ -20,7 +20,7 @@ static unsigned int get_opengl_type(const ShaderType& type) {
     return 0;
 }
 
-static int get_type_size(const ShaderType& type) {
+static u32 get_type_size(const ShaderType& type) {
     switch (type) {
         case ShaderType::Float32:
         case ShaderType::UnsignedInt:
@@ -34,7 +34,7 @@ static int get_type_size(const ShaderType& type) {
 //
 // Vertex Buffer
 //
-VertexBuffer::VertexBuffer(const void* vertices, unsigned int size) {
+VertexBuffer::VertexBuffer(const void* vertices, u32 size) {
     glGenBuffers(1, &ID);
     bind();
 
@@ -53,18 +53,18 @@ void VertexBuffer::unbind() const {
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void VertexBuffer::set_layout(const std::vector<VertexLayout>& layout) {
+void VertexBuffer::set_layout(const std::vector<VertexLayout>& layout) const {
     bind();
 
-    int generic_stride = 0;
+    u32 generic_stride = 0;
     for (auto element : layout) {
         generic_stride += element.count * get_type_size(element.type);
     }
 
-    int stride = 0;
-    for (unsigned int i = 0; i < layout.size(); ++i) {
+    u32 stride = 0;
+    for (u32 i = 0; i < layout.size(); ++i) {
         auto element = layout[i];
-        glVertexAttribPointer(i, element.count, get_opengl_type(element.type),
+        glVertexAttribPointer(i, (i32)element.count, get_opengl_type(element.type),
                               element.normalized ? GL_TRUE : GL_FALSE, generic_stride,
                               reinterpret_cast<const void*>(stride));
         glEnableVertexAttribArray(i);
@@ -76,11 +76,11 @@ void VertexBuffer::set_layout(const std::vector<VertexLayout>& layout) {
 //
 // Index Buffer
 //
-IndexBuffer::IndexBuffer(const unsigned int* indices, int number_indices) : m_count(number_indices) {
+IndexBuffer::IndexBuffer(const u32* indices, u32 number_indices) : m_count(number_indices) {
     glGenBuffers(1, &ID);
     bind();
 
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, number_indices * sizeof(unsigned int), indices, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, static_cast<i32>(number_indices * sizeof(u32)), indices, GL_STATIC_DRAW);
 }
 
 IndexBuffer::~IndexBuffer() {
@@ -98,7 +98,7 @@ void IndexBuffer::unbind() const {
 //
 // Uniform Buffer
 //
-UniformBuffer::UniformBuffer(unsigned int size) {
+UniformBuffer::UniformBuffer(u32 size) {
     glGenBuffers(1, &ID);
 
     bind();
@@ -109,7 +109,7 @@ UniformBuffer::~UniformBuffer() {
     glDeleteBuffers(1, &ID);
 }
 
-void UniformBuffer::assign_slot(unsigned int slot) {
+void UniformBuffer::assign_slot(u32 slot) {
     if (current_slot == slot)
         return;
 
@@ -125,23 +125,23 @@ void UniformBuffer::unbind() const {
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
-void UniformBuffer::set_vec3(unsigned int pos, const glm::vec3& data) {
+void UniformBuffer::set_vec3(u32 pos, const glm::vec3& data) {
     set_data(pos, 16, data);
 }
 
-void UniformBuffer::set_vec4(unsigned int pos, const glm::vec4& data) {
+void UniformBuffer::set_vec4(u32 pos, const glm::vec4& data) {
     set_data(pos, 16, data);
 }
 
-void UniformBuffer::set_mat4(unsigned int pos, const glm::mat4& data) {
+void UniformBuffer::set_mat4(u32 pos, const glm::mat4& data) {
     set_data(pos, sizeof(glm::mat4), data);
 }
 
 template <typename T>
-void UniformBuffer::set_data(unsigned int pos, int size, const T& data) {
+void UniformBuffer::set_data(u32 pos, i32 size, const T& data) {
     HG_ASSERT(pos < MAX_UNIFORM_POSITIONS, "You can't use more than {} uniform positions", MAX_UNIFORM_POSITIONS);
 
-    int offset = pos == 0 ? 0 : m_position_offset[pos-1];
+    i32 offset = pos == 0 ? 0 : m_position_offset[pos-1];
     m_position_offset[pos] = offset + size;
 
     glBufferSubData(GL_UNIFORM_BUFFER, offset, size, glm::value_ptr(data));

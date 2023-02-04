@@ -22,20 +22,20 @@ class HG_API Shader {
     void bind() const;
     void unbind() const;
 
-    void assign_uniform_buffer(const std::string& name, UniformBuffer* uniform_buffer, unsigned int slot) const;
+    void assign_uniform_buffer(const std::string& name, UniformBuffer* uniform_buffer, u32 slot) const;
 
-    void set_uniform_int(const std::string& name, int value);
-    void set_uniform_float(const std::string& name, float value);
+    void set_uniform_int(const std::string& name, i32 value);
+    void set_uniform_float(const std::string& name, f32 value);
     void set_uniform_vec3(const std::string& name, const glm::vec3& value);
     void set_uniform_mat4(const std::string& name, const glm::mat4& value);
 
   private:
-    unsigned int ID;
+    u32 ID;
 
-    std::map<std::string, int> m_uniform_location;
+    std::map<std::string, i32> m_uniform_location;
 
-    Shader(unsigned int id);
-    static unsigned int compile(const std::string& source, unsigned int type);
+    Shader(u32 id);
+    static u32 compile(const std::string& source, u32 type);
 };
 
 } // namespace renderer

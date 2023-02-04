@@ -10,8 +10,6 @@
 
 namespace Hydrogen {
 
-using ShaderId = std::size_t;
-
 class ShaderSystem {
   public:
     static ShaderSystem* instance;
@@ -30,7 +28,7 @@ class ShaderSystem {
 
   private:
     std::unordered_map<ShaderId, Shader*> m_shaders;
-    std::unordered_map<ShaderId, int> m_reference_count;
+    std::unordered_map<ShaderId, i32> m_reference_count;
 
     ShaderSystem();
     ~ShaderSystem();

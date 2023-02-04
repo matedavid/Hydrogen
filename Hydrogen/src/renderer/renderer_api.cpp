@@ -11,7 +11,7 @@ bool RendererAPI::init(void* loader) {
     return true;
 }
 
-void RendererAPI::resize(int width, int height) {
+void RendererAPI::resize(i32 width, i32 height) {
     glViewport(0, 0, width, height);
 }
 

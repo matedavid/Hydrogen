@@ -8,7 +8,7 @@
 
 namespace Hydrogen {
 
-Texture::Texture(const unsigned char* data, int width, int height)
+Texture::Texture(const unsigned char* data, i32 width, i32 height)
     : m_file_path(""), m_width(width), m_height(height), m_BPP(0)
 {
     glGenTextures(1, &ID);
@@ -61,7 +61,7 @@ Texture* Texture::white() {
     return new Texture(data, 1, 1);
 }
 
-void Texture::bind(unsigned int slot) const {
+void Texture::bind(u32 slot) const {
     glActiveTexture(GL_TEXTURE0 + slot);
     glBindTexture(GL_TEXTURE_2D, ID);
 }

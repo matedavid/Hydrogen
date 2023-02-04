@@ -101,7 +101,7 @@ void Renderer3D::draw_model(const Model& model, const glm::vec3& pos, const glm:
         // Add point lights
         // TODO: Use UBO to pass along lights?
         shader->set_uniform_int("NumberPointLights", (int)m_context->lights.size());
-        for (unsigned int i = 0; i < m_context->lights.size(); ++i) {
+        for (u32 i = 0; i < m_context->lights.size(); ++i) {
             const Light& light = m_context->lights[i];
 
             const std::string header = "PointLights[" + std::to_string(i) + "]";
@@ -126,7 +126,7 @@ VertexArray* Renderer3D::create_quad() {
     vao->bind();
 
     // Create Vertex Buffer and Index Buffer
-    float vertices[] = {
+    f32 vertices[] = {
         // top face
         -0.5f, 0.5f, -0.5f,  // top left       (0)
         -0.5f, 0.5f, 0.5f,   // bottom left    (1)
@@ -140,7 +140,7 @@ VertexArray* Renderer3D::create_quad() {
         0.5f, -0.5f, -0.5f    // top right     (7)
     };
 
-    unsigned int indices[] = {
+    u32 indices[] = {
         // top face
         0, 1, 3, 1, 2, 3,
         // front face
@@ -158,7 +158,7 @@ VertexArray* Renderer3D::create_quad() {
         {.type = ShaderType::Float32, .count = 3, .normalized = false},
     });
 
-    const auto* ebo = new IndexBuffer(indices, sizeof(indices) / sizeof(unsigned int));
+    const auto* ebo = new IndexBuffer(indices, sizeof(indices) / sizeof(u32));
     ebo->bind();
 
     // Add Vertex Buffer and Index Buffer to Vertex Array

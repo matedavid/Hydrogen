@@ -7,7 +7,7 @@ namespace Hydrogen {
 Model::Model(const std::string& path, bool flip_uvs) {
     Assimp::Importer importer;
 
-    unsigned int flags = aiProcess_Triangulate | aiProcess_CalcTangentSpace;
+    u32 flags = aiProcess_Triangulate | aiProcess_CalcTangentSpace;
     if (flip_uvs)
         flags |= aiProcess_FlipUVs;
 
@@ -33,14 +33,14 @@ const std::vector<Mesh*>& Model::get_meshes() const {
 }
 
 void Model::process_node_r(aiNode* node, const aiScene* scene) {
-    for (unsigned int i = 0; i < node->mNumMeshes; ++i) {
+    for (u32 i = 0; i < node->mNumMeshes; ++i) {
         const aiMesh* m = scene->mMeshes[node->mMeshes[i]];
 
         auto* mesh = new Mesh(m, scene, m_directory);
         m_meshes.push_back(mesh);
     }
 
-    for (unsigned int i = 0; i < node->mNumChildren; ++i) {
+    for (u32 i = 0; i < node->mNumChildren; ++i) {
         process_node_r(node->mChildren[i], scene);
     }
 }

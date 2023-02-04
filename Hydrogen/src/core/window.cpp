@@ -6,7 +6,7 @@
 
 namespace Hydrogen {
 
-Window::Window(int width, int height, std::string&& title) {
+Window::Window(i32 width, i32 height, std::string&& title) {
     //
     // Setup GLFW and RendererAPI
     //
@@ -53,7 +53,7 @@ Window::Window(int width, int height, std::string&& title) {
     //
 
     // Window events
-    glfwSetWindowSizeCallback(m_window, [](GLFWwindow* window, int _width, int _height) {
+    glfwSetWindowSizeCallback(m_window, [](GLFWwindow* window, i32 _width, i32 _height) {
         auto data = (WindowData*)glfwGetWindowUserPointer(window);
         data->width = _width;
         data->height = _height;
@@ -66,7 +66,7 @@ Window::Window(int width, int height, std::string&& title) {
     });
 
     // Mouse events
-    glfwSetCursorPosCallback(m_window, [](GLFWwindow* window, double xpos, double ypos) {
+    glfwSetCursorPosCallback(m_window, [](GLFWwindow* window, f64 xpos, f64 ypos) {
         auto data = (WindowData*)glfwGetWindowUserPointer(window);
 
         MouseMovedEvent event(xpos, ypos);
@@ -74,7 +74,7 @@ Window::Window(int width, int height, std::string&& title) {
     });
 
     // Mouse button events
-    glfwSetMouseButtonCallback(m_window, [](GLFWwindow* window, int button, int action, int mods) {
+    glfwSetMouseButtonCallback(m_window, [](GLFWwindow* window, i32 button, i32 action, i32 mods) {
         auto data = (WindowData*)glfwGetWindowUserPointer(window);
 
         MouseButton mouse_button = static_cast<MouseButton>(button);
@@ -87,7 +87,7 @@ Window::Window(int width, int height, std::string&& title) {
         }
     });
 
-    glfwSetScrollCallback(m_window, [](GLFWwindow* window, double xoffset, double yoffset) {
+    glfwSetScrollCallback(m_window, [](GLFWwindow* window, f64 xoffset, f64 yoffset) {
         auto data = (WindowData*)glfwGetWindowUserPointer(window);
 
         MouseScrolledEvent event(xoffset, yoffset);
@@ -96,7 +96,7 @@ Window::Window(int width, int height, std::string&& title) {
 
     // Keyboard events
     glfwSetKeyCallback(
-        m_window, [](GLFWwindow* window, int _key, int scancode, int action, int mods) {
+        m_window, [](GLFWwindow* window, i32 _key, i32 scancode, i32 action, i32 mods) {
             auto data = (WindowData*)glfwGetWindowUserPointer(window);
 
             Key key = static_cast<Key>(_key);
@@ -127,7 +127,7 @@ void Window::on_update() const {
     glfwPollEvents();
 }
 
-double Window::get_current_time() const {
+f64 Window::get_current_time() const {
     return glfwGetTime();
 }
 

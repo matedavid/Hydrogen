@@ -8,7 +8,7 @@
 
 namespace Hydrogen {
 
-Application::Application(int width, int height, std::string&& title) {
+Application::Application(i32 width, i32 height, std::string&& title) {
     m_window = new Window(width, height, std::move(title));
 
     ShaderSystem::init();
@@ -30,11 +30,11 @@ Application::~Application() {
 }
 
 void Application::run() {
-    double last_time = m_window->get_current_time();
+    f64 last_time = m_window->get_current_time();
 
     while (!m_window->should_close()) {
-        double current_time = m_window->get_current_time();
-        double ts = current_time - last_time;
+        f64 current_time = m_window->get_current_time();
+        f64 ts = current_time - last_time;
         last_time = current_time;
 
         RendererAPI::clear(glm::vec3(0.0f, 0.0f, 0.0f));
