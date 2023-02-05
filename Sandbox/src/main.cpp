@@ -4,7 +4,7 @@ class Sandbox : public Hydrogen::Application {
   public:
     Sandbox(int width, int height, std::string&& title)
         : Hydrogen::Application(width, height, std::move(title)),
-          m_model("../../Sandbox/models/backpack/backpack.obj", true)
+          m_model("../../Sandbox/assets/models/backpack/backpack.obj", true)
     {
         bind_event_callback_func(Hydrogen::EventType::MouseMoved, BIND_EVENT_FUNC(on_mouse_moved));
         bind_event_callback_func(Hydrogen::EventType::KeyPressed, BIND_EVENT_FUNC(on_key_pressed));
@@ -16,6 +16,16 @@ class Sandbox : public Hydrogen::Application {
         float ratio = float(get_window()->get_width()) / float(get_window()->get_height());
         m_camera = Hydrogen::PerspectiveCamera(glm::radians(60.0f), ratio, 0.1f, 100.0f);
         m_camera.set_position(m_camera_position);
+
+        auto skybox_components = Hydrogen::Skybox::Components{
+            .right = "../../Sandbox/assets/Meadow_Skybox/posx.jpg",
+            .left = "../../Sandbox/assets/Meadow_Skybox/negx.jpg",
+            .top = "../../Sandbox/assets/Meadow_Skybox/posy.jpg",
+            .bottom = "../../Sandbox/assets/Meadow_Skybox/negy.jpg",
+            .front = "../../Sandbox/assets/Meadow_Skybox/negz.jpg",
+            .back = "../../Sandbox/assets/Meadow_Skybox/posz.jpg",
+        };
+        const auto* skybox = new Hydrogen::Skybox(skybox_components);
     }
 
     void on_update([[maybe_unused]] double ts) override {
@@ -33,7 +43,7 @@ class Sandbox : public Hydrogen::Application {
                 .diffuse = {1.0f, 1.0f, 1.0f},
                 .specular = {1.0f, 1.0f, 1.0f}
             };
-            // Hydrogen::Renderer3D::add_light_source(light);
+            Hydrogen::Renderer3D::add_light_source(light);
         }
         {
             auto light = Hydrogen::Light{
@@ -47,7 +57,7 @@ class Sandbox : public Hydrogen::Application {
                 .diffuse = {1.0f, 1.0f, 1.0f},
                 .specular = {1.0f, 1.0f, 1.0f}
             };
-            // Hydrogen::Renderer3D::add_light_source(light);
+            Hydrogen::Renderer3D::add_light_source(light);
         }
 
         Hydrogen::Renderer3D::draw_model(m_model, {0.0f, 0.0f, 0.0f}, {1.0f, 1.0f, 1.0f});
