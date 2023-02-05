@@ -12,28 +12,28 @@ void Renderer3D::init() {
     m_resources->quad = create_quad();
 
     m_resources->flat_color_shader = Shader::default_();
-    // camera_ubo = mat4 + vec3 (which has the same size as vec4)
-    m_resources->camera_ubo = new UniformBuffer(2 * sizeof(glm::mat4) + sizeof(glm::vec4));
     m_resources->white_texture = Texture::white();
 
     // Rendering Context
     m_context = new RenderingContext{};
+    // camera_ubo = mat4 (Projection) + mat4 (View) + vec3 (which has the same size as vec4)
+    m_context->camera_ubo = new UniformBuffer(2 * sizeof(glm::mat4) + sizeof(glm::vec4));
 }
 
 void Renderer3D::free() {
     delete m_resources->quad;
     delete m_resources->flat_color_shader;
-    delete m_resources->camera_ubo;
     delete m_resources->white_texture;
-
     delete m_resources;
+
+    delete m_context->camera_ubo;
     delete m_context;
 }
 
 void Renderer3D::begin_scene(const Camera& camera) {
-    m_resources->camera_ubo->set_mat4(0, camera.get_projection());
-    m_resources->camera_ubo->set_mat4(1, camera.get_view());
-    m_resources->camera_ubo->set_vec3(2, camera.get_position());
+    m_context->camera_ubo->set_mat4(0, camera.get_projection());
+    m_context->camera_ubo->set_mat4(1, camera.get_view());
+    m_context->camera_ubo->set_vec3(2, camera.get_position());
 }
 
 void Renderer3D::end_scene() {
@@ -70,7 +70,7 @@ void Renderer3D::draw_cube(const glm::vec3& pos, const glm::vec3& dim, Shader* s
     model = glm::scale(model, dim);
 
     shader->set_uniform_mat4("Model", model);
-    shader->assign_uniform_buffer("Camera", m_resources->camera_ubo, 0);
+    shader->assign_uniform_buffer("Camera", m_context->camera_ubo, 0);
 
     RendererAPI::send(m_resources->quad, shader);
 }
@@ -105,7 +105,7 @@ void Renderer3D::draw_model(const Model& model, const glm::vec3& pos, const glm:
         VertexArray* VAO = mesh->VAO;
 
         Shader* shader = mesh->material.bind();
-        shader->assign_uniform_buffer("Camera", m_resources->camera_ubo, 0);
+        shader->assign_uniform_buffer("Camera", m_context->camera_ubo, 0);
 
         auto m = glm::mat4(1.0f);
         m = glm::translate(m, pos);
