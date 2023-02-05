@@ -100,7 +100,7 @@ void Renderer3D::draw_model(const Model& model, const glm::vec3& pos, const glm:
 
         // Add point lights
         // TODO: Use UBO to pass along lights?
-        shader->set_uniform_int("NumberPointLights", (int)m_context->lights.size());
+        shader->set_uniform_int("NumberPointLights", (i32)m_context->lights.size());
         for (u32 i = 0; i < m_context->lights.size(); ++i) {
             const Light& light = m_context->lights[i];
 

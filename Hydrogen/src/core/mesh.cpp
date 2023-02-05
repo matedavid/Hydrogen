@@ -119,7 +119,7 @@ void Mesh::setup_mesh() {
         {.type = ShaderType::Float32, .count = 3, .normalized = false}
     });
 
-    const auto* EBO = new IndexBuffer(&indices[0], (int)indices.size());
+    const auto* EBO = new IndexBuffer(&indices[0], (u32)indices.size());
 
     VAO->add_vertex_buffer(VBO);
     VAO->set_index_buffer(EBO);
