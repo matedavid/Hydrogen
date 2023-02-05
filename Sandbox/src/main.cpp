@@ -22,10 +22,11 @@ class Sandbox : public Hydrogen::Application {
             .left = "../../Sandbox/assets/Meadow_Skybox/negx.jpg",
             .top = "../../Sandbox/assets/Meadow_Skybox/posy.jpg",
             .bottom = "../../Sandbox/assets/Meadow_Skybox/negy.jpg",
-            .front = "../../Sandbox/assets/Meadow_Skybox/negz.jpg",
-            .back = "../../Sandbox/assets/Meadow_Skybox/posz.jpg",
+            .front = "../../Sandbox/assets/Meadow_Skybox/posz.jpg",
+            .back = "../../Sandbox/assets/Meadow_Skybox/negz.jpg",
         };
         const auto* skybox = new Hydrogen::Skybox(skybox_components);
+        Hydrogen::Renderer3D::set_skybox(skybox);
     }
 
     void on_update([[maybe_unused]] double ts) override {

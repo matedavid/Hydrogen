@@ -13,7 +13,7 @@ void Renderer3D::init() {
 
     m_resources->flat_color_shader = Shader::default_();
     // camera_ubo = mat4 + vec3 (which has the same size as vec4)
-    m_resources->camera_ubo = new UniformBuffer(sizeof(glm::mat4) + sizeof(glm::vec4));
+    m_resources->camera_ubo = new UniformBuffer(2 * sizeof(glm::mat4) + sizeof(glm::vec4));
     m_resources->white_texture = Texture::white();
 
     // Rendering Context
@@ -31,23 +31,37 @@ void Renderer3D::free() {
 }
 
 void Renderer3D::begin_scene(const Camera& camera) {
-    m_resources->camera_ubo->set_mat4(0, camera.get_view_projection());
-    m_resources->camera_ubo->set_vec3(1, camera.get_position());
+    m_resources->camera_ubo->set_mat4(0, camera.get_projection());
+    m_resources->camera_ubo->set_mat4(1, camera.get_view());
+    m_resources->camera_ubo->set_vec3(2, camera.get_position());
 }
 
 void Renderer3D::end_scene() {
-    // TEMPORAL: Draw lights
+    // Draw lights
     for (const Light& light : m_context->lights) {
         Renderer3D::draw_cube(light.position, {0.25f, 0.25f, 0.25f}, light.diffuse);
     }
-    // ======
-
     m_context->lights.clear();
+
+    // Draw Skybox
+    if (m_context->skybox != nullptr) {
+        glDepthFunc(GL_LEQUAL);
+
+        auto* shader = m_context->skybox->bind(0);
+        Renderer3D::draw_cube({0.0f, 0.0f, 0.0f}, {2.0f, 2.0f, 2.0f}, shader);
+        m_context->skybox->unbind();
+
+        glDepthFunc(GL_LESS);
+    }
 }
 
 void Renderer3D::add_light_source(const Light& light) {
     // TODO: Use UBO to pass along lights?
     m_context->lights.push_back(light);
+}
+
+void Renderer3D::set_skybox(const Skybox* skybox) {
+    m_context->skybox = skybox;
 }
 
 void Renderer3D::draw_cube(const glm::vec3& pos, const glm::vec3& dim, Shader* shader) {
@@ -142,15 +156,23 @@ VertexArray* Renderer3D::create_quad() {
 
     u32 indices[] = {
         // top face
-        0, 1, 3, 1, 2, 3,
+        0, 1, 3,
+        1, 2, 3,
         // front face
-        1, 5, 2, 5, 6, 2,
+        1, 5, 2,
+        5, 6, 2,
         // left face
-        0, 4, 1, 4, 5, 1,
+        0, 4, 1,
+        4, 5, 1,
         // right face
-        2, 6, 7, 7, 3, 2,
+        2, 6, 7,
+        7, 3, 2,
         // bottom face
-        4, 1, 7, 5, 6, 7
+        4, 5, 7,
+        5, 6, 7,
+        // back face
+        0, 4, 3,
+        4, 7, 3
     };
 
     auto* vbo = new VertexBuffer(vertices, sizeof(vertices));

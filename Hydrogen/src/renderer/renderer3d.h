@@ -15,6 +15,7 @@
 #include "buffers.h"
 #include "shader.h"
 #include "texture.h"
+#include "skybox.h"
 
 namespace Hydrogen {
 
@@ -38,8 +39,9 @@ class HG_API Renderer3D {
     static void begin_scene(const Camera& camera);
     static void end_scene();
 
-    // Light
+    // Scene configuration
     static void add_light_source(const Light& light);
+    static void set_skybox(const Skybox* skybox);
 
     // Primitives
     static void draw_cube(const glm::vec3& pos, const glm::vec3& dim, Shader* shader);
@@ -62,6 +64,7 @@ class HG_API Renderer3D {
 
     struct RenderingContext {
         std::vector<Light> lights;
+        const Skybox* skybox = nullptr;
     };
     inline static RenderingContext* m_context;
 

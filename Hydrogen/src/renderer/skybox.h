@@ -2,6 +2,8 @@
 
 #include "core.h"
 
+#include "systems/shader_system.h"
+
 namespace Hydrogen {
 
 class HG_API Skybox {
@@ -18,11 +20,12 @@ class HG_API Skybox {
     Skybox(Components components);
     ~Skybox();
 
-    void bind() const;
+    Shader* bind(u32 slot = 0) const;
     void unbind() const;
 
   private:
     u32 ID;
+    ShaderId m_shader_id;
 
     enum class SkyboxFace {
         Right = 0,

@@ -6,12 +6,19 @@
 
 namespace Hydrogen {
 
+// const std::string = SKYBOX_VERTEX_PATH "base.skybox.vert";
+const std::string SKYBOX_VERTEX_PATH = "../../Hydrogen/assets/shaders/base.skybox.vert";
+// const std::string SKYBOX_FRAGMENT_PATH = "base.skybox.frag";
+const std::string SKYBOX_FRAGMENT_PATH = "../../Hydrogen/assets/shaders/base.skybox.frag";
+
 Skybox::Skybox(Components components) {
     // Create Skybox
     glGenTextures(1, &ID);
-    bind();
+    glBindTexture(GL_TEXTURE_CUBE_MAP, ID);
 
     // Load face textures
+    stbi_set_flip_vertically_on_load(false);
+
     load_face(components.right, SkyboxFace::Right);
     load_face(components.left, SkyboxFace::Left);
     load_face(components.top, SkyboxFace::Top);
@@ -27,13 +34,24 @@ Skybox::Skybox(Components components) {
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
     unbind();
+
+    // Get Skybox shader
+    m_shader_id =
+        ShaderSystem::instance->acquire_from_file(SKYBOX_VERTEX_PATH, SKYBOX_FRAGMENT_PATH);
 }
 
 Skybox::~Skybox() {
+    glDeleteTextures(1, &ID);
 }
 
-void Skybox::bind() const {
+Shader* Skybox::bind(u32 slot) const {
+    auto* shader = ShaderSystem::instance->get(m_shader_id);
+    shader->set_uniform_int("Skybox", (i32)slot);
+
+    glActiveTexture(GL_TEXTURE0 + slot);
     glBindTexture(GL_TEXTURE_CUBE_MAP, ID);
+
+    return shader;
 }
 
 void Skybox::unbind() const {

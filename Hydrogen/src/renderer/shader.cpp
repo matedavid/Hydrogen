@@ -53,14 +53,16 @@ layout (location = 1) in vec2 aTexCoord;
 out vec2 v_TexCoord;
 
 layout(std140) uniform Camera {
-    uniform mat4 ViewProjection;
+    uniform mat4 Projection;
+    uniform mat4 View;
+    uniform vec3 CameraPosition;
 };
 
 uniform mat4 Model;
 
 void main()
 {
-    gl_Position = ViewProjection * Model * vec4(aPos, 1.0f);
+    gl_Position = Projection * View * Model * vec4(aPos, 1.0f);
     v_TexCoord = aTexCoord;
 }
 )";
@@ -164,7 +166,7 @@ u32 Shader::compile(const std::string& source, u32 type) {
         glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &max_length);
 
         // The maxLength includes the NULL character
-        std::vector<GLchar> error_log(max_length);
+        std::vector<GLchar> error_log((usize)max_length);
         glGetShaderInfoLog(shader, max_length, &max_length, &error_log[0]);
 
         std::string str_type = (type == GL_VERTEX_SHADER) ? "Vertex: " : "Fragment: ";

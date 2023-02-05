@@ -6,7 +6,8 @@ layout(location = 2) in vec2 aTextureCoords;
 layout(location = 3) in vec3 aTangent;
 
 layout(std140) uniform Camera {
-    uniform mat4 ViewProjection;
+    uniform mat4 Projection;
+    uniform mat4 View;
     uniform vec3 CameraPosition;
 };
 
@@ -19,6 +20,7 @@ out vec3 FragCameraPosition;
 out mat3 FragTBN;
 
 void main() {
+    mat4 ViewProjection = Projection * View;
     gl_Position = ViewProjection * Model * vec4(aPosition, 1.0f);
 
     FragPosition = vec3(Model * vec4(aPosition, 1.0f));

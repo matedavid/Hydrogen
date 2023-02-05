@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cassert>
 #include <spdlog/spdlog.h>
 
 namespace Hydrogen {
@@ -14,7 +15,7 @@ namespace Hydrogen {
 #define HG_ASSERT(condition, ...)  \
     if (!(condition)) {            \
         HG_LOG_ERROR(__VA_ARGS__); \
-        exit(-1);                  \
+        assert(false);             \
     }
 
 // Types
