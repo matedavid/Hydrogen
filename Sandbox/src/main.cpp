@@ -18,15 +18,21 @@ class Sandbox : public Hydrogen::Application {
         m_camera.set_position(m_camera_position);
 
         auto skybox_components = Hydrogen::Skybox::Components{
-            .right = "../../Sandbox/assets/Meadow_Skybox/posx.jpg",
-            .left = "../../Sandbox/assets/Meadow_Skybox/negx.jpg",
-            .top = "../../Sandbox/assets/Meadow_Skybox/posy.jpg",
-            .bottom = "../../Sandbox/assets/Meadow_Skybox/negy.jpg",
-            .front = "../../Sandbox/assets/Meadow_Skybox/posz.jpg",
-            .back = "../../Sandbox/assets/Meadow_Skybox/negz.jpg",
+            .right = "posx.jpg",
+            .left = "negx.jpg",
+            .top = "posy.jpg",
+            .bottom = "negy.jpg",
+            .front = "posz.jpg",
+            .back = "negz.jpg",
         };
-        const auto* skybox = new Hydrogen::Skybox(skybox_components);
-        Hydrogen::Renderer3D::set_skybox(skybox);
+        m_skybox = new Hydrogen::Skybox(skybox_components, "../../Sandbox/assets/Meadow_Skybox/");
+        Hydrogen::Renderer3D::set_skybox(m_skybox);
+
+        HG_LOG_INFO("Finished startup...");
+    }
+
+    ~Sandbox() {
+        delete m_skybox;
     }
 
     void on_update([[maybe_unused]] double ts) override {
@@ -149,6 +155,7 @@ class Sandbox : public Hydrogen::Application {
     glm::vec3 m_camera_position;
 
     Hydrogen::Model m_model;
+    Hydrogen::Skybox* m_skybox;
 };
 
 int main() {

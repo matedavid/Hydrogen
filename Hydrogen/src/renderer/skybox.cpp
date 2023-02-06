@@ -1,7 +1,8 @@
 #include "skybox.h"
 
-#include "stb_image.h"
+#include <filesystem>
 
+#include "stb_image.h"
 #include <glad/glad.h>
 
 namespace Hydrogen {
@@ -40,6 +41,37 @@ Skybox::Skybox(Components components) {
         ShaderSystem::instance->acquire_from_file(SKYBOX_VERTEX_PATH, SKYBOX_FRAGMENT_PATH);
 }
 
+Skybox::Skybox(Components components, const std::string& directory) {
+    // Create Skybox
+    glGenTextures(1, &ID);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, ID);
+
+    // Load face textures
+    stbi_set_flip_vertically_on_load(false);
+
+    const auto directory_path = std::filesystem::path(directory);
+
+    load_face(directory_path / components.right, SkyboxFace::Right);
+    load_face(directory_path / components.left, SkyboxFace::Left);
+    load_face(directory_path / components.top, SkyboxFace::Top);
+    load_face(directory_path / components.bottom, SkyboxFace::Bottom);
+    load_face(directory_path / components.front, SkyboxFace::Front);
+    load_face(directory_path / components.back, SkyboxFace::Back);
+
+    // Configuration
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+    unbind();
+
+    // Get Skybox shader
+    m_shader_id =
+        ShaderSystem::instance->acquire_from_file(SKYBOX_VERTEX_PATH, SKYBOX_FRAGMENT_PATH);
+}
+
 Skybox::~Skybox() {
     glDeleteTextures(1, &ID);
 }
@@ -52,6 +84,13 @@ Shader* Skybox::bind(u32 slot) const {
     glBindTexture(GL_TEXTURE_CUBE_MAP, ID);
 
     return shader;
+}
+
+void Skybox::bind_to_shader(Shader* shader, u32 slot) const {
+    shader->set_uniform_int("Skybox", (i32)slot);
+
+    glActiveTexture(GL_TEXTURE0 + slot);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, ID);
 }
 
 void Skybox::unbind() const {
