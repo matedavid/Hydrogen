@@ -7,17 +7,16 @@
 namespace Hydrogen {
 
 void Renderer3D::init() {
-    // Rendering Resources
-    m_resources = new RendererResources{};
-    m_resources->quad = create_quad();
-
-    m_resources->flat_color_shader = Shader::default_();
-    m_resources->white_texture = Texture::white();
-
     // Rendering Context
     m_context = new RenderingContext{};
     // camera_ubo = mat4 (Projection) + mat4 (View) + vec3 (which has the same size as vec4)
     m_context->camera_ubo = new UniformBuffer(2 * sizeof(glm::mat4) + sizeof(glm::vec4));
+
+    // Rendering Resources
+    m_resources = new RendererResources{};
+    m_resources->quad = create_quad();
+    m_resources->flat_color_shader = Shader::default_();
+    m_resources->white_texture = Texture::white();
 }
 
 void Renderer3D::free() {
