@@ -94,7 +94,7 @@ void Renderer3D::draw_cube(const glm::vec3& pos, const glm::vec3& dim, const glm
     Renderer3D::draw_cube(pos, dim, m_resources->flat_color_shader);
 }
 
-void Renderer3D::draw_cube(const glm::vec3& pos, const glm::vec3& dim, const Material& material) {
+void Renderer3D::draw_cube(const glm::vec3& pos, const glm::vec3& dim, const IMaterial& material) {
     Shader* shader = material.bind();
     Renderer3D::draw_cube(pos, dim, shader);
 }
@@ -103,7 +103,7 @@ void Renderer3D::draw_model(const Model& model, const glm::vec3& pos, const glm:
     for (const auto* mesh : model.get_meshes()) {
         VertexArray* VAO = mesh->VAO;
 
-        Shader* shader = mesh->material.bind();
+        Shader* shader = mesh->material->bind();
         shader->assign_uniform_buffer("Camera", m_context->camera_ubo, 0);
 
         auto m = glm::mat4(1.0f);

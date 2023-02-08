@@ -51,55 +51,60 @@ Mesh::Mesh(const aiMesh* mesh, const aiScene* scene, const std::string& director
         }
     }
 
+
+    auto* phong_material =  new PhongMaterial();
+
     const aiMaterial* mat = scene->mMaterials[mesh->mMaterialIndex];
 
     // Diffuse texture
     aiString ai_path;
     if (mat->GetTexture(aiTextureType_DIFFUSE, 0, &ai_path) == aiReturn_SUCCESS) {
         const std::string path = directory + std::string(ai_path.C_Str());
-        material.values.diffuse_map = TextureSystem::instance->acquire(path);
+        phong_material->diffuse_map = TextureSystem::instance->acquire(path);
     }
 
     // Specular texture
     ai_path.Clear();
     if (mat->GetTexture(aiTextureType_SPECULAR, 0, &ai_path) == aiReturn_SUCCESS) {
         const std::string path = directory + std::string(ai_path.C_Str());
-        material.values.specular_map = TextureSystem::instance->acquire(path);
+        phong_material->specular_map = TextureSystem::instance->acquire(path);
     }
 
     // Normal texture
     ai_path.Clear();
     if (mat->GetTexture(aiTextureType_HEIGHT, 0, &ai_path) == aiReturn_SUCCESS) {
         const std::string path = directory + std::string(ai_path.C_Str());
-        material.values.normal_map = TextureSystem::instance->acquire(path);
+        phong_material->normal_map = TextureSystem::instance->acquire(path);
     }
 
     // Ambient, diffuse and specular colors
     aiColor3D color;
     if (mat->Get(AI_MATKEY_COLOR_AMBIENT, color) == aiReturn_SUCCESS) {
-        material.values.ambient = glm::vec3(color.r, color.g, color.b);
+        phong_material->ambient = glm::vec3(color.r, color.g, color.b);
     }
 
     if (mat->Get(AI_MATKEY_COLOR_DIFFUSE, color) == aiReturn_SUCCESS) {
-        material.values.diffuse = glm::vec3(color.r, color.g, color.b);
+        phong_material->diffuse = glm::vec3(color.r, color.g, color.b);
     }
 
     if (mat->Get(AI_MATKEY_COLOR_SPECULAR, color) == aiReturn_SUCCESS) {
-        material.values.specular = glm::vec3(color.r, color.g, color.b);
+        phong_material->specular = glm::vec3(color.r, color.g, color.b);
     }
 
     // Shininess
     ai_real shininess;
     if (mat->Get(AI_MATKEY_SHININESS, shininess) == aiReturn_SUCCESS) {
-        material.values.shininess = shininess;
+        phong_material->shininess = shininess;
     }
 
-    material.build();
+    material = phong_material;
+    material->build();
 
     setup_mesh();
 }
 
 Mesh::~Mesh() {
+    delete material;
     delete VAO;
 }
 

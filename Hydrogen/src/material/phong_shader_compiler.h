@@ -2,18 +2,12 @@
 
 #include "core.h"
 
-#include <optional>
-
-#include "glm/glm.hpp"
-
+#include "shader_compiler.h"
 #include "renderer/texture.h"
-#include "renderer/shader.h"
 
 namespace Hydrogen {
 
-using ShaderId = usize;
-
-struct HG_API MaterialValues {
+struct PhongShaderArguments {
     glm::vec3 ambient{1.0f, 1.0f, 1.0f};
     std::optional<glm::vec3> diffuse;
     std::optional<glm::vec3> specular;
@@ -24,19 +18,16 @@ struct HG_API MaterialValues {
     std::optional<Texture*> normal_map;
 };
 
-class HG_API Material {
+class PhongShaderCompiler : public IShaderCompiler {
   public:
-    MaterialValues values;
+    PhongShaderCompiler(PhongShaderArguments arguments);
+    ~PhongShaderCompiler() = default;
 
-    Material();
-    ~Material();
-
-    void build();
-    Shader* bind() const;
+    Shader* compile() const override;
+    usize get_hash() const override;
 
   private:
-    ShaderId m_shader_id;
-    bool m_built;
+    PhongShaderArguments m_arguments;
 };
 
 } // namespace Hydrogen

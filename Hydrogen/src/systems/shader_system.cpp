@@ -1,7 +1,5 @@
 #include "shader_system.h"
 
-#include "shader_compiler.h"
-
 namespace Hydrogen {
 
 ShaderSystem* ShaderSystem::instance = nullptr;
@@ -77,28 +75,17 @@ ShaderId ShaderSystem::acquire_from_file(const std::string& vertex_path,
     return id;
 }
 
-ShaderId ShaderSystem::acquire_from_material(const MaterialValues& material) {
-    // NOTE: Only implementing for Materials using Phong model
-
-    // 6 optional values, using bit representation
-    ShaderId diffuse_id = material.diffuse.has_value();
-    ShaderId specular_id = material.specular.has_value() * (ShaderId)1e1;
-    ShaderId shininess_id = material.shininess.has_value() * (ShaderId)1e2;
-    ShaderId diffuse_map_id = material.diffuse_map.has_value() * (ShaderId)1e3;
-    ShaderId specular_map_id = material.specular_map.has_value() * (ShaderId)1e4;
-    ShaderId normal_map_id = material.normal_map.has_value() * (ShaderId)1e5;
-
-    ShaderId id =
-        diffuse_id + specular_id + shininess_id + diffuse_map_id + specular_map_id + normal_map_id;
+ShaderId ShaderSystem::acquire_from_compiler(const IShaderCompiler& compiler) {
+    usize id = compiler.get_hash();
 
     if (m_shaders.contains(id)) {
         m_reference_count[id]++;
         return id;
     }
 
-    HG_LOG_INFO("Loading new Shader from material: {}", id);
+    HG_LOG_INFO("Loading new Shader from compiler: {}", id);
 
-    Shader* shader = ShaderCompiler::from_material(material);
+    Shader* shader = compiler.compile();
     m_reference_count[id] = 1;
     m_shaders[id] = shader;
 

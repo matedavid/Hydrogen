@@ -6,7 +6,7 @@
 
 #include <glm/glm.hpp>
 
-#include "core/material.h"
+#include "material/material.h"
 #include "core/model.h"
 #include "core/mesh.h"
 
@@ -47,7 +47,7 @@ class HG_API Renderer3D {
     static void draw_cube(const glm::vec3& pos, const glm::vec3& dim, Shader* shader);
     static void draw_cube(const glm::vec3& pos, const glm::vec3& dim, const Texture* texture);
     static void draw_cube(const glm::vec3& pos, const glm::vec3& dim, const glm::vec3& color);
-    static void draw_cube(const glm::vec3& pos, const glm::vec3& dim, const Material& material);
+    static void draw_cube(const glm::vec3& pos, const glm::vec3& dim, const IMaterial& material);
 
     // Model
     static void draw_model(const Model& model, const glm::vec3& pos, const glm::vec3& dim);
