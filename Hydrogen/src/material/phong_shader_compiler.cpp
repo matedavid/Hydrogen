@@ -4,6 +4,15 @@
 
 namespace Hydrogen {
 
+#define REGISTER_DEFINE(opt, string)       \
+    if (m_arguments.opt.has_value()) {     \
+        defines += "#define " string "\n"; \
+    }
+
+#define REGISTER_HASH_COMPONENT(opt, result, iter)              \
+    result += m_arguments.opt.has_value() * (usize)(1 << iter); \
+    iter++;
+
 // const std::string BASE_VERTEX_PATH = "shaders/base.phong.vert";
 const std::string BASE_VERTEX_PATH = "../../Hydrogen/assets/shaders/base.phong.vert";
 // const std::string BASE_FRAGMENT_PATH = "shaders/base.phong.frag";
@@ -32,24 +41,12 @@ Shader* PhongShaderCompiler::compile() const {
     const std::string version = "#version 330 core\n\n";
 
     std::string defines;
-    if (m_arguments.diffuse.has_value()) {
-        defines += "#define diffuse_color\n";
-    }
-    if (m_arguments.specular.has_value()) {
-        defines += "#define specular_color\n";
-    }
-    if (m_arguments.shininess.has_value()) {
-        defines += "#define shininess_def\n";
-    }
-    if (m_arguments.diffuse_map.has_value()) {
-        defines += "#define diffuse_texture\n";
-    }
-    if (m_arguments.specular_map.has_value()) {
-        defines += "#define specular_texture\n";
-    }
-    if (m_arguments.normal_map.has_value()) {
-        defines += "#define normal_texture\n";
-    }
+    REGISTER_DEFINE(diffuse, "diffuse_color");
+    REGISTER_DEFINE(specular, "specular_color");
+    REGISTER_DEFINE(shininess, "shininess_def");
+    REGISTER_DEFINE(diffuse_map, "diffuse_texture");
+    REGISTER_DEFINE(specular_map, "specular_texture");
+    REGISTER_DEFINE(normal_map, "normal_texture");
 
     fragment_source = version + defines + fragment_source;
 
@@ -57,16 +54,16 @@ Shader* PhongShaderCompiler::compile() const {
 }
 
 usize PhongShaderCompiler::get_hash() const {
-    // 6 optional values, using bit representation
-    ShaderId diffuse_id = m_arguments.diffuse.has_value();
-    ShaderId specular_id = m_arguments.specular.has_value() * (ShaderId)1e1;
-    ShaderId shininess_id = m_arguments.shininess.has_value() * (ShaderId)1e2;
-    ShaderId diffuse_map_id = m_arguments.diffuse_map.has_value() * (ShaderId)1e3;
-    ShaderId specular_map_id = m_arguments.specular_map.has_value() * (ShaderId)1e4;
-    ShaderId normal_map_id = m_arguments.normal_map.has_value() * (ShaderId)1e5;
+    usize hash = 0;
+    u32 iter = 1;
+    REGISTER_HASH_COMPONENT(diffuse, hash, iter);
+    REGISTER_HASH_COMPONENT(specular, hash, iter);
+    REGISTER_HASH_COMPONENT(shininess, hash, iter);
+    REGISTER_HASH_COMPONENT(diffuse_map, hash, iter);
+    REGISTER_HASH_COMPONENT(specular_map, hash, iter);
+    REGISTER_HASH_COMPONENT(normal_map, hash, iter);
 
-    return diffuse_id + specular_id + shininess_id + diffuse_map_id + specular_map_id +
-           normal_map_id;
+    return ((hash << 45) * 0x14573) % 62819;
 }
 
 } // namespace Hydrogen

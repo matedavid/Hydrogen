@@ -14,6 +14,7 @@
 
 #include "material/material.h"
 #include "material/phong_material.h"
+#include "material/pbr_material.h"
 
 #include "renderer/vertex_array.h"
 #include "renderer/buffers.h"

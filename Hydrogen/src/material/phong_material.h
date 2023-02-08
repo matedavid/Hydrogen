@@ -9,7 +9,7 @@ namespace Hydrogen {
 class HG_API PhongMaterial : public IMaterial {
   public:
     PhongMaterial();
-    ~PhongMaterial();
+    ~PhongMaterial() override;
 
     void build() override;
     Shader* bind() const override;

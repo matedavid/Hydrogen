@@ -25,7 +25,9 @@ target_sources(${PROJECT_NAME} PRIVATE
         src/input/input.cpp
 
         src/material/phong_material.cpp
+        src/material/pbr_material.cpp
         src/material/phong_shader_compiler.cpp
+        src/material/pbr_shader_compiler.cpp
 
         src/systems/shader_system.cpp
         src/systems/texture_system.cpp
