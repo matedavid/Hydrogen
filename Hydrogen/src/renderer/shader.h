@@ -31,11 +31,12 @@ class HG_API Shader {
 
   private:
     u32 ID;
-
     std::map<std::string, i32> m_uniform_location;
 
     Shader(u32 id);
     static u32 compile(const std::string& source, u32 type);
+
+    i32 get_uniform_location(const std::string& value);
 };
 
 } // namespace renderer

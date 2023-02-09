@@ -103,7 +103,7 @@ void Shader::assign_uniform_buffer(const std::string& name, UniformBuffer* unifo
 void Shader::set_uniform_int(const std::string& name, i32 value) {
     bind();
     if (!m_uniform_location.contains(name)) {
-        i32 uniform_location = glGetUniformLocation(ID, name.c_str());
+        i32 uniform_location = get_uniform_location(name);
         m_uniform_location.insert({name, uniform_location});
     }
 
@@ -114,7 +114,7 @@ void Shader::set_uniform_int(const std::string& name, i32 value) {
 void Shader::set_uniform_float(const std::string& name, f32 value) {
     bind();
     if (!m_uniform_location.contains(name)) {
-        i32 uniform_location = glGetUniformLocation(ID, name.c_str());
+        i32 uniform_location = get_uniform_location(name);
         m_uniform_location.insert({name, uniform_location});
     }
 
@@ -125,7 +125,7 @@ void Shader::set_uniform_float(const std::string& name, f32 value) {
 void Shader::set_uniform_vec3(const std::string& name, const glm::vec3& value) {
     bind();
     if (!m_uniform_location.contains(name)) {
-        i32 uniform_location = glGetUniformLocation(ID, name.c_str());
+        i32 uniform_location = get_uniform_location(name);
         m_uniform_location.insert({name, uniform_location});
     }
 
@@ -136,7 +136,7 @@ void Shader::set_uniform_vec3(const std::string& name, const glm::vec3& value) {
 void Shader::set_uniform_mat4(const std::string& name, const glm::mat4& value) {
     bind();
     if (!m_uniform_location.contains(name)) {
-        i32 uniform_location = glGetUniformLocation(ID, name.c_str());
+        i32 uniform_location = get_uniform_location(name);
         m_uniform_location.insert({name, uniform_location});
     }
 
@@ -176,6 +176,15 @@ u32 Shader::compile(const std::string& source, u32 type) {
     }
 
     return shader;
+}
+
+i32 Shader::get_uniform_location(const std::string& name) {
+    i32 uniform_location = glGetUniformLocation(ID, name.c_str());
+    if (uniform_location == -1) {
+        HG_LOG_WARN("Uniform '{}' not found in shader with ID {}", name, ID);
+    }
+
+    return uniform_location;
 }
 
 } // namespace renderer
