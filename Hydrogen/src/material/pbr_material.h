@@ -29,6 +29,10 @@ class HG_API PBRMaterial : public IMaterial {
     std::optional<Texture*> metallic_map;
     std::optional<Texture*> roughness_map;
     std::optional<Texture*> ao_map;
+    std::optional<Texture*> normal_map;
+
+    bool metallic_roughness_same_texture = false;
+    bool metallic_roughness_ao_same_texture = false;
 };
 
 } // namespace Hydrogen

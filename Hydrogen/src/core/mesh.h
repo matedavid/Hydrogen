@@ -14,7 +14,6 @@
 #include "renderer/texture.h"
 
 #include "material/material.h"
-#include "material/phong_material.h"
 
 namespace Hydrogen {
 
@@ -38,6 +37,10 @@ class HG_API Mesh {
     std::vector<u32> indices;
 
     void setup_mesh();
+
+    // Material loaders
+    IMaterial* load_phong_material(const aiMaterial* mat, const std::string& directory);
+    IMaterial* load_pbr_material(const aiMaterial* mat, const std::string& directory);
 };
 
 }

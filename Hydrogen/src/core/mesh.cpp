@@ -3,6 +3,9 @@
 #include "renderer/renderer_api.h"
 #include "systems/texture_system.h"
 
+#include "material/phong_material.h"
+#include "material/pbr_material.h"
+
 namespace Hydrogen {
 
 Mesh::Mesh(const aiMesh* mesh, const aiScene* scene, const std::string& directory) {
@@ -51,10 +54,50 @@ Mesh::Mesh(const aiMesh* mesh, const aiScene* scene, const std::string& director
         }
     }
 
-
-    auto* phong_material =  new PhongMaterial();
-
     const aiMaterial* mat = scene->mMaterials[mesh->mMaterialIndex];
+
+    // TODO: Make selection dynamic, at the moment do not know how to recognize type of material from assimp
+
+    // material = load_phong_material(mat, directory);
+    material = load_pbr_material(mat, directory);
+    material->build();
+
+    setup_mesh();
+}
+
+Mesh::~Mesh() {
+    delete material;
+    delete VAO;
+}
+
+void Mesh::setup_mesh() {
+    VAO = new VertexArray();
+    VAO->bind();
+
+    auto* VBO = new VertexBuffer(&vertices[0], (u32)vertices.size() * sizeof(Vertex));
+    VBO->set_layout({
+        // Vertex positions
+        {.type = ShaderType::Float32, .count = 3, .normalized = false},
+        // Vertex normals
+        {.type = ShaderType::Float32, .count = 3, .normalized = false},
+        // Vertex texture coords
+        {.type = ShaderType::Float32, .count = 2, .normalized = false},
+        // Vertex tangents
+        {.type = ShaderType::Float32, .count = 3, .normalized = false}
+    });
+
+    const auto* EBO = new IndexBuffer(&indices[0], (u32)indices.size());
+
+    VAO->add_vertex_buffer(VBO);
+    VAO->set_index_buffer(EBO);
+
+    VAO->unbind();
+    VBO->unbind();
+    EBO->unbind();
+}
+
+IMaterial* Mesh::load_phong_material(const aiMaterial* mat, const std::string& directory) {
+    auto* phong_material = new PhongMaterial();
 
     // Diffuse texture
     aiString ai_path;
@@ -97,41 +140,76 @@ Mesh::Mesh(const aiMesh* mesh, const aiScene* scene, const std::string& director
         phong_material->shininess = shininess;
     }
 
-    material = phong_material;
-    material->build();
-
-    setup_mesh();
+    return phong_material;
 }
 
-Mesh::~Mesh() {
-    delete material;
-    delete VAO;
-}
+IMaterial* Mesh::load_pbr_material(const aiMaterial* mat, const std::string& directory) {
+    auto* pbr_material = new PBRMaterial();
 
-void Mesh::setup_mesh() {
-    VAO = new VertexArray();
-    VAO->bind();
+    // Albedo color
+    aiColor3D color;
+    if (mat->Get(AI_MATKEY_BASE_COLOR, color) == aiReturn_SUCCESS) {
+        pbr_material->albedo = glm::vec3(color.r, color.g, color.b);
+    }
 
-    auto* VBO = new VertexBuffer(&vertices[0], (u32)vertices.size() * sizeof(Vertex));
-    VBO->set_layout({
-        // Vertex positions
-        {.type = ShaderType::Float32, .count = 3, .normalized = false},
-        // Vertex normals
-        {.type = ShaderType::Float32, .count = 3, .normalized = false},
-        // Vertex texture coords
-        {.type = ShaderType::Float32, .count = 2, .normalized = false},
-        // Vertex tangents
-        {.type = ShaderType::Float32, .count = 3, .normalized = false}
-    });
+    // Metallic value
+    ai_real value;
+    if (mat->Get(AI_MATKEY_METALLIC_FACTOR, value) == aiReturn_SUCCESS) {
+        pbr_material->metallic = value;
+    }
 
-    const auto* EBO = new IndexBuffer(&indices[0], (u32)indices.size());
+    // Roughness value
+    if (mat->Get(AI_MATKEY_ROUGHNESS_FACTOR, value) == aiReturn_SUCCESS) {
+        pbr_material->roughness = value;
+    }
 
-    VAO->add_vertex_buffer(VBO);
-    VAO->set_index_buffer(EBO);
+    // AO value
+    // TODO: Could not find it in assimp docs
 
-    VAO->unbind();
-    VBO->unbind();
-    EBO->unbind();
+    // Albedo texture
+    aiString albedo_path;
+    if (mat->GetTexture(AI_MATKEY_BASE_COLOR_TEXTURE, &albedo_path) == aiReturn_SUCCESS) {
+        const std::string path = directory + std::string(albedo_path.C_Str());
+        pbr_material->albedo_map = TextureSystem::instance->acquire(path);
+    }
+
+    // Metallic texture
+    aiString metallic_path;
+    if (mat->GetTexture(AI_MATKEY_METALLIC_TEXTURE, &metallic_path) == aiReturn_SUCCESS) {
+        const std::string path = directory + std::string(metallic_path.C_Str());
+        pbr_material->metallic_map = TextureSystem::instance->acquire(path);
+    }
+
+    // Roughness texture
+    aiString roughness_path;
+    if (mat->GetTexture(AI_MATKEY_ROUGHNESS_TEXTURE, &roughness_path) == aiReturn_SUCCESS) {
+        const std::string path = directory + std::string(roughness_path.C_Str());
+        pbr_material->roughness_map = TextureSystem::instance->acquire(path);
+    }
+
+    // AO texture
+    aiString ao_path;
+    if (mat->GetTexture(aiTextureType_LIGHTMAP, 0, &ao_path) == aiReturn_SUCCESS) {
+        const std::string path = directory + std::string(ao_path.C_Str());
+        pbr_material->ao_map = TextureSystem::instance->acquire(path);
+    }
+
+    // Normal texture
+    aiString normal_path;
+    if (mat->GetTexture(aiTextureType_HEIGHT, 0, &normal_path) == aiReturn_SUCCESS) {
+        const std::string path = directory + std::string(normal_path.C_Str());
+        pbr_material->normal_map = TextureSystem::instance->acquire(path);
+    }
+
+    // Check if metallic and roughness textures are the same image
+    pbr_material->metallic_roughness_same_texture = !std::string(metallic_path.C_Str()).empty()
+                                                    && metallic_path == roughness_path;
+
+    // Check if metallic, roughness and ao texture are the same image
+    pbr_material->metallic_roughness_ao_same_texture = pbr_material->metallic_roughness_same_texture
+                                                       && ao_path == metallic_path;
+
+    return pbr_material;
 }
 
 } // namespace Hydrogen

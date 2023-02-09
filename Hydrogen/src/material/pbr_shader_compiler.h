@@ -17,6 +17,10 @@ struct PBRShaderArguments {
     std::optional<Texture*> metallic_map;
     std::optional<Texture*> roughness_map;
     std::optional<Texture*> ao_map;
+    std::optional<Texture*> normal_map;
+
+    bool metallic_roughness_same_texture;
+    bool metallic_roughness_ao_same_texture;
 };
 
 class HG_API PBRShaderCompiler : public IShaderCompiler {

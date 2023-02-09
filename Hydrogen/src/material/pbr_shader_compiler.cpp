@@ -9,6 +9,11 @@ namespace Hydrogen {
         defines += "#define " string "\n"; \
     }
 
+#define REGISTER_DEFINE_BOOL(cond, string) \
+    if (m_arguments.cond) {                \
+        defines += "#define " string "\n"; \
+    }
+
 #define REGISTER_HASH_COMPONENT(opt, result, iter)              \
     result += m_arguments.opt.has_value() * (usize)(1 << iter); \
     iter++;
@@ -49,6 +54,9 @@ Shader* PBRShaderCompiler::compile() const {
     REGISTER_DEFINE(metallic_map, "metallic_texture");
     REGISTER_DEFINE(roughness_map, "roughness_texture");
     REGISTER_DEFINE(ao_map, "ao_texture");
+    REGISTER_DEFINE(normal_map, "normal_texture");
+    REGISTER_DEFINE_BOOL(metallic_roughness_same_texture, "metallic_roughness_texture");
+    REGISTER_DEFINE_BOOL(metallic_roughness_ao_same_texture, "metallic_roughness_ao_texture");
 
     fragment_source = version + defines + fragment_source;
 
@@ -66,6 +74,7 @@ usize PBRShaderCompiler::get_hash() const {
     REGISTER_HASH_COMPONENT(metallic_map, hash, iter);
     REGISTER_HASH_COMPONENT(roughness_map, hash, iter);
     REGISTER_HASH_COMPONENT(ao_map, hash, iter);
+    REGISTER_HASH_COMPONENT(normal_map, hash, iter);
 
     return (hash * 0x08475) % 43476;
 }

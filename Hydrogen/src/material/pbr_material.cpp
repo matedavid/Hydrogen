@@ -26,7 +26,11 @@ void PBRMaterial::build() {
         .albedo_map = albedo_map,
         .metallic_map = metallic_map,
         .roughness_map = roughness_map,
-        .ao_map = ao_map
+        .ao_map = ao_map,
+        .normal_map = normal_map,
+
+        .metallic_roughness_same_texture = metallic_roughness_same_texture,
+        .metallic_roughness_ao_same_texture = metallic_roughness_ao_same_texture
     });
 
     m_shader_id = ShaderSystem::instance->acquire_from_compiler(compiler);
@@ -34,9 +38,67 @@ void PBRMaterial::build() {
 }
 
 Shader* PBRMaterial::bind() const {
-    // TODO:
-    HG_ASSERT(false, "Unimplemented");
-    return nullptr;
+    HG_ASSERT(m_built, "You must build the Material before binding it");
+
+    auto* shader = ShaderSystem::instance->get(m_shader_id);
+    HG_ASSERT(shader != nullptr, "Unexpected error: shader is null");
+
+    // Albedo color
+    if (albedo.has_value()) {
+        shader->set_uniform_vec3("Material.albedo", albedo.value());
+    }
+
+    // Metallic value
+    if (metallic.has_value()) {
+        shader->set_uniform_float("Material.metallic", metallic.value());
+    }
+
+    // Roughness value
+    if (roughness.has_value()) {
+        shader->set_uniform_float("Material.roughness", roughness.value());
+    }
+
+    // AO value
+    if (ao.has_value()) {
+        shader->set_uniform_float("Material.ao", ao.value());
+    }
+
+    // Albedo map
+    if (albedo_map.has_value()) {
+        const Texture* albedo_map_texture = albedo_map.value();
+        albedo_map_texture->bind(0);
+        shader->set_uniform_int("Material.albedo_map", 0);
+    }
+
+    // Metallic map
+    if (metallic_map.has_value()) {
+        const Texture* metallic_map_texture = metallic_map.value();
+        metallic_map_texture->bind(1);
+        shader->set_uniform_int("Material.metallic_map", 1);
+    }
+
+    // Roughness map
+    if (roughness_map.has_value()) {
+        const Texture* roughness_map_texture = roughness_map.value();
+        roughness_map_texture->bind(2);
+        shader->set_uniform_int("Material.roughness_map", 2);
+    }
+
+    // AO map
+    if (ao_map.has_value()) {
+        const Texture* ao_map_texture = ao_map.value();
+        ao_map_texture->bind(3);
+        shader->set_uniform_int("Material.ao_map", 3);
+    }
+
+    // Normal map
+    if (normal_map.has_value()) {
+        const Texture* normal_map_texture = normal_map.value();
+        normal_map_texture->bind(4);
+        shader->set_uniform_int("Material.normal_map", 4);
+    }
+
+    return shader;
 }
 
 } // namespace Hydrogen

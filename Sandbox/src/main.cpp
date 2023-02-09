@@ -4,7 +4,8 @@ class Sandbox : public Hydrogen::Application {
   public:
     Sandbox(int width, int height, std::string&& title)
         : Hydrogen::Application(width, height, std::move(title)),
-          m_model("../../Sandbox/assets/models/backpack/backpack.obj", true)
+          // m_model("../../Sandbox/assets/models/backpack/backpack.obj", true)
+          m_model("../../Sandbox/assets/models/john_117/scene.gltf", false)
     {
         bind_event_callback_func(Hydrogen::EventType::MouseMoved, BIND_EVENT_FUNC(on_mouse_moved));
         bind_event_callback_func(Hydrogen::EventType::KeyPressed, BIND_EVENT_FUNC(on_key_pressed));
@@ -40,7 +41,7 @@ class Sandbox : public Hydrogen::Application {
 
         {
             auto light = Hydrogen::Light{
-                .position = {2.0f, 2.0f, 0.0f},
+                .position = {0.0f, 1.0f, 2.0f},
 
                 .constant = 1.0f,
                 .linear = 0.09f,
@@ -67,8 +68,8 @@ class Sandbox : public Hydrogen::Application {
             Hydrogen::Renderer3D::add_light_source(light);
         }
 
-        Hydrogen::Renderer3D::draw_model(m_model, {0.0f, 0.0f, 0.0f}, {1.0f, 1.0f, 1.0f});
-        Hydrogen::Renderer3D::draw_model(m_model, {5.0f, 2.0f, 1.0f}, {0.75f, 0.75f, 0.75f});
+        Hydrogen::Renderer3D::draw_model(m_model, {-1.0f, -2.0f, -4.0f}, {1.0f, 1.0f, 1.0f});
+        // Hydrogen::Renderer3D::draw_model(m_model, {5.0f, 2.0f, 1.0f}, {0.75f, 0.75f, 0.75f});
 
         Hydrogen::Renderer3D::end_scene();
     }
@@ -159,7 +160,7 @@ class Sandbox : public Hydrogen::Application {
 };
 
 int main() {
-    Sandbox sandbox = Sandbox(800, 600, "Sandbox");
+    Sandbox sandbox = Sandbox(1280, 960, "Sandbox");
     sandbox.run();
     return 0;
 }
