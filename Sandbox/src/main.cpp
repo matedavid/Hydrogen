@@ -53,17 +53,19 @@ class Sandbox : public Hydrogen::Application {
             .quadratic = 0.032f,
 
             .ambient = {0.2f, 0.2f, 0.2f},
-            .diffuse = {1.0f, 1.0f, 1.0f},
+            .diffuse = glm::vec3(10.0f),
             .specular = {1.0f, 1.0f, 1.0f}
         };
 
-        for (unsigned int r = 0; r < 2; ++r) {
-            for (unsigned int c = 0; c < 1; ++c) {
-                auto light = Hydrogen::Light(base_light);
-                light.position = glm::vec3((float)c - 2.0f, (float)r - 2.0f, 5.0f);
-
-                Hydrogen::Renderer3D::add_light_source(light);
-            }
+        {
+            auto light = base_light;
+            light.position = {2.0f, 2.0f, 0.0f};
+            Hydrogen::Renderer3D::add_light_source(light);
+        }
+        {
+            auto light = base_light;
+            light.position = {-0.5f, 0.0f, 2.0f};
+            Hydrogen::Renderer3D::add_light_source(light);
         }
 
         Hydrogen::Renderer3D::draw_model(m_model, {-0.40f, -2.0f, -2.0f}, glm::vec3(0.5f));

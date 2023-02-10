@@ -69,7 +69,7 @@ out vec4 ResultColor;
 vec3 CalcPointLight(
     PointLightStruct light, 
     vec3 albedo, float metallic, float roughness, float ao,
-    vec3 N, vec3 V);
+    vec3 N, vec3 V, vec3 F0);
 
 vec3 FresnelSchlick(float cosTheta, vec3 F0);
 float DistributionGGX(vec3 N, vec3 H, float roughness);
@@ -110,8 +110,8 @@ void main() {
 #endif
 
 #if defined(metallic_roughness_texture) && !defined(metallic_roughness_ao_texture)
-    roughness = texture(Material.roughness_map, FragTextureCoords).g;
-    metallic = texture(Material.metallic_map, FragTextureCoords).b;
+    roughness = texture(Material.roughness_map, FragTextureCoords).r;
+    metallic = texture(Material.metallic_map, FragTextureCoords).g;
 #endif
 
 #if !defined(metallic_roughness_texture) && !defined(metallic_roughness_ao_texture)
@@ -134,9 +134,13 @@ void main() {
     ao = Material.ao;
 #endif
 
+    // Reflectance at normal incidence
+    vec3 F0 = vec3(0.04f);
+    F0 = mix(F0, albedo, metallic);
+
     vec3 Lo = vec3(0.0f);
     for (int i = 0; i < NumberPointLights; ++i) {
-        Lo += CalcPointLight(PointLights[i], albedo, metallic, roughness, ao, N, V);
+        Lo += CalcPointLight(PointLights[i], albedo, metallic, roughness, ao, N, V, F0);
     }
 
     vec3 ambient = vec3(0.03f) * albedo * ao;
@@ -152,7 +156,7 @@ void main() {
 vec3 CalcPointLight(
     PointLightStruct light, 
     vec3 albedo, float metallic, float roughness, float ao,
-    vec3 N, vec3 V) 
+    vec3 N, vec3 V, vec3 F0) 
 {
     vec3 L = normalize(light.position - FragPosition);
     vec3 H = normalize(V + L);
@@ -161,8 +165,6 @@ vec3 CalcPointLight(
     float attenuation = 1.0f / (distance * distance);
     vec3 radiance = light.diffuse * attenuation;
 
-    vec3 F0 = vec3(0.04f);
-    F0 = mix(F0, albedo, metallic);
     vec3 F = FresnelSchlick(max(dot(H, V), 0.0f), F0);
 
     float NDF = DistributionGGX(N, H, roughness);
