@@ -128,10 +128,12 @@ void main() {
     #endif
 #endif
 
-#if defined(ao_texture)
-    ao = texture(Material.ao_map, FragTextureCoords).r;
-#elif defined(ao_value)
-    ao = Material.ao;
+#if !defined(metallic_roughness_ao_texture)
+    #if defined(ao_texture)
+        ao = texture(Material.ao_map, FragTextureCoords).r;
+    #elif defined(ao_value) 
+        ao = Material.ao;
+    #endif
 #endif
 
     // Reflectance at normal incidence
@@ -146,8 +148,9 @@ void main() {
     vec3 ambient = vec3(0.03f) * albedo * ao;
     vec3 color = ambient + Lo;
 
-    // HDR tonemapping & gamma correct
+    // HDR tonemapping
     color = color / (color + vec3(1.0));
+    // Gamma correct
     color = pow(color, vec3(1.0/2.2));  
 
     ResultColor = vec4(color, 1.0);
@@ -177,8 +180,7 @@ vec3 CalcPointLight(
 
     vec3 kS = F;
     vec3 kD = vec3(1.0) - kS;
-
-    kD *= 1.0f - metallic;
+    kD *= (1.0f - metallic);
 
     float NdotL = max(dot(N, L), 0.0);
     return (kD * albedo / PI + specular) * radiance * NdotL;

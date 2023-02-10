@@ -24,7 +24,7 @@ void main() {
     gl_Position = ViewProjection * Model * vec4(aPosition, 1.0f);
 
     FragPosition = vec3(Model * vec4(aPosition, 1.0f));
-    FragNormal = mat3(transpose(inverse(Model))) * aNormal;
+    FragNormal = mat3(Model) * aNormal;
     FragTextureCoords = aTextureCoords;
     FragCameraPosition = CameraPosition;
 
