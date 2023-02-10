@@ -29,6 +29,13 @@ class Sandbox : public Hydrogen::Application {
         m_skybox = new Hydrogen::Skybox(skybox_components, "../../Sandbox/assets/Meadow_Skybox/");
         Hydrogen::Renderer3D::set_skybox(m_skybox);
 
+
+        m_material = new Hydrogen::PBRMaterial();
+        m_material->albedo = glm::vec3(1.0f, 0.0f, 0.0f);
+        m_material->metallic = 1.0f;  // Dummy value
+        m_material->roughness = 1.0f; // Dummy value
+        m_material->build();
+
         HG_LOG_INFO("Finished startup...");
     }
 
@@ -39,36 +46,27 @@ class Sandbox : public Hydrogen::Application {
     void on_update([[maybe_unused]] double ts) override {
         Hydrogen::Renderer3D::begin_scene(m_camera);
 
-        {
-            auto light = Hydrogen::Light{
-                .position = {0.0f, 1.0f, 2.0f},
+        auto base_light = Hydrogen::Light{
+            .position = glm::vec3(0.0f, 0.0f, 0.0f),
+            .constant = 1.0f,
+            .linear = 0.09f,
+            .quadratic = 0.032f,
 
-                .constant = 1.0f,
-                .linear = 0.09f,
-                .quadratic = 0.032f,
+            .ambient = {0.2f, 0.2f, 0.2f},
+            .diffuse = {1.0f, 1.0f, 1.0f},
+            .specular = {1.0f, 1.0f, 1.0f}
+        };
 
-                .ambient = {0.2f, 0.2f, 0.2f},
-                .diffuse = {1.0f, 1.0f, 1.0f},
-                .specular = {1.0f, 1.0f, 1.0f}
-            };
-            Hydrogen::Renderer3D::add_light_source(light);
-        }
-        {
-            auto light = Hydrogen::Light{
-                .position = {-2.0f, -1.0f, -2.0f},
+        for (unsigned int r = 0; r < 2; ++r) {
+            for (unsigned int c = 0; c < 1; ++c) {
+                auto light = Hydrogen::Light(base_light);
+                light.position = glm::vec3((float)c - 2.0f, (float)r - 2.0f, 5.0f);
 
-                .constant = 1.0f,
-                .linear = 0.09f,
-                .quadratic = 0.032f,
-
-                .ambient = {0.2f, 0.2f, 0.2f},
-                .diffuse = {1.0f, 1.0f, 1.0f},
-                .specular = {1.0f, 1.0f, 1.0f}
-            };
-            Hydrogen::Renderer3D::add_light_source(light);
+                Hydrogen::Renderer3D::add_light_source(light);
+            }
         }
 
-        Hydrogen::Renderer3D::draw_model(m_model, {-1.0f, -2.0f, -4.0f}, {1.0f, 1.0f, 1.0f});
+        Hydrogen::Renderer3D::draw_model(m_model, {-0.40f, -2.0f, -2.0f}, glm::vec3(0.5f));
         // Hydrogen::Renderer3D::draw_model(m_model, {5.0f, 2.0f, 1.0f}, {0.75f, 0.75f, 0.75f});
 
         Hydrogen::Renderer3D::end_scene();
@@ -107,23 +105,19 @@ class Sandbox : public Hydrogen::Application {
 
         if (key_pressed.get_key() == Hydrogen::Key::W) {
             m_camera_position += glm::vec3({0.0f, 0.0f, -1.0f});
-            m_camera.set_position(m_camera_position);
         } else if (key_pressed.get_key() == Hydrogen::Key::S) {
             m_camera_position += glm::vec3({0.0f, 0.0f, 1.0f});
-            m_camera.set_position(m_camera_position);
         } else if (key_pressed.get_key() == Hydrogen::Key::A) {
             m_camera_position += glm::vec3({-1.0f, 0.0f, 0.0f});
-            m_camera.set_position(m_camera_position);
         } else if (key_pressed.get_key() == Hydrogen::Key::D) {
             m_camera_position += glm::vec3({1.0f, 0.0f, 0.0f});
-            m_camera.set_position(m_camera_position);
         } else if (key_pressed.get_key() == Hydrogen::Key::Q) {
-            m_camera_position += glm::vec3({0.0f, -1.0f, 0.0f});
-            m_camera.set_position(m_camera_position);
+            m_camera_position += glm::vec3({0.0f, -0.5f, 0.0f});
         } else if (key_pressed.get_key() == Hydrogen::Key::E) {
-            m_camera_position += glm::vec3({0.0f, 1.0f, 0.0f});
-            m_camera.set_position(m_camera_position);
+            m_camera_position += glm::vec3({0.0f, 0.5f, 0.0f});
         }
+
+        m_camera.set_position(m_camera_position);
     }
 
     void on_mouse_scrolled(Hydrogen::Event& event) {
@@ -157,6 +151,7 @@ class Sandbox : public Hydrogen::Application {
 
     Hydrogen::Model m_model;
     Hydrogen::Skybox* m_skybox;
+    Hydrogen::PBRMaterial* m_material;
 };
 
 int main() {

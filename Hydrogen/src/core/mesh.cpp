@@ -56,12 +56,19 @@ Mesh::Mesh(const aiMesh* mesh, const aiScene* scene, const std::string& director
 
     const aiMaterial* mat = scene->mMaterials[mesh->mMaterialIndex];
 
-    // TODO: Make selection dynamic, at the moment do not know how to recognize type of material from assimp
+    int shading_model;
+    if (mat->Get(AI_MATKEY_SHADING_MODEL, shading_model) != aiReturn_SUCCESS) {
+        HG_LOG_WARN("Could not determine shading model for mesh, defaulting to PBR");
+        shading_model = aiShadingMode_PBR_BRDF;
+    }
 
-    // material = load_phong_material(mat, directory);
-    material = load_pbr_material(mat, directory);
+    if (shading_model == aiShadingMode_PBR_BRDF) {
+        material = load_pbr_material(mat, directory);
+    } else {
+        material = load_phong_material(mat, directory);
+    }
+
     material->build();
-
     setup_mesh();
 }
 
@@ -196,7 +203,7 @@ IMaterial* Mesh::load_pbr_material(const aiMaterial* mat, const std::string& dir
 
     // Normal texture
     aiString normal_path;
-    if (mat->GetTexture(aiTextureType_HEIGHT, 0, &normal_path) == aiReturn_SUCCESS) {
+    if (mat->GetTexture(aiTextureType_NORMALS, 0, &normal_path) == aiReturn_SUCCESS) {
         const std::string path = directory + std::string(normal_path.C_Str());
         pbr_material->normal_map = TextureSystem::instance->acquire(path);
     }
