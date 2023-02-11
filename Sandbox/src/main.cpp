@@ -18,23 +18,25 @@ class Sandbox : public Hydrogen::Application {
         m_camera = Hydrogen::PerspectiveCamera(glm::radians(60.0f), ratio, 0.1f, 100.0f);
         m_camera.set_position(m_camera_position);
 
+//        auto skybox_components = Hydrogen::Skybox::Components{
+//            .right = "posx.jpg",
+//            .left = "negx.jpg",
+//            .top = "posy.jpg",
+//            .bottom = "negy.jpg",
+//            .front = "posz.jpg",
+//            .back = "negz.jpg",
+//        };
+//        m_skybox = new Hydrogen::Skybox(skybox_components, "../../Sandbox/assets/Meadow_Skybox/");
         auto skybox_components = Hydrogen::Skybox::Components{
-            .right = "posx.jpg",
-            .left = "negx.jpg",
-            .top = "posy.jpg",
-            .bottom = "negy.jpg",
-            .front = "posz.jpg",
-            .back = "negz.jpg",
+            .right = "px.png",
+            .left = "nx.png",
+            .top = "py.png",
+            .bottom = "ny.png",
+            .front = "pz.png",
+            .back = "nz.png",
         };
-        m_skybox = new Hydrogen::Skybox(skybox_components, "../../Sandbox/assets/Meadow_Skybox/");
+        m_skybox = new Hydrogen::Skybox(skybox_components, "../../Sandbox/assets/Standard-Cube-Map/");
         Hydrogen::Renderer3D::set_skybox(m_skybox);
-
-
-        m_material = new Hydrogen::PBRMaterial();
-        m_material->albedo = glm::vec3(1.0f, 0.0f, 0.0f);
-        m_material->metallic = 1.0f;  // Dummy value
-        m_material->roughness = 1.0f; // Dummy value
-        m_material->build();
 
         HG_LOG_INFO("Finished startup...");
     }
@@ -53,7 +55,7 @@ class Sandbox : public Hydrogen::Application {
             .quadratic = 0.032f,
 
             .ambient = {0.2f, 0.2f, 0.2f},
-            .diffuse = glm::vec3(10.0f),
+            .diffuse = glm::vec3(1.0f),
             .specular = {1.0f, 1.0f, 1.0f}
         };
 
@@ -64,7 +66,7 @@ class Sandbox : public Hydrogen::Application {
         }
         {
             auto light = base_light;
-            light.position = {-0.5f, 0.0f, 2.0f};
+            light.position = {-2.0f, 0.0f, 2.0f};
             Hydrogen::Renderer3D::add_light_source(light);
         }
 
@@ -153,7 +155,6 @@ class Sandbox : public Hydrogen::Application {
 
     Hydrogen::Model m_model;
     Hydrogen::Skybox* m_skybox;
-    Hydrogen::PBRMaterial* m_material;
 };
 
 int main() {

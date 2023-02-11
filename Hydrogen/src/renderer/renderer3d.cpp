@@ -129,6 +129,10 @@ void Renderer3D::draw_model(const Model& model, const glm::vec3& pos, const glm:
             shader->set_uniform_vec3(header + ".specular", light.specular);
         }
 
+        if (m_context->skybox != nullptr) {
+            m_context->skybox->bind_to_shader(shader, 10);
+        }
+
         RendererAPI::send(VAO, shader);
     }
 }

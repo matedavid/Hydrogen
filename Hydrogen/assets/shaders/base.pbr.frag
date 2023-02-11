@@ -62,6 +62,9 @@ struct PointLightStruct {
 uniform int NumberPointLights;
 uniform PointLightStruct[MAX_NUMBER_POINT_LIGHTS] PointLights;
 
+// Skybox
+uniform samplerCube Skybox;
+
 // Fragment Output
 out vec4 ResultColor;
 
@@ -78,6 +81,10 @@ float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness);
 
 // Constants
 const float PI = 3.14159265359;
+
+vec3 FresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness) {
+    return F0 + (max(vec3(1.0 - roughness), F0) - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
+}  
 
 void main() {
 #if defined(normal_texture)
@@ -145,7 +152,13 @@ void main() {
         Lo += CalcPointLight(PointLights[i], albedo, metallic, roughness, ao, N, V, F0);
     }
 
-    vec3 ambient = vec3(0.03f) * albedo * ao;
+    // vec3 ambient = vec3(0.03f) * albedo * ao;
+    vec3 kS = FresnelSchlickRoughness(max(dot(N, V), 0.0), F0, roughness); 
+    vec3 kD = 1.0 - kS;
+    vec3 irradiance = texture(Skybox, N).rgb;
+    vec3 diffuse    = irradiance * albedo;
+    vec3 ambient    = (kD * diffuse) * ao; 
+
     vec3 color = ambient + Lo;
 
     // HDR tonemapping
