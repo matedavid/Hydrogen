@@ -70,7 +70,7 @@ out vec4 ResultColor;
 
 // Forward declare functions
 vec3 CalcPointLight(
-    PointLightStruct light, 
+    PointLightStruct light,
     vec3 albedo, float metallic, float roughness, float ao,
     vec3 N, vec3 V, vec3 F0);
 
@@ -84,23 +84,13 @@ const float PI = 3.14159265359;
 
 vec3 FresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness) {
     return F0 + (max(vec3(1.0 - roughness), F0) - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
-}  
+}
 
-void main() {
-#if defined(normal_texture)
-    vec3 N = texture(Material.normal_map, FragTextureCoords).rgb;
-    N = N * 2.0f - 1.0f; // convert from [0,1] to [-1,1]
-    N = normalize(FragTBN * N);
-#else
-    vec3 N = normalize(FragNormal);
-#endif
-
-    vec3 V = normalize(FragCameraPosition - FragPosition);
-
+void main() { 
     vec3 albedo;
-    float metallic = 0.0f;
-    float roughness = 0.0f;
-    float ao = 0.0f;
+    float metallic;
+    float roughness;
+    float ao;
 
 #if defined(albedo_texture)
     albedo = pow(texture(Material.albedo_map, FragTextureCoords).rgb, vec3(2.2));
@@ -138,26 +128,38 @@ void main() {
 #if !defined(metallic_roughness_ao_texture)
     #if defined(ao_texture)
         ao = texture(Material.ao_map, FragTextureCoords).r;
-    #elif defined(ao_value) 
+    #elif defined(ao_value)
         ao = Material.ao;
     #endif
 #endif
 
+#if defined(normal_texture)
+    vec3 N = texture(Material.normal_map, FragTextureCoords).rgb;
+    N = N * 2.0 - 1.0; // convert from [0,1] to [-1,1]
+    N = normalize(FragTBN * N);
+#else
+    vec3 N = normalize(FragNormal);
+#endif
+
+    vec3 V = normalize(FragCameraPosition - FragPosition);
+
     // Reflectance at normal incidence
-    vec3 F0 = vec3(0.04f);
+    vec3 F0 = vec3(0.04);
     F0 = mix(F0, albedo, metallic);
 
-    vec3 Lo = vec3(0.0f);
+    vec3 Lo = vec3(0.0);
     for (int i = 0; i < NumberPointLights; ++i) {
         Lo += CalcPointLight(PointLights[i], albedo, metallic, roughness, ao, N, V, F0);
     }
 
-    // vec3 ambient = vec3(0.03f) * albedo * ao;
-    vec3 kS = FresnelSchlickRoughness(max(dot(N, V), 0.0), F0, roughness); 
-    vec3 kD = 1.0 - kS;
-    vec3 irradiance = texture(Skybox, N).rgb;
-    vec3 diffuse    = irradiance * albedo;
-    vec3 ambient    = (kD * diffuse) * ao; 
+    vec3 ambient = vec3(0.03f) * albedo * ao;
+
+    // When diffuse irradiance lighting implemented
+    // vec3 kS = FresnelSchlickRoughness(max(dot(N, V), 0.0), F0, roughness);
+    // vec3 kD = (1.0 - kS) * (1.0 - metallic);
+    // vec3 irradiance = texture(Skybox, N).rgb;
+    // vec3 diffuse    = irradiance * albedo;
+    // vec3 ambient    = (kD * diffuse) * ao; 
 
     vec3 color = ambient + Lo;
 
@@ -178,22 +180,21 @@ vec3 CalcPointLight(
     vec3 H = normalize(V + L);
 
     float distance = length(light.position - FragPosition);
-    float attenuation = 1.0f / (distance * distance);
+    float attenuation = 1.0 / (distance * distance);
     vec3 radiance = light.diffuse * attenuation;
 
-    vec3 F = FresnelSchlick(max(dot(H, V), 0.0f), F0);
+    vec3 F = FresnelSchlick(max(dot(H, V), 0.0), F0);
 
     float NDF = DistributionGGX(N, H, roughness);
     float G = GeometrySmith(N, V, L, roughness);
 
     vec3 numerator = NDF * G * F;
-    float denominator = 4.0f * max(dot(N, V), 0.0f) * max(dot(N, L), 0.0f) +
-                        0.0001f; // + 0.0001f to prevent divide by 0
+    float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) +
+                        0.0001; // + 0.0001f to prevent divide by 0
     vec3 specular = numerator / denominator;
 
     vec3 kS = F;
-    vec3 kD = vec3(1.0) - kS;
-    kD *= (1.0f - metallic);
+    vec3 kD = (vec3(1.0) - kS) * (1.0 - metallic);
 
     float NdotL = max(dot(N, L), 0.0);
     return (kD * albedo / PI + specular) * radiance * NdotL;
