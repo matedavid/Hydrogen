@@ -48,6 +48,7 @@ class HG_API Renderer3D {
     static void draw_cube(const glm::vec3& pos, const glm::vec3& dim, const Texture* texture);
     static void draw_cube(const glm::vec3& pos, const glm::vec3& dim, const glm::vec3& color);
     static void draw_cube(const glm::vec3& pos, const glm::vec3& dim, const IMaterial& material);
+    static void draw_sphere(const glm::vec3& pos, const glm::vec3& dim, const IMaterial& material);
 
     // Model
     static void draw_model(const Model& model, const glm::vec3& pos, const glm::vec3& dim);
@@ -55,6 +56,7 @@ class HG_API Renderer3D {
   private:
     struct RendererResources {
         VertexArray* quad;
+        VertexArray* sphere;
 
         Shader* flat_color_shader;
         Texture* white_texture;
@@ -69,6 +71,7 @@ class HG_API Renderer3D {
     inline static RenderingContext* m_context;
 
     static VertexArray* create_quad();
+    static VertexArray* create_sphere();
 };
 
 } // namespace Hydrogen

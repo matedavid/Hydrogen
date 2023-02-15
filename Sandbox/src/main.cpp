@@ -3,9 +3,9 @@
 class Sandbox : public Hydrogen::Application {
   public:
     Sandbox(int width, int height, std::string&& title)
-        : Hydrogen::Application(width, height, std::move(title)),
+        : Hydrogen::Application(width, height, std::move(title))
           // m_model("../../Sandbox/assets/models/backpack/backpack.obj", true)
-          m_model("../../Sandbox/assets/models/john_117/scene.gltf", false)
+          // m_model("../../Sandbox/assets/models/john_117/scene.gltf", false)
     {
         bind_event_callback_func(Hydrogen::EventType::MouseMoved, BIND_EVENT_FUNC(on_mouse_moved));
         bind_event_callback_func(Hydrogen::EventType::KeyPressed, BIND_EVENT_FUNC(on_key_pressed));
@@ -27,51 +27,77 @@ class Sandbox : public Hydrogen::Application {
 //            .back = "negz.jpg",
 //        };
 //        m_skybox = new Hydrogen::Skybox(skybox_components, "../../Sandbox/assets/Meadow_Skybox/");
-        auto skybox_components = Hydrogen::Skybox::Components{
-            .right = "px.png",
-            .left = "nx.png",
-            .top = "py.png",
-            .bottom = "ny.png",
-            .front = "pz.png",
-            .back = "nz.png",
+//        Hydrogen::Renderer3D::set_skybox(m_skybox);
+
+        m_material.albedo = glm::vec3(0.5f, 0.0f, 0.0f);
+        m_material.roughness = 0.1f; // Dummy value
+        m_material.metallic = 0.1f;  // Dummy value
+        m_material.ao = 1.0f;
+        m_material.build();
+
+        light_positions = {
+            glm::vec3(-10.0f,  10.0f, 10.0f),
+            glm::vec3( 10.0f,  10.0f, 10.0f),
+            glm::vec3(-10.0f, -10.0f, 10.0f),
+            glm::vec3( 10.0f, -10.0f, 10.0f)
         };
-        m_skybox = new Hydrogen::Skybox(skybox_components, "../../Sandbox/assets/Standard-Cube-Map/");
-        Hydrogen::Renderer3D::set_skybox(m_skybox);
+
+        light_colors = {
+            glm::vec3(300.0f, 300.0f, 300.0f),
+            glm::vec3(300.0f, 300.0f, 300.0f),
+            glm::vec3(300.0f, 300.0f, 300.0f),
+            glm::vec3(300.0f, 300.0f, 300.0f)
+        };
 
         HG_LOG_INFO("Finished startup...");
     }
 
     ~Sandbox() {
-        delete m_skybox;
+        if (m_skybox != nullptr) {
+            delete m_skybox;
+        }
     }
+
+    const unsigned int number_rows = 7;
+    const unsigned int number_cols = 7;
+    const float spacing = 2.5f;
+
+    const Hydrogen::Light base_light = Hydrogen::Light{
+        .position = glm::vec3(0.0f, 0.0f, 0.0f),
+        .constant = 1.0f,
+        .linear = 0.09f,
+        .quadratic = 0.032f,
+
+        .ambient = {0.2f, 0.2f, 0.2f},
+        .diffuse = glm::vec3(1.0f),
+        .specular = {1.0f, 1.0f, 1.0f}
+    };
 
     void on_update([[maybe_unused]] double ts) override {
         Hydrogen::Renderer3D::begin_scene(m_camera);
 
-        auto base_light = Hydrogen::Light{
-            .position = glm::vec3(0.0f, 0.0f, 0.0f),
-            .constant = 1.0f,
-            .linear = 0.09f,
-            .quadratic = 0.032f,
-
-            .ambient = {0.2f, 0.2f, 0.2f},
-            .diffuse = glm::vec3(1.0f),
-            .specular = {1.0f, 1.0f, 1.0f}
-        };
-
-        {
+        for (unsigned int i = 0; i < light_positions.size(); ++i) {
             auto light = base_light;
-            light.position = {2.0f, 2.0f, 0.0f};
-            Hydrogen::Renderer3D::add_light_source(light);
-        }
-        {
-            auto light = base_light;
-            light.position = {-2.0f, 0.0f, 2.0f};
+            light.position = light_positions[i];
+            light.diffuse = light_colors[i];
+
             Hydrogen::Renderer3D::add_light_source(light);
         }
 
-        Hydrogen::Renderer3D::draw_model(m_model, {-0.40f, -2.0f, -2.0f}, glm::vec3(0.5f));
-        // Hydrogen::Renderer3D::draw_model(m_model, {5.0f, 2.0f, 1.0f}, {0.75f, 0.75f, 0.75f});
+        for (unsigned int row = 0; row < number_rows; ++row) {
+            m_material.metallic = (float)row / float(number_rows);
+            for (unsigned int col = 0; col < number_cols; ++col) {
+                m_material.roughness = glm::clamp(float(col) / float(number_cols), 0.05f, 1.0f);
+
+                glm::vec3 position = {
+                    (float)(col - (number_cols / 2)) * spacing,
+                    (float)(row - (number_rows / 2)) * spacing,
+                    0.0f
+                };
+
+                Hydrogen::Renderer3D::draw_sphere(position, glm::vec3(1.0f), m_material);
+            }
+        }
 
         Hydrogen::Renderer3D::end_scene();
     }
@@ -153,8 +179,13 @@ class Sandbox : public Hydrogen::Application {
     glm::vec2 m_mouse_position{};
     glm::vec3 m_camera_position;
 
-    Hydrogen::Model m_model;
-    Hydrogen::Skybox* m_skybox;
+    // Hydrogen::Model m_model;
+    Hydrogen::Skybox* m_skybox = nullptr;
+
+    Hydrogen::PBRMaterial m_material;
+
+    std::vector<glm::vec3> light_positions;
+    std::vector<glm::vec3> light_colors;
 };
 
 int main() {
