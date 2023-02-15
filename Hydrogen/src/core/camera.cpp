@@ -10,8 +10,8 @@ void Camera::set_position(const glm::vec3& pos) {
 }
 
 glm::vec3 Camera::get_position() const {
-    glm::vec3 position = glm::vec3(m_view * glm::vec4(m_position, 1.0f));
-    return position;
+    const auto inverse = glm::inverse(m_view);
+    return glm::vec3(inverse[3]);
 }
 
 void Camera::rotate(const glm::vec2& rotation) {
