@@ -17,8 +17,8 @@ class HG_API Skybox {
         std::string back;
     };
 
-    Skybox(Components components);
-    Skybox(Components components, const std::string& directory);
+    Skybox(const Components& components);
+    Skybox(const Components& components, const std::string& directory);
     ~Skybox();
 
     Shader* bind(u32 slot = 0) const;
@@ -38,6 +38,7 @@ class HG_API Skybox {
         Back = 5
     };
 
+    void init(const std::array<std::string, 6>& faces);
     void load_face(const std::string& path, SkyboxFace face);
 };
 
