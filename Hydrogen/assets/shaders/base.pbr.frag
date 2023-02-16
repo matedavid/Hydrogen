@@ -108,6 +108,10 @@ float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness) {
     return ggx1 * ggx2;
 }
 
+vec3 FresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness) {
+    return F0 + (max(vec3(1.0 - roughness), F0) - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
+} 
+
 void main() { 
     // ============================
     // Define Material properties
@@ -118,7 +122,7 @@ void main() {
     float ao;
 
 #if defined(albedo_texture)
-    albedo = texture(Material.albedo_map, FragTextureCoords).rgb;
+    albedo = pow(texture(Material.albedo_map, FragTextureCoords).rgb, vec3(2.2));
 #elif defined(albedo_color)
     albedo = Material.albedo;
 #else
@@ -204,7 +208,15 @@ void main() {
         Lo += (kD * albedo / PI + specular) * radiance * NdotL;
     }
 
-    vec3 ambient = vec3(0.03) * albedo * ao;
+    // Ambient color
+
+    // vec3 ambient = vec3(0.03) * albedo * ao;
+    vec3 kS = FresnelSchlickRoughness(max(dot(N, V), 0.0), F0, roughness); 
+    vec3 kD = 1.0 - kS;
+    vec3 irradiance = texture(Skybox, N).rgb;
+    vec3 diffuse    = irradiance * albedo;
+    vec3 ambient    = (kD * diffuse) * ao; 
+
     vec3 color = ambient + Lo;
 
     // HDR tonemapping

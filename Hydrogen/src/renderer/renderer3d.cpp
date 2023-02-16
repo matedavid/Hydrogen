@@ -123,6 +123,11 @@ void Renderer3D::draw_sphere(const glm::vec3& pos, const glm::vec3& dim, const I
         shader->set_uniform_vec3(header + ".diffuse", light.diffuse);
     }
 
+    // Add skybox
+    if (m_context->skybox != nullptr) {
+        m_context->skybox->bind_to_shader(shader, 10);
+    }
+
     m_resources->sphere->bind();
     glDrawElements(GL_TRIANGLE_STRIP, m_resources->sphere->get_count(), GL_UNSIGNED_INT, 0);
 }
@@ -157,6 +162,7 @@ void Renderer3D::draw_model(const Model& model, const glm::vec3& pos, const glm:
             shader->set_uniform_vec3(header + ".specular", light.specular);
         }
 
+        // Add skybox
         if (m_context->skybox != nullptr) {
             m_context->skybox->bind_to_shader(shader, 10);
         }
