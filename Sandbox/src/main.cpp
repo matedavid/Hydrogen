@@ -18,26 +18,18 @@ class Sandbox : public Hydrogen::Application {
         m_camera = Hydrogen::PerspectiveCamera(glm::radians(60.0f), ratio, 0.1f, 100.0f);
         m_camera.set_position(m_camera_position);
 
-        auto skybox_components = Hydrogen::Skybox::Components{
-            .right = "posx.jpg",
-            .left = "negx.jpg",
-            .top = "posy.jpg",
-            .bottom = "negy.jpg",
-            .front = "posz.jpg",
-            .back = "negz.jpg",
-        };
-        m_skybox = new Hydrogen::Skybox(skybox_components, "../../Sandbox/assets/Meadow_Skybox/");
-        Hydrogen::Renderer3D::set_skybox(m_skybox);
-
 //        auto skybox_components = Hydrogen::Skybox::Components{
-//            .right = "px.png",
-//            .left = "nx.png",
-//            .top = "py.png",
-//            .bottom = "ny.png",
-//            .front = "pz.png",
-//            .back = "nz.png"
+//            .right = "posx.jpg",
+//            .left = "negx.jpg",
+//            .top = "posy.jpg",
+//            .bottom = "negy.jpg",
+//            .front = "posz.jpg",
+//            .back = "negz.jpg",
 //        };
-//        m_skybox = new Hydrogen::Skybox(skybox_components, "../../Sandbox/assets/Standard-Cube-Map/");
+//        m_skybox = new Hydrogen::Skybox(skybox_components, "../../Sandbox/assets/Meadow_Skybox/");
+//        Hydrogen::Renderer3D::set_skybox(m_skybox);
+
+        m_skybox = new Hydrogen::Skybox("../../Sandbox/assets/clarens_night_02_4k.hdr");
 
         Hydrogen::Renderer3D::set_skybox(m_skybox);
 

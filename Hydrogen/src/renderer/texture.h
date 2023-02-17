@@ -9,6 +9,7 @@ namespace Hydrogen {
 class HG_API Texture {
   public:
     Texture(const unsigned char* data, i32 width, i32 height);
+    Texture(const f32* data, i32 width, i32 height);
     Texture(const std::string& path);
     ~Texture();
 

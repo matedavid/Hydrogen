@@ -19,6 +19,7 @@ class HG_API Skybox {
 
     Skybox(const Components& components);
     Skybox(const Components& components, const std::string& directory);
+    Skybox(const std::string& image_path);
     ~Skybox();
 
     Shader* bind(u32 slot = 0) const;
