@@ -62,8 +62,8 @@ struct PointLightStruct {
 uniform int NumberPointLights;
 uniform PointLightStruct[MAX_NUMBER_POINT_LIGHTS] PointLights;
 
-// Skybox
-uniform samplerCube Skybox;
+// Skybox (Irradiance Map)
+uniform samplerCube IrradianceMap;
 
 // Fragment Output
 out vec4 ResultColor;
@@ -213,7 +213,7 @@ void main() {
     // vec3 ambient = vec3(0.03) * albedo * ao;
     vec3 kS = FresnelSchlickRoughness(max(dot(N, V), 0.0), F0, roughness); 
     vec3 kD = 1.0 - kS;
-    vec3 irradiance = texture(Skybox, N).rgb;
+    vec3 irradiance = texture(IrradianceMap, N).rgb;
     vec3 diffuse    = irradiance * albedo;
     vec3 ambient    = (kD * diffuse) * ao; 
 

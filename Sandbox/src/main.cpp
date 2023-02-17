@@ -27,9 +27,8 @@ class Sandbox : public Hydrogen::Application {
 //            .back = "negz.jpg",
 //        };
 //        m_skybox = new Hydrogen::Skybox(skybox_components, "../../Sandbox/assets/Meadow_Skybox/");
-//        Hydrogen::Renderer3D::set_skybox(m_skybox);
 
-        m_skybox = new Hydrogen::Skybox("../../Sandbox/assets/clarens_night_02_4k.hdr");
+        m_skybox = new Hydrogen::Skybox("../../Sandbox/assets/newport_loft.hdr");
 
         Hydrogen::Renderer3D::set_skybox(m_skybox);
 
