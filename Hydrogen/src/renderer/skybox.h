@@ -27,12 +27,15 @@ class HG_API Skybox {
     void unbind() const;
 
   private:
-    u32 ID, IrradianceID;
+    u32 ID;
+    u32 IrradianceID, PrefilterID, BrdfID;
+
     ShaderId m_shader_id;
     bool m_is_hdr;
 
     void init(const std::array<std::string, 6>& faces);
-    void create_irradiance_map();
+    void create_diffuse_irradiance_map();
+    void create_specular_radiance_map();
 };
 
 } // namespace Hydrogen
