@@ -12,21 +12,6 @@
 
 namespace Hydrogen {
 
-// const std::string SKYBOX_VERTEX_PATH = "base.skybox.vert";
-const std::string SKYBOX_VERTEX_PATH = "../../Hydrogen/assets/shaders/base.skybox.vert";
-// const std::string SKYBOX_FRAGMENT_PATH = "base.skybox.frag";
-const std::string SKYBOX_FRAGMENT_PATH = "../../Hydrogen/assets/shaders/base.skybox.frag";
-
-// const std::string EQUIRECTANGULAR_VERTEX_PATH = "base.equirectangular.vert";
-const std::string EQUIRECTANGULAR_VERTEX_PATH = "../../Hydrogen/assets/shaders/base.equirectangular.vert";
-// const std::string EQUIRECTANGULAR_FRAGMENT_PATH = "base.equirectangular.frag";
-const std::string EQUIRECTANGULAR_FRAGMENT_PATH = "../../Hydrogen/assets/shaders/base.equirectangular.frag";
-
-// const std::string CONVOLUTION_VERTEX_PATH = "base.equirectangular.vert";
-const std::string CONVOLUTION_VERTEX_PATH = "../../Hydrogen/assets/shaders/base.equirectangular.vert";
-// const std::string CONVOLUTION_FRAGMENT_PATH = "base.convolution.frag";
-const std::string CONVOLUTION_FRAGMENT_PATH = "../../Hydrogen/assets/shaders/base.convolution.frag";
-
 Skybox::Skybox(const Components& components) {
     const auto faces = std::array<std::string, 6>({
         components.right,
@@ -109,8 +94,9 @@ Skybox::Skybox(const std::string& image_path) {
     };
 
     // Create conversion shader
-    auto equirectangular_cubemap_shader =
-        Shader::from_file(EQUIRECTANGULAR_VERTEX_PATH, EQUIRECTANGULAR_FRAGMENT_PATH);
+    usize equirectangular_cubemap_id =
+        ShaderSystem::instance->acquire_base("base.equirectangular.vert", "base.equirectangular.frag");
+    auto* equirectangular_cubemap_shader = ShaderSystem::instance->get(equirectangular_cubemap_id);
 
     // convert equirectangular environment map to cubemap
     equirectangular_cubemap_shader->set_uniform_int("EquirectangularMap", 0);
@@ -137,7 +123,7 @@ Skybox::Skybox(const std::string& image_path) {
     // Release framebuffers and other stuff
     glDeleteFramebuffers(1, &capture_fbo);
     glDeleteRenderbuffers(1, &capture_rbo);
-    delete equirectangular_cubemap_shader;
+    ShaderSystem::instance->release(equirectangular_cubemap_id);;
 
     // configure the viewport to the original framebuffer's screen dimensions
     i32 original_width = Application::get()->get_window()->get_width();
@@ -145,8 +131,7 @@ Skybox::Skybox(const std::string& image_path) {
     glViewport(0, 0, original_width, original_height);
 
     // Get Skybox shader
-    m_shader_id =
-        ShaderSystem::instance->acquire_from_file(SKYBOX_VERTEX_PATH, SKYBOX_FRAGMENT_PATH);
+    m_shader_id = ShaderSystem::instance->acquire_base("base.skybox.vert", "base.skybox.frag");
 
     create_diffuse_irradiance_map();
     create_specular_radiance_map();
@@ -189,8 +174,7 @@ void Skybox::init(const std::array<std::string, 6>& faces) {
     unbind();
 
     // Get Skybox shader
-    m_shader_id =
-        ShaderSystem::instance->acquire_from_file(SKYBOX_VERTEX_PATH, SKYBOX_FRAGMENT_PATH);
+    m_shader_id = ShaderSystem::instance->acquire_base("base.skybox.vert", "base.skybox.frag");
 
     create_diffuse_irradiance_map();
     create_specular_radiance_map();
@@ -268,7 +252,9 @@ void Skybox::create_diffuse_irradiance_map() {
         glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f,  0.0f, -1.0f), glm::vec3(0.0f, -1.0f,  0.0f))
     };
 
-    auto* convolution_shader = Shader::from_file(CONVOLUTION_VERTEX_PATH, CONVOLUTION_FRAGMENT_PATH);
+    usize convolution_shader_id =
+        ShaderSystem::instance->acquire_base("base.equirectangular.vert", "base.convolution.frag");
+    auto* convolution_shader = ShaderSystem::instance->get(convolution_shader_id);
 
     convolution_shader->set_uniform_int("Skybox", 0);
     convolution_shader->set_uniform_mat4("Projection", capture_projection);
@@ -293,7 +279,7 @@ void Skybox::create_diffuse_irradiance_map() {
     // Release framebuffers and other stuff
     glDeleteFramebuffers(1, &capture_fbo);
     glDeleteRenderbuffers(1, &capture_rbo);
-    delete convolution_shader;
+    ShaderSystem::instance->release(convolution_shader_id);
     glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 
     // configure the viewport to the original framebuffer's screen dimensions
@@ -342,7 +328,15 @@ void Skybox::create_specular_radiance_map() {
         glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f,  0.0f, -1.0f), glm::vec3(0.0f, -1.0f,  0.0f))
     };
 
-    auto* prefilter_shader = Shader::from_file(CONVOLUTION_VERTEX_PATH, "../../Hydrogen/assets/shaders/base.prefilter.frag");
+    // Get shaders
+    usize prefilter_shader_id
+        = ShaderSystem::instance->acquire_base("base.equirectangular.vert", "base.prefilter.frag");
+    usize brdf_shader_id =
+        ShaderSystem::instance->acquire_base("base.brdf.vert", "base.brdf.frag");
+
+    auto* prefilter_shader = ShaderSystem::instance->get(prefilter_shader_id);
+    auto* brdf_shader = ShaderSystem::instance->get(brdf_shader_id);
+
     prefilter_shader->set_uniform_int("EnvironmentMap", 0);
     prefilter_shader->set_uniform_mat4("Projection", capture_projection);
     glActiveTexture(GL_TEXTURE0);
@@ -386,8 +380,6 @@ void Skybox::create_specular_radiance_map() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    auto brdf_shader = Shader::from_file("../../Hydrogen/assets/shaders/base.brdf.vert", "../../Hydrogen/assets/shaders/base.brdf.frag");
-
     glBindFramebuffer(GL_FRAMEBUFFER, capture_fbo);
     glBindRenderbuffer(GL_RENDERBUFFER, capture_rbo);
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 512, 512);
@@ -403,15 +395,14 @@ void Skybox::create_specular_radiance_map() {
     // Release framebuffers and other stuff
     glDeleteFramebuffers(1, &capture_fbo);
     glDeleteRenderbuffers(1, &capture_rbo);
-    delete prefilter_shader;
-    delete brdf_shader;
+    ShaderSystem::instance->release(prefilter_shader_id);
+    ShaderSystem::instance->release(brdf_shader_id);
 
     // configure the viewport to the original framebuffer's screen dimensions
     i32 original_width = Application::get()->get_window()->get_width();
     i32 original_height = Application::get()->get_window()->get_height();
     glViewport(0, 0, original_width, original_height);
 }
-
 
 // renderQuad() renders a 1x1 XY quad in NDC
 // -----------------------------------------
