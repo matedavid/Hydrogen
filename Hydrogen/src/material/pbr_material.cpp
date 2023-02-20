@@ -66,36 +66,31 @@ Shader* PBRMaterial::bind() const {
     // Albedo map
     if (albedo_map.has_value()) {
         const Texture* albedo_map_texture = albedo_map.value();
-        albedo_map_texture->bind(0);
-        shader->set_uniform_int("Material.albedo_map", 0);
+        albedo_map_texture->bind("Material.albedo_map", shader, 0);
     }
 
     // Metallic map
     if (metallic_map.has_value()) {
         const Texture* metallic_map_texture = metallic_map.value();
-        metallic_map_texture->bind(1);
-        shader->set_uniform_int("Material.metallic_map", 1);
+        metallic_map_texture->bind("Material.metallic_map", shader, 1);
     }
 
     // Roughness map
     if (roughness_map.has_value()) {
         const Texture* roughness_map_texture = roughness_map.value();
-        roughness_map_texture->bind(2);
-        shader->set_uniform_int("Material.roughness_map", 2);
+        roughness_map_texture->bind("Material.roughness_map", shader, 2);
     }
 
     // AO map
     if (ao_map.has_value()) {
         const Texture* ao_map_texture = ao_map.value();
-        ao_map_texture->bind(3);
-        shader->set_uniform_int("Material.ao_map", 3);
+        ao_map_texture->bind("Material.ao_map", shader, 3);
     }
 
     // Normal map
     if (normal_map.has_value()) {
         const Texture* normal_map_texture = normal_map.value();
-        normal_map_texture->bind(4);
-        shader->set_uniform_int("Material.normal_map", 4);
+        normal_map_texture->bind("Material.normal_map", shader, 4);
     }
 
     return shader;

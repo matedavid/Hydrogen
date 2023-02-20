@@ -81,9 +81,7 @@ Shader* Skybox::bind(u32 slot) const {
 void Skybox::bind_to_shader(Shader* shader, u32 slot) const {
     m_irradiance_map->bind("IrradianceMap", shader, slot);
     m_prefilter->bind("PrefilterMap", shader, slot + 1);
-
-    shader->set_uniform_int("BrdfLUT", (i32)slot + 2);
-    m_brdf_texture->bind(slot + 2);
+    m_brdf_texture->bind("BrdfLUT", shader, slot + 2);
 }
 
 void Skybox::unbind() const {

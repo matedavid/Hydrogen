@@ -33,8 +33,6 @@ class HG_API Cubemap : public IFramebufferAttachable {
     void bind(const std::string& name, Shader* shader, u32 slot) const;
     void unbind() const;
 
-    u32 get_id() const { return ID; }
-
   private:
     u32 ID;
     u32 m_current_framebuffer_face = 0;

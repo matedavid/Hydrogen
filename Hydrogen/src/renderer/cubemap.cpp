@@ -101,9 +101,7 @@ Cubemap::Cubemap(const std::string& equirectangular_image_path, bool flip) : Cub
     auto* equirectangular_cubemap_shader = ShaderSystem::instance->get(equirectangular_cubemap_id);
 
     equirectangular_cubemap_shader->set_uniform_mat4("Projection", capture_projection);
-    // TODO: Maybe use same api for texture binding as used in cubemap??
-    equirectangular_cubemap_shader->set_uniform_int("EquirectangularMap", 0);
-    texture.bind(0);
+    texture.bind("EquirectangularMap", equirectangular_cubemap_shader, 0);
 
     RendererAPI::resize(SIZE, SIZE);
     framebuffer.bind();

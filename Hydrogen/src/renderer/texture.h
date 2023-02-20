@@ -8,6 +8,9 @@
 
 namespace Hydrogen {
 
+// Forward declaration
+class Shader;
+
 class HG_API Texture : public IFramebufferAttachable {
   public:
     Texture(const unsigned char* data, i32 width, i32 height);
@@ -22,9 +25,10 @@ class HG_API Texture : public IFramebufferAttachable {
 
     const std::string& get_path() const { return m_file_path; }
 
-    void attach_to_framebuffer(Framebuffer::AttachmentType attachment_type, u32 level) const override;
+    void attach_to_framebuffer(
+        Framebuffer::AttachmentType attachment_type, u32 level) const override;
 
-    void bind(u32 slot = 0) const;
+    void bind(const std::string& name, Shader* shader, u32 slot) const;
     void unbind() const;
 
   private:

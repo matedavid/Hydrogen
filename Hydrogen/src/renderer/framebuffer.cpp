@@ -2,9 +2,6 @@
 
 #include <glad/glad.h>
 
-#include "renderer/texture.h"
-#include "renderer/renderbuffer.h"
-
 namespace Hydrogen {
 
 Framebuffer::Framebuffer() {
