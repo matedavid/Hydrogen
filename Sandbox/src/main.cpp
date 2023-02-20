@@ -18,7 +18,7 @@ class Sandbox : public Hydrogen::Application {
         m_camera = Hydrogen::PerspectiveCamera(glm::radians(60.0f), ratio, 0.1f, 100.0f);
         m_camera.set_position(m_camera_position);
 
-//        auto skybox_components = Hydrogen::Skybox::Components{
+//        auto skybox_components = Hydrogen::Cubemap::Components{
 //            .right = "posx.jpg",
 //            .left = "negx.jpg",
 //            .top = "posy.jpg",

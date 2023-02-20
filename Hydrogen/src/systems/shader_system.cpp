@@ -1,5 +1,7 @@
 #include "shader_system.h"
 
+#include "filesystem"
+
 namespace Hydrogen {
 
 ShaderSystem* ShaderSystem::instance = nullptr;
@@ -15,7 +17,6 @@ void ShaderSystem::free() {
 }
 
 ShaderSystem::ShaderSystem() {
-    // TODO: Maybe include default shaders, maybe nothing
 }
 
 ShaderSystem::~ShaderSystem() {
@@ -86,6 +87,34 @@ ShaderId ShaderSystem::acquire_from_compiler(const IShaderCompiler& compiler) {
     HG_LOG_INFO("Loading new Shader from compiler: {}", id);
 
     Shader* shader = compiler.compile();
+    m_reference_count[id] = 1;
+    m_shaders[id] = shader;
+
+    return id;
+}
+
+// #define BASE_PATH "shaders/"
+#define BASE_PATH "../../Hydrogen/assets/shaders/"
+
+ShaderId ShaderSystem::acquire_base(const std::string& vertex, const std::string& fragment) {
+    std::hash<std::string> string_hasher;
+
+    usize vertex_hash = string_hasher(vertex);
+    usize fragment_hash = string_hasher(fragment);
+
+    usize id = hash_combine(vertex_hash, fragment_hash);
+
+    if (m_shaders.contains(id)) {
+        m_reference_count[id]++;
+        return id;
+    }
+
+    const auto base_path = std::filesystem::path(BASE_PATH);
+
+    const auto vertex_path = base_path / vertex;
+    const auto fragment_path = base_path / fragment;
+
+    Shader* shader = Shader::from_file(vertex_path, fragment_path);
     m_reference_count[id] = 1;
     m_shaders[id] = shader;
 

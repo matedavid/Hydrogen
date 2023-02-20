@@ -6,13 +6,15 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
+#include "renderer/shader.h"
+
 namespace Hydrogen {
 
 Texture::Texture(const unsigned char* data, i32 width, i32 height)
     : m_file_path(), m_width(width), m_height(height), m_BPP(0)
 {
     glGenTextures(1, &ID);
-    bind();
+    glBindTexture(GL_TEXTURE_2D, ID);
 
     // How the texture will be resampled down if it needs to be smaller than it is
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -31,7 +33,7 @@ Texture::Texture(const f32* data, i32 width, i32 height)
     : m_file_path(), m_width(width), m_height(height), m_BPP(0)
 {
     glGenTextures(1, &ID);
-    bind();
+    glBindTexture(GL_TEXTURE_2D, ID);
 
     // How the texture will be resampled down if it needs to be smaller than it is
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -53,7 +55,7 @@ Texture::Texture(const std::string& path) : m_file_path(path), m_width(0), m_hei
     unsigned char* local_buffer = stbi_load(path.c_str(), &m_width, &m_height, &m_BPP, 4);
 
     glGenTextures(1, &ID);
-    bind();
+    glBindTexture(GL_TEXTURE_2D, ID);
 
     // How the texture will be resampled down if it needs to be smaller than it is
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -79,7 +81,13 @@ Texture* Texture::white() {
     return new Texture(data, 1, 1);
 }
 
-void Texture::bind(u32 slot) const {
+void Texture::attach_to_framebuffer(Framebuffer::AttachmentType attachment_type, u32 level) const {
+    u32 attachment = Framebuffer::get_attachment_type(attachment_type);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, attachment, GL_TEXTURE_2D, ID, (i32)level);
+}
+
+void Texture::bind(const std::string& name, Shader* shader, u32 slot) const {
+    shader->set_uniform_int(name, (i32)slot);
     glActiveTexture(GL_TEXTURE0 + slot);
     glBindTexture(GL_TEXTURE_2D, ID);
 }

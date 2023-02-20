@@ -59,22 +59,19 @@ Shader* PhongMaterial::bind() const {
     // Diffuse Texture
     if (diffuse_map.has_value()) {
         const Texture* diffuse_map_texture = diffuse_map.value();
-        diffuse_map_texture->bind(0);
-        shader->set_uniform_int("Material.diffuse_map", 0);
+        diffuse_map_texture->bind("Material.diffuse_map", shader, 0);
     }
 
     // Specular Texture
     if (specular_map.has_value()) {
         const Texture* specular_map_texture = specular_map.value();
-        specular_map_texture->bind(1);
-        shader->set_uniform_int("Material.specular_map", 1);
+        specular_map_texture->bind("Material.specular_map", shader, 1);
     }
 
     // Normal Texture
     if (normal_map.has_value()) {
         const Texture* normal_map_texture = normal_map.value();
-        normal_map_texture->bind(2);
-        shader->set_uniform_int("Material.normal_map", 2);
+        normal_map_texture->bind("Material.normal_map", shader, 2);
     }
 
     return shader;

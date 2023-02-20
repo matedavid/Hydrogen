@@ -34,9 +34,12 @@ target_sources(${PROJECT_NAME} PRIVATE
 
         src/renderer/vertex_array.cpp
         src/renderer/buffers.cpp
+        src/renderer/framebuffer.cpp
+        src/renderer/renderbuffer.cpp
         src/renderer/shader.cpp
         src/renderer/texture.cpp
         src/renderer/skybox.cpp
+        src/renderer/cubemap.cpp
         src/renderer/renderer_api.cpp
         src/renderer/renderer3d.cpp
         )
