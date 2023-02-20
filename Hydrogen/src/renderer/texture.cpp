@@ -79,6 +79,11 @@ Texture* Texture::white() {
     return new Texture(data, 1, 1);
 }
 
+void Texture::attach_to_framebuffer(Framebuffer::AttachmentType attachment_type, u32 level) const {
+    u32 attachment = Framebuffer::get_attachment_type(attachment_type);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, attachment, GL_TEXTURE_2D, ID, (i32)level);
+}
+
 void Texture::bind(u32 slot) const {
     glActiveTexture(GL_TEXTURE0 + slot);
     glBindTexture(GL_TEXTURE_2D, ID);

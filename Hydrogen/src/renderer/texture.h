@@ -4,9 +4,11 @@
 
 #include <string>
 
+#include "renderer/framebuffer.h"
+
 namespace Hydrogen {
 
-class HG_API Texture {
+class HG_API Texture : public IFramebufferAttachable {
   public:
     Texture(const unsigned char* data, i32 width, i32 height);
     Texture(const f32* data, i32 width, i32 height);
@@ -19,6 +21,8 @@ class HG_API Texture {
     i32 get_height() const { return m_height; }
 
     const std::string& get_path() const { return m_file_path; }
+
+    void attach_to_framebuffer(Framebuffer::AttachmentType attachment_type, u32 level) const override;
 
     void bind(u32 slot = 0) const;
     void unbind() const;
