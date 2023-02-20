@@ -3,22 +3,15 @@
 #include "core.h"
 
 #include "systems/shader_system.h"
+#include "renderer/cubemap.h"
+#include "renderer/texture.h"
 
 namespace Hydrogen {
 
 class HG_API Skybox {
   public:
-    struct Components {
-        std::string right;
-        std::string left;
-        std::string top;
-        std::string bottom;
-        std::string front;
-        std::string back;
-    };
-
-    Skybox(const Components& components);
-    Skybox(const Components& components, const std::string& directory);
+    Skybox(const Cubemap::Components& faces);
+    Skybox(const Cubemap::Components& faces, const std::string& directory);
     Skybox(const std::string& image_path);
     ~Skybox();
 
@@ -27,8 +20,13 @@ class HG_API Skybox {
     void unbind() const;
 
   private:
-    u32 ID;
-    u32 IrradianceID, PrefilterID, BrdfID;
+    // u32 ID;
+    // u32 IrradianceID, PrefilterID, BrdfID;
+
+    Cubemap* m_cubemap;
+    Cubemap* m_irradiance_map;
+    Cubemap* m_prefilter;
+    Texture* m_brdf_texture;
 
     ShaderId m_shader_id;
     bool m_is_hdr;
