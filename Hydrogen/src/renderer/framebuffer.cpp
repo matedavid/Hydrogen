@@ -41,6 +41,7 @@ u32 Framebuffer::get_attachment_type(AttachmentType type) {
     }
 
     HG_ASSERT(false, "Unreachable");
+    return 0;
 }
 
 } // namespace Hydrogen
