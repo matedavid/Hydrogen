@@ -7,9 +7,7 @@
 
 namespace Hydrogen {
 
-//
 // Attribute Data
-//
 enum class HG_API ShaderType { Float32, UnsignedInt, Bool };
 
 struct HG_API VertexLayout {
@@ -60,11 +58,6 @@ class HG_API UniformBuffer {
   public:
     UniformBuffer(u32 size);
     ~UniformBuffer();
-
-//    template<typename T>
-//    void set_data(u32 offset, u32 size, const T& data) {
-//        glBufferSubData(GL_UNIFORM_BUFFER, offset, size, glm::value_ptr(data));
-//    }
 
     void assign_slot(u32 slot);
 

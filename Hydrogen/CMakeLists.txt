@@ -18,22 +18,28 @@ target_sources(${PROJECT_NAME} PRIVATE
         src/core/window.cpp
         src/core/model.cpp
         src/core/mesh.cpp
-        src/core/material.cpp
         src/core/camera.cpp
         src/core/orthographic_camera.cpp
         src/core/perspective_camera.cpp
 
         src/input/input.cpp
 
+        src/material/phong_material.cpp
+        src/material/pbr_material.cpp
+        src/material/phong_shader_compiler.cpp
+        src/material/pbr_shader_compiler.cpp
+
         src/systems/shader_system.cpp
-        src/systems/shader_compiler.cpp
         src/systems/texture_system.cpp
 
         src/renderer/vertex_array.cpp
         src/renderer/buffers.cpp
+        src/renderer/framebuffer.cpp
+        src/renderer/renderbuffer.cpp
         src/renderer/shader.cpp
         src/renderer/texture.cpp
         src/renderer/skybox.cpp
+        src/renderer/cubemap.cpp
         src/renderer/renderer_api.cpp
         src/renderer/renderer3d.cpp
         )

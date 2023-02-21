@@ -8,11 +8,12 @@
 #include "glm/glm.hpp"
 #include "assimp/scene.h"
 
-#include "material.h"
 #include "renderer/vertex_array.h"
 #include "renderer/buffers.h"
 #include "renderer/shader.h"
 #include "renderer/texture.h"
+
+#include "material/material.h"
 
 namespace Hydrogen {
 
@@ -26,7 +27,7 @@ struct Vertex {
 class HG_API Mesh {
   public:
     VertexArray* VAO;
-    Material material;
+    IMaterial* material = nullptr;
 
     Mesh(const aiMesh* mesh, const aiScene* scene, const std::string& directory);
     ~Mesh();
@@ -36,6 +37,10 @@ class HG_API Mesh {
     std::vector<u32> indices;
 
     void setup_mesh();
+
+    // Material loaders
+    IMaterial* load_phong_material(const aiMaterial* mat, const std::string& directory);
+    IMaterial* load_pbr_material(const aiMaterial* mat, const std::string& directory);
 };
 
 }

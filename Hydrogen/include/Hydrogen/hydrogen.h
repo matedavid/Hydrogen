@@ -4,7 +4,6 @@
 #include "core/window.h"
 #include "core/mesh.h"
 #include "core/model.h"
-#include "core/material.h"
 #include "core/camera.h"
 #include "core/orthographic_camera.h"
 #include "core/perspective_camera.h"
@@ -12,6 +11,10 @@
 #include "input/events.h"
 #include "input/input.h"
 #include "input/keycodes.h"
+
+#include "material/material.h"
+#include "material/phong_material.h"
+#include "material/pbr_material.h"
 
 #include "renderer/vertex_array.h"
 #include "renderer/buffers.h"

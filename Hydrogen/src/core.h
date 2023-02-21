@@ -1,6 +1,8 @@
 #pragma once
 
 #include <cassert>
+#include <optional>
+
 #include <spdlog/spdlog.h>
 
 namespace Hydrogen {
@@ -33,5 +35,8 @@ typedef float f32;
 typedef double f64;
 
 typedef size_t usize;
+
+// Temporal types
+typedef usize ShaderId;
 
 } // namespace Hydrogen

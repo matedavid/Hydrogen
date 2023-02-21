@@ -5,7 +5,7 @@
 #include <unordered_map>
 #include <functional>
 
-#include "core/material.h"
+#include "material/shader_compiler.h"
 #include "renderer/shader.h"
 
 namespace Hydrogen {
@@ -19,10 +19,11 @@ class ShaderSystem {
 
     Shader* get(ShaderId id);
 
-        // Acquire functions
+    // Acquire functions
     ShaderId acquire_from_source(const std::string& vertex_src, const std::string& fragment_src);
     ShaderId acquire_from_file(const std::string& vertex_path, const std::string& fragment_path);
-    ShaderId acquire_from_material(const MaterialValues& material);
+    ShaderId acquire_from_compiler(const IShaderCompiler& compiler);
+    ShaderId acquire_base(const std::string& vertex, const std::string& fragment);
 
     void release(ShaderId id);
 
