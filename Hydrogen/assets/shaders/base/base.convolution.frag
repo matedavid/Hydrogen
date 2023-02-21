@@ -1,7 +1,6 @@
 #version 330 core
 
 in vec3 FragPosition;
-
 uniform samplerCube Skybox;
 
 out vec4 ResultColor;

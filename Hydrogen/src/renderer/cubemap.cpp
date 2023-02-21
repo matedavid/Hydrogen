@@ -97,7 +97,7 @@ Cubemap::Cubemap(const std::string& equirectangular_image_path, bool flip) : Cub
     }
 
     usize equirectangular_cubemap_id =
-        ShaderSystem::instance->acquire_base("base.equirectangular.vert", "base.equirectangular.frag");
+        ShaderSystem::instance->acquire_base("base.skybox_operations.vert", "base.equirectangular.frag");
     auto* equirectangular_cubemap_shader = ShaderSystem::instance->get(equirectangular_cubemap_id);
 
     equirectangular_cubemap_shader->set_uniform_mat4("Projection", capture_projection);

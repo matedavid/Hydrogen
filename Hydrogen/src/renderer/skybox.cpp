@@ -107,7 +107,7 @@ void Skybox::create_diffuse_irradiance_map() {
     m_irradiance_map = new Cubemap(32, 32);
 
     usize convolution_shader_id =
-        ShaderSystem::instance->acquire_base("base.equirectangular.vert", "base.convolution.frag");
+        ShaderSystem::instance->acquire_base("base.skybox_operations.vert", "base.convolution.frag");
     auto* convolution_shader = ShaderSystem::instance->get(convolution_shader_id);
 
     convolution_shader->set_uniform_mat4("Projection", capture_projection);
@@ -164,7 +164,7 @@ void Skybox::create_specular_radiance_map() {
 
     // Get shaders
     usize prefilter_shader_id =
-        ShaderSystem::instance->acquire_base("base.equirectangular.vert", "base.prefilter.frag");
+        ShaderSystem::instance->acquire_base("base.skybox_operations.vert", "base.prefilter.frag");
     usize brdf_shader_id =
         ShaderSystem::instance->acquire_base("base.brdf.vert", "base.brdf.frag");
 
