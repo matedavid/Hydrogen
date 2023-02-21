@@ -137,8 +137,6 @@ void Skybox::create_diffuse_irradiance_map() {
     RendererAPI::resize(original_width, original_height);
 }
 
-static void renderQuad();
-
 void Skybox::create_specular_radiance_map() {
     // set up projection and view matrices for capturing data onto the 6 cubemap face directions
     const auto capture_projection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 10.0f);
@@ -217,10 +215,9 @@ void Skybox::create_specular_radiance_map() {
     framebuffer.attach(*m_brdf_texture, Framebuffer::AttachmentType::Color0);
 
     RendererAPI::resize(512, 512);
-    brdf_shader->bind();
     RendererAPI::clear(glm::vec3(0.0f));
 
-    renderQuad();
+    render_quad(brdf_shader);
 
     framebuffer.unbind();
 
@@ -233,35 +230,40 @@ void Skybox::create_specular_radiance_map() {
     RendererAPI::resize(original_width, original_height);
 }
 
-// renderQuad() renders a 1x1 XY quad in NDC
-// -----------------------------------------
-unsigned int quadVAO = 0;
-static void renderQuad()
-{
-    if (quadVAO == 0)
-    {
-        float quadVertices[] = {
-            // positions        // texture Coords
-            -1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
-            -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
-            1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
-            1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+void Skybox::render_quad(Shader* shader) {
+    if (m_quad_vao == nullptr) {
+        f32 quad_vertices[] = {
+            //    positions      texture coords
+            -1.0f,  1.0f,  0.0f,   0.0f, 1.0f,
+            -1.0f, -1.0f,  0.0f,   0.0f, 0.0f,
+             1.0f,  1.0f,  0.0f,   1.0f, 1.0f,
+             1.0f, -1.0f,  0.0f,   1.0f, 0.0f,
         };
-        // setup plane VAO
-        unsigned int quadVBO;
-        glGenVertexArrays(1, &quadVAO);
-        glGenBuffers(1, &quadVBO);
-        glBindVertexArray(quadVAO);
-        glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-        glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+
+        u32 indices[] = {
+            1, 3, 2,
+            1, 2, 0
+        };
+
+        m_quad_vao = new VertexArray();
+
+        auto vbo = VertexBuffer(quad_vertices, sizeof(quad_vertices));
+        vbo.set_layout({
+            {.type = ShaderType::Float32, .count = 3, .normalized = false},
+            {.type = ShaderType::Float32, .count = 2, .normalized = false}
+        });
+
+        const auto ebo = IndexBuffer(indices, 6);
+
+        m_quad_vao->add_vertex_buffer(&vbo);
+        m_quad_vao->set_index_buffer(&ebo);
+
+        m_quad_vao->unbind();
+        vbo.unbind();
+        ebo.unbind();
     }
-    glBindVertexArray(quadVAO);
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-    glBindVertexArray(0);
+
+    RendererAPI::send(m_quad_vao, shader);
 }
 
 } // namespace Hydrogen

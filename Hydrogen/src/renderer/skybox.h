@@ -8,6 +8,9 @@
 
 namespace Hydrogen {
 
+// Forward declarations
+class VertexArray;
+
 class HG_API Skybox {
   public:
     Skybox(const Cubemap::Components& faces);
@@ -30,6 +33,10 @@ class HG_API Skybox {
 
     void create_diffuse_irradiance_map();
     void create_specular_radiance_map();
+
+    // Utils
+    VertexArray* m_quad_vao = nullptr;
+    void render_quad(Shader* shader);
 };
 
 } // namespace Hydrogen
