@@ -99,7 +99,7 @@ void Renderer3D::draw_cube(const glm::vec3& pos, const glm::vec3& dim, const IMa
 }
 
 void Renderer3D::draw_sphere(const glm::vec3& pos, const glm::vec3& dim, const IMaterial& material) {
-    Shader* shader = material.bind();
+    auto* shader = material.bind();
     shader->bind();
 
     auto model = glm::mat4(1.0f);
@@ -132,7 +132,7 @@ void Renderer3D::draw_model(const Model& model, const glm::vec3& pos, const glm:
     for (const auto* mesh : model.get_meshes()) {
         VertexArray* VAO = mesh->VAO;
 
-        Shader* shader = mesh->material->bind();
+        auto* shader = mesh->material->bind();
         shader->assign_uniform_buffer("Camera", m_context->camera_ubo, 0);
 
         auto m = glm::mat4(1.0f);

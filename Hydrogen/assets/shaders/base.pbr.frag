@@ -62,10 +62,19 @@ struct PointLightStruct {
 uniform int NumberPointLights;
 uniform PointLightStruct[MAX_NUMBER_POINT_LIGHTS] PointLights;
 
-// Skybox (Irradiance Map, Specular Map, BRDF Lut)
-uniform samplerCube IrradianceMap;
-uniform samplerCube PrefilterMap;
-uniform sampler2D BrdfLUT;
+//
+// Skybox 
+//
+
+// Image Skybox (Irradiance Map, Specular Map, BRDF Lut)
+struct SkyboxStruct {
+    samplerCube IrradianceMap;
+    samplerCube PrefilterMap;
+    sampler2D BrdfLUT;
+};
+uniform SkyboxStruct Skybox;
+
+// ===================================
 
 // Fragment Output
 out vec4 ResultColor;
@@ -215,21 +224,23 @@ void main() {
     //
 
     // vec3 ambient = vec3(0.03) * albedo * ao;
+
     vec3 kS = FresnelSchlickRoughness(max(dot(N, V), 0.0), F0, roughness); 
     vec3 kD = 1.0 - kS;
     kD *= 1.0 - metallic;
-    vec3 irradiance = texture(IrradianceMap, N).rgb;
+    vec3 irradiance = texture(Skybox.IrradianceMap, N).rgb;
     vec3 diffuse    = irradiance * albedo;
 
-    // sample both the pre-filter map and the BRDF lut and combine them together as per the Split-Sum approximation to get the IBL specular part.
+    // sample both the prefilter map and the BRDF lut and combine them together 
+    // as per the Split-Sum approximation to get the IBL specular part.
     vec3 R = reflect(-V, N);
 
     const float MAX_REFLECTION_LOD = 4.0;
-    vec3 prefilteredColor = textureLod(PrefilterMap, R,  roughness * MAX_REFLECTION_LOD).rgb;    
-    vec2 brdf  = texture(BrdfLUT, vec2(max(dot(N, V), 0.0), roughness)).rg;
+    vec3 prefilteredColor = textureLod(Skybox.PrefilterMap, R, roughness * MAX_REFLECTION_LOD).rgb;    
+    vec2 brdf = texture(Skybox.BrdfLUT, vec2(max(dot(N, V), 0.0), roughness)).rg;
     vec3 specular = prefilteredColor * (kS * brdf.x + brdf.y);
 
-    vec3 ambient    = (kD * diffuse + specular) * ao; 
+    vec3 ambient = (kD * diffuse + specular) * ao;
 
     vec3 color = ambient + Lo;
 
