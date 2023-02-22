@@ -12,7 +12,7 @@ class HG_API PBRMaterial : public IMaterial {
     ~PBRMaterial() override;
 
     void build() override;
-    Shader* bind() const override;
+    Shader* bind(u32 slot) const override;
 
   private:
     ShaderId m_shader_id;

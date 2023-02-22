@@ -32,7 +32,7 @@ void PhongMaterial::build() {
     m_built = true;
 }
 
-Shader* PhongMaterial::bind() const {
+Shader* PhongMaterial::bind(u32 slot) const {
     HG_ASSERT(m_built, "You must build the Material before binding it");
 
     Shader* shader = ShaderSystem::instance->get(m_shader_id);
@@ -59,19 +59,19 @@ Shader* PhongMaterial::bind() const {
     // Diffuse Texture
     if (diffuse_map.has_value()) {
         const Texture* diffuse_map_texture = diffuse_map.value();
-        diffuse_map_texture->bind("Material.diffuse_map", shader, 0);
+        diffuse_map_texture->bind("Material.diffuse_map", shader, slot);
     }
 
     // Specular Texture
     if (specular_map.has_value()) {
         const Texture* specular_map_texture = specular_map.value();
-        specular_map_texture->bind("Material.specular_map", shader, 1);
+        specular_map_texture->bind("Material.specular_map", shader, slot + 1);
     }
 
     // Normal Texture
     if (normal_map.has_value()) {
         const Texture* normal_map_texture = normal_map.value();
-        normal_map_texture->bind("Material.normal_map", shader, 2);
+        normal_map_texture->bind("Material.normal_map", shader, slot + 2);
     }
 
     return shader;

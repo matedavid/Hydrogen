@@ -16,7 +16,7 @@ class IMaterial {
     virtual ~IMaterial() = default;
 
     virtual void build() = 0;
-    virtual Shader* bind() const = 0;
+    virtual Shader* bind(u32 slot = 0) const = 0;
 };
 
 } // namespace Hydrogen
