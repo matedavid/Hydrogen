@@ -49,10 +49,16 @@ set(SHADERS_PATH ${CMAKE_CURRENT_SOURCE_DIR}/assets/shaders/ PARENT_SCOPE)
 
 function(configure_assets TARGET_NAME TARGET_PATH)
     message("Copying assets to: ${TARGET_PATH}")
-    file(MAKE_DIRECTORY ${TARGET_PATH}/shaders/)
+
+    # Create folder
     add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            ${SHADERS_PATH}/*
+            COMMAND ${CMAKE_COMMAND} -E make_directory
+            ${TARGET_PATH}/shaders/)
+
+    # Copy shaders to bin folder
+    add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_directory
+            ${SHADERS_PATH}/
             ${TARGET_PATH}/shaders/)
 endfunction(configure_assets)
 

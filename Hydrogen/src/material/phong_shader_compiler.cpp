@@ -13,13 +13,8 @@ namespace Hydrogen {
     result += m_arguments.opt.has_value() * (usize)(1 << iter); \
     iter++;
 
-#ifdef NDEBUG
 #define BASE_VERTEX_PATH "shaders/base.phong.vert"
 #define BASE_FRAGMENT_PATH "shaders/base.phong.frag"
-#else
-#define BASE_VERTEX_PATH "../../Hydrogen/assets/shaders/base.phong.vert"
-#define BASE_FRAGMENT_PATH "../../Hydrogen/assets/shaders/base.phong.frag"
-#endif
 
 PhongShaderCompiler::PhongShaderCompiler(PhongShaderArguments arguments) : m_arguments(arguments) {
 }
