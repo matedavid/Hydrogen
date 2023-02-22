@@ -18,10 +18,13 @@ namespace Hydrogen {
     result += m_arguments.opt.has_value() * (usize)(1 << iter); \
     iter++;
 
-// const std::string BASE_VERTEX_PATH = "shaders/base.pbr.vert";
-const std::string BASE_VERTEX_PATH = "../../Hydrogen/assets/shaders/base.pbr.vert";
-// const std::string BASE_FRAGMENT_PATH = "shaders/base.pbr.frag";
-const std::string BASE_FRAGMENT_PATH = "../../Hydrogen/assets/shaders/base.pbr.frag";
+#ifdef NDEBUG
+#define BASE_VERTEX_PATH "shaders/base.pbr.vert"
+#define BASE_FRAGMENT_PATH "shaders/base.pbr.frag"
+#else
+#define BASE_VERTEX_PATH "../../Hydrogen/assets/shaders/base.pbr.vert"
+#define BASE_FRAGMENT_PATH "../../Hydrogen/assets/shaders/base.pbr.frag"
+#endif
 
 PBRShaderCompiler::PBRShaderCompiler(PBRShaderArguments arguments) : m_arguments(arguments) {
 }

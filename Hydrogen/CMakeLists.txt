@@ -44,7 +44,6 @@ target_sources(${PROJECT_NAME} PRIVATE
         src/renderer/renderer3d.cpp
         )
 
-
 # Function to configure assets, such as builtin shaders
 set(SHADERS_PATH ${CMAKE_CURRENT_SOURCE_DIR}/assets/shaders/ PARENT_SCOPE)
 

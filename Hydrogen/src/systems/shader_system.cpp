@@ -93,8 +93,11 @@ ShaderId ShaderSystem::acquire_from_compiler(const IShaderCompiler& compiler) {
     return id;
 }
 
-// #define BASE_PATH "shaders/base/"
+#ifdef NDEBUG
+#define BASE_PATH "shaders/base/"
+#else
 #define BASE_PATH "../../Hydrogen/assets/shaders/base/"
+#endif
 
 ShaderId ShaderSystem::acquire_base(const std::string& vertex, const std::string& fragment) {
     std::hash<std::string> string_hasher;
