@@ -61,6 +61,20 @@ Skybox::Skybox(const std::string& image_path) {
     create_specular_radiance_map();
 }
 
+Skybox::Skybox(const glm::vec3& color) {
+    f32 data[] = {color.r, color.g, color.b};
+    m_cubemap = new Cubemap(data, 1, 1);
+
+    m_shader_id = ShaderSystem::instance->acquire_base("base.skybox.vert", "base.skybox.frag");
+
+    create_diffuse_irradiance_map();
+    create_specular_radiance_map();
+}
+
+Skybox* Skybox::color(const glm::vec3& color) {
+    return new Skybox(color);
+}
+
 Skybox::~Skybox() {
     delete m_cubemap;
     delete m_irradiance_map;

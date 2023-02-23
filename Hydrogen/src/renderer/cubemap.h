@@ -22,6 +22,7 @@ class HG_API Cubemap : public IFramebufferAttachable {
 
     Cubemap(bool is_mipmap = false);
     Cubemap(u32 width, u32 height, bool is_mipmap = false);
+    Cubemap(const f32* data, u32 width, u32 height);
     Cubemap(const Components& faces, bool flip = false);
     Cubemap(const std::string& equirectangular_image_path, bool flip = false);
     ~Cubemap();

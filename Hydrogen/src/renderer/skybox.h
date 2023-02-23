@@ -18,6 +18,8 @@ class HG_API Skybox {
     Skybox(const std::string& image_path);
     ~Skybox();
 
+    static Skybox* color(const glm::vec3& color);
+
     Shader* bind(u32 slot = 0) const;
     void bind_to_shader(Shader* shader, u32 slot = 0) const;
     void unbind() const;
@@ -30,6 +32,8 @@ class HG_API Skybox {
 
     ShaderId m_shader_id;
     bool m_is_hdr;
+
+    Skybox(const glm::vec3& color);
 
     void create_diffuse_irradiance_map();
     void create_specular_radiance_map();

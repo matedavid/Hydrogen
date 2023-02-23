@@ -42,6 +42,13 @@ Cubemap::Cubemap(u32 width, u32 height, bool is_mipmap) : Cubemap(is_mipmap) {
     }
 }
 
+Cubemap::Cubemap(const f32* data, u32 width, u32 height) : Cubemap(false) {
+    for (u32 i = 0; i < 6; ++i) {
+        glTexImage2D(
+            GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB16F, (i32)width, (i32)height, 0, GL_RGB, GL_FLOAT, data);
+    }
+}
+
 Cubemap::Cubemap(const Components& faces, bool flip) : Cubemap() {
     stbi_set_flip_vertically_on_load(flip);
 
