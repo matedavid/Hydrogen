@@ -126,8 +126,8 @@ Cubemap::Cubemap(const std::string& equirectangular_image_path, bool flip) : Cub
 
     // Return to default framebuffer and to original size
     framebuffer.unbind();
-    i32 original_width = Application::get()->get_window()->get_width();
-    i32 original_height = Application::get()->get_window()->get_height();
+    i32 original_width = Application::instance()->get_window().get_width();
+    i32 original_height = Application::instance()->get_window().get_height();
     RendererAPI::resize(original_width, original_height);
 
     // Release shader

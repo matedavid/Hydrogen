@@ -7,7 +7,7 @@
 namespace Hydrogen {
 
 bool Input::is_key_pressed(Key key) {
-    auto* window = Application::get()->get_window()->get_native_window();
+    const auto& window = Application::instance()->get_window().get_native_window();
 
     i32 glfw_key = static_cast<i32>(key);
     i32 status = glfwGetKey(window, glfw_key);
@@ -15,7 +15,7 @@ bool Input::is_key_pressed(Key key) {
 }
 
 bool Input::is_mouse_button_pressed(MouseButton button) {
-    auto* window = Application::get()->get_window()->get_native_window();
+    const auto& window = Application::instance()->get_window().get_native_window();
 
     i32 glfw_button = static_cast<i32>(button);
     i32 status = glfwGetMouseButton(window, glfw_button);

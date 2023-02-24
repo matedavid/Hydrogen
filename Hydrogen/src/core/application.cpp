@@ -8,9 +8,9 @@
 
 namespace Hydrogen {
 
-Application::Application(i32 width, i32 height, std::string&& title) {
-    m_window = new Window(width, height, std::move(title));
-
+Application::Application(i32 width, i32 height, std::string&& title)
+    : m_window(width, height, std::move(title))
+{
     ShaderSystem::init();
     TextureSystem::init();
 
@@ -25,15 +25,14 @@ Application::~Application() {
     ShaderSystem::free();
     TextureSystem::free();
 
-    delete m_window;
     m_instance = nullptr;
 }
 
 void Application::run() {
-    f64 last_time = m_window->get_current_time();
+    f64 last_time = m_window.get_current_time();
 
-    while (!m_window->should_close()) {
-        f64 current_time = m_window->get_current_time();
+    while (!m_window.should_close()) {
+        f64 current_time = m_window.get_current_time();
         f64 ts = current_time - last_time;
         last_time = current_time;
 
@@ -41,12 +40,12 @@ void Application::run() {
 
         on_update(ts);
 
-        m_window->on_update();
+        m_window.on_update();
     }
 }
 
 void Application::bind_event_callback_func(EventType event, EventCallbackFunc func) {
-    m_window->bind_event_func(event, std::move(func));
+    m_window.bind_event_func(event, std::move(func));
 }
 
 } // namespace Hydrogen

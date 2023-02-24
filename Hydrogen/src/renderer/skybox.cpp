@@ -146,8 +146,8 @@ void Skybox::create_diffuse_irradiance_map() {
     // Cleanup
     ShaderSystem::instance->release(convolution_shader_id);
 
-    i32 original_width = Application::get()->get_window()->get_width();
-    i32 original_height = Application::get()->get_window()->get_height();
+    i32 original_width = Application::instance()->get_window().get_width();
+    i32 original_height = Application::instance()->get_window().get_height();
     RendererAPI::resize(original_width, original_height);
 }
 
@@ -239,8 +239,8 @@ void Skybox::create_specular_radiance_map() {
     ShaderSystem::instance->release(prefilter_shader_id);
     ShaderSystem::instance->release(brdf_shader_id);
 
-    i32 original_width = Application::get()->get_window()->get_width();
-    i32 original_height = Application::get()->get_window()->get_height();
+    i32 original_width = Application::instance()->get_window().get_width();
+    i32 original_height = Application::instance()->get_window().get_height();
     RendererAPI::resize(original_width, original_height);
 }
 
