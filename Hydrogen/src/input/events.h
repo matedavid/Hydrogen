@@ -22,6 +22,7 @@ enum class EventType {
 
 class HG_API Event {
   public:
+    bool handled = false;
     virtual EventType get_type() const = 0;
 };
 

@@ -11,14 +11,10 @@
 // Forward declare
 struct GLFWwindow;
 
+
 namespace Hydrogen {
 
 using EventCallbackFunc = std::function<void(Event&)>;
-
-#define BIND_EVENT_FUNC(func)                                     \
-    [this](auto&&... args) -> decltype(auto) {                    \
-        return this->func(std::forward<decltype(args)>(args)...); \
-    }
 
 struct WindowData {
     i32 width;
@@ -36,21 +32,20 @@ class Window {
     void on_update() const;
 
     GLFWwindow* get_native_window() const { return m_window; }
-
     f64 get_current_time() const;
+
+    void add_event_callback_function(std::function<void(Event&)> func);
 
     i32 get_width() const { return m_data.width; }
     i32 get_height() const { return m_data.height; }
-
-    void bind_event_func(EventType event, EventCallbackFunc func);
 
   private:
     GLFWwindow* m_window;
     WindowData m_data;
 
-    std::unordered_map<EventType, EventCallbackFunc> m_event_callback;
+    std::vector<std::function<void(Event&)>> m_event_callbacks;
 
-    void on_event(Event& event);
+    void on_window_event(Event& event);
 };
 
 } // namespace Hydrogen

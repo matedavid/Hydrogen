@@ -46,7 +46,9 @@ Window::Window(i32 width, i32 height, std::string&& title) {
     glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
     glfwSetWindowUserPointer(m_window, &m_data);
 
-    m_data.event_callback = BIND_EVENT_FUNC(Window::on_event);
+    m_data.event_callback = [&](Event& event) {
+        on_window_event(event);
+    };
 
     //
     // Event callbacks
@@ -77,7 +79,7 @@ Window::Window(i32 width, i32 height, std::string&& title) {
     glfwSetMouseButtonCallback(m_window, [](GLFWwindow* window, i32 button, i32 action, i32 mods) {
         auto data = (WindowData*)glfwGetWindowUserPointer(window);
 
-        MouseButton mouse_button = static_cast<MouseButton>(button);
+        auto mouse_button = static_cast<MouseButton>(button);
         if (action == GLFW_PRESS) {
             MousePressedEvent event(mouse_button, mods);
             data->event_callback(event);
@@ -95,22 +97,21 @@ Window::Window(i32 width, i32 height, std::string&& title) {
     });
 
     // Keyboard events
-    glfwSetKeyCallback(
-        m_window, [](GLFWwindow* window, i32 _key, i32 scancode, i32 action, i32 mods) {
-            auto data = (WindowData*)glfwGetWindowUserPointer(window);
+    glfwSetKeyCallback(m_window, [](GLFWwindow* window, i32 _key, i32 scancode, i32 action, i32 mods) {
+        auto data = (WindowData*)glfwGetWindowUserPointer(window);
 
-            Key key = static_cast<Key>(_key);
-            if (action == GLFW_PRESS) {
-                KeyPressedEvent event(key, scancode, mods);
-                data->event_callback(event);
-            } else if (action == GLFW_RELEASE) {
-                KeyReleasedEvent event(key, scancode, mods);
-                data->event_callback(event);
-            } else if (action == GLFW_REPEAT) {
-                KeyRepeatEvent event(key, scancode, mods);
-                data->event_callback(event);
-            }
-        });
+        Key key = static_cast<Key>(_key);
+        if (action == GLFW_PRESS) {
+            KeyPressedEvent event(key, scancode, mods);
+            data->event_callback(event);
+        } else if (action == GLFW_RELEASE) {
+            KeyReleasedEvent event(key, scancode, mods);
+            data->event_callback(event);
+        } else if (action == GLFW_REPEAT) {
+            KeyRepeatEvent event(key, scancode, mods);
+            data->event_callback(event);
+        }
+    });
 }
 
 Window::~Window() {
@@ -131,20 +132,15 @@ f64 Window::get_current_time() const {
     return glfwGetTime();
 }
 
-void Window::bind_event_func(EventType event, EventCallbackFunc func) {
-    m_event_callback[event] = std::move(func);
+void Window::add_event_callback_function(std::function<void(Event&)> func) {
+    m_event_callbacks.emplace_back([=](Event& event) {
+        func(event);
+    });
 }
 
-void Window::on_event(Event& event) {
-    if (m_event_callback.find(event.get_type()) != m_event_callback.end()) {
-        m_event_callback[event.get_type()](event);
-        return;
-    }
-
-    // Default callback functions
-    switch (event.get_type()) {
-        default:
-            break;
+void Window::on_window_event(Event& event) {
+    for (auto& callback_function : m_event_callbacks) {
+        callback_function(event);
     }
 }
 
