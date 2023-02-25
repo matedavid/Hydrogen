@@ -64,7 +64,7 @@ class SandboxLayer : public Hydrogen::Layer {
     };
 
     void on_update([[maybe_unused]] double ts) override {
-        Hydrogen::Renderer3D::begin_scene(m_camera);
+        Hydrogen::Renderer3D::begin_frame(m_camera);
 
         //        for (unsigned int i = 0; i < light_positions.size(); ++i) {
         //            auto light = base_light;
@@ -92,7 +92,7 @@ class SandboxLayer : public Hydrogen::Layer {
 
         Hydrogen::Renderer3D::draw_model(m_model, glm::vec3(-0.5f, -2.0f, -4.0f), glm::vec3(1.0f));
 
-        Hydrogen::Renderer3D::end_scene();
+        Hydrogen::Renderer3D::end_frame();
     }
 
     void on_mouse_moved(Hydrogen::MouseMovedEvent& event) override {

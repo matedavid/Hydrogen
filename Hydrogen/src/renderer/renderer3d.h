@@ -36,8 +36,8 @@ class HG_API Renderer3D {
     static void init();
     static void free();
 
-    static void begin_scene(const Camera& camera);
-    static void end_scene();
+    static void begin_frame(const Camera& camera);
+    static void end_frame();
 
     // Scene configuration
     static void add_light_source(const Light& light);

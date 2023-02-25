@@ -32,13 +32,13 @@ void Renderer3D::free() {
     delete m_context;
 }
 
-void Renderer3D::begin_scene(const Camera& camera) {
+void Renderer3D::begin_frame(const Camera& camera) {
     m_context->camera_ubo->set_mat4(0, camera.get_projection());
     m_context->camera_ubo->set_mat4(1, camera.get_view());
     m_context->camera_ubo->set_vec3(2, camera.get_position());
 }
 
-void Renderer3D::end_scene() {
+void Renderer3D::end_frame() {
     // Draw lights
     for (const Light& light : m_context->lights) {
         Renderer3D::draw_cube(light.position, {0.25f, 0.25f, 0.25f}, light.diffuse);
