@@ -32,7 +32,7 @@ class HG_API Application {
 
     std::vector<Layer*> m_layers;
 
-    void on_event(Event& evnt);
+    void on_event(Event& event);
 };
 
 } // namespace Hydrogen
