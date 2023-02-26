@@ -6,13 +6,11 @@
 
 namespace Hydrogen {
 
-Window::Window(i32 width, i32 height, std::string&& title) {
+Window::Window(i32 width, i32 height, const std::string& title) {
     //
     // Setup GLFW and RendererAPI
     //
-    if (!glfwInit()) {
-        std::cerr << "Error initializing glfw\n";
-    }
+    HG_ASSERT(glfwInit(), "Error initializing glfw");
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -28,9 +26,8 @@ Window::Window(i32 width, i32 height, std::string&& title) {
 
     bool success = RendererAPI::init((void*)glfwGetProcAddress);
     if (!success) {
-        HG_LOG_ERROR("Failed to initialize!");
         glfwTerminate();
-        return;
+        HG_ASSERT(false, "Failed to initialize Renderer");
     }
     RendererAPI::resize(width, height);
 

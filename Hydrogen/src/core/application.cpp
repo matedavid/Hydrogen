@@ -9,8 +9,8 @@
 
 namespace Hydrogen {
 
-Application::Application(i32 width, i32 height, std::string&& title)
-    : m_window(width, height, std::move(title)) {
+Application::Application(i32 width, i32 height, const std::string& title)
+    : m_window(width, height, title) {
     m_window.add_event_callback_function([&](Event& event) { on_event(event); });
 
     ShaderSystem::init();

@@ -10,11 +10,11 @@ namespace Hydrogen {
 
 class HG_API Application {
   public:
-    Application(i32 width, i32 height, std::string&& title);
+    Application(i32 width, i32 height, const std::string& title);
     ~Application();
 
     static Application* instance() { return m_instance; }
-    const Window& get_window() const { return m_window; };
+    [[nodiscard]] const Window& get_window() const { return m_window; };
 
     void run();
 
