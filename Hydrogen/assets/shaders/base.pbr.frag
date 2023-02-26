@@ -128,9 +128,9 @@ void main() {
     // Define Material properties
     // ============================
     vec3 albedo;
-    float metallic;
-    float roughness;
-    float ao;
+    float metallic = 0.0;
+    float roughness = 0.0;
+    float ao = 1.0;
 
 #if defined(albedo_texture)
     albedo = pow(texture(Material.albedo_map, FragTextureCoords).rgb, vec3(2.2));
