@@ -52,6 +52,7 @@ class HG_API Renderer3D {
 
     // Model
     static void draw_model(const Model& model, const glm::vec3& pos, const glm::vec3& dim);
+    static void draw_model(const Model& model, const glm::vec3& pos, const glm::vec3& dim, const IMaterial& material);
 
   private:
     struct RendererResources {

@@ -167,6 +167,45 @@ void Renderer3D::draw_model(const Model& model, const glm::vec3& pos, const glm:
     }
 }
 
+void Renderer3D::draw_model(const Model& model, const glm::vec3& pos, const glm::vec3& dim, const IMaterial& material) {
+    for (const auto* mesh : model.get_meshes()) {
+        VertexArray* VAO = mesh->VAO;
+
+        auto* shader = material.bind();
+        shader->assign_uniform_buffer("Camera", m_context->camera_ubo, 0);
+
+        auto m = glm::mat4(1.0f);
+        m = glm::translate(m, pos);
+        m = glm::scale(m, dim);
+        shader->set_uniform_mat4("Model", m);
+
+        // Add point lights
+        // TODO: Use UBO to pass along lights?
+        shader->set_uniform_int("NumberPointLights", (i32)m_context->lights.size());
+        for (u32 i = 0; i < m_context->lights.size(); ++i) {
+            const Light& light = m_context->lights[i];
+
+            const std::string header = "PointLights[" + std::to_string(i) + "]";
+            shader->set_uniform_vec3(header + ".position", light.position);
+
+            shader->set_uniform_float(header + ".constant", light.constant);
+            shader->set_uniform_float(header + ".linear", light.linear);
+            shader->set_uniform_float(header + ".quadratic", light.quadratic);
+
+            shader->set_uniform_vec3(header + ".ambient", light.ambient);
+            shader->set_uniform_vec3(header + ".diffuse", light.diffuse);
+            shader->set_uniform_vec3(header + ".specular", light.specular);
+        }
+
+        // Add skybox
+        if (m_context->skybox != nullptr) {
+            m_context->skybox->bind_to_shader(shader, 10);
+        }
+
+        RendererAPI::send(VAO, shader);
+    }
+}
+
 VertexArray* Renderer3D::create_quad() {
     // Create Vertex Array
     auto* vao = new VertexArray();

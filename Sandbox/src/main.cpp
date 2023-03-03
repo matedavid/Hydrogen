@@ -90,7 +90,8 @@ class SandboxLayer : public Hydrogen::Layer {
         //            }
         //        }
 
-        Hydrogen::Renderer3D::draw_model(m_model, glm::vec3(-0.5f, -2.0f, -4.0f), glm::vec3(1.0f));
+        // Hydrogen::Renderer3D::draw_model(m_model, glm::vec3(-0.5f, -2.0f, -4.0f), glm::vec3(1.0f));
+        Hydrogen::Renderer3D::draw_model(m_model, glm::vec3(-0.5f, -2.0f, -4.0f), glm::vec3(1.0f), m_material);
 
         Hydrogen::Renderer3D::end_frame();
     }
