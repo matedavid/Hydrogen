@@ -11,6 +11,12 @@ Rendering Engine developed using the OpenGL graphics api.
 - Model loading
 
 ### How to compile
+First, when cloning the project make sure you download all the git submodules in the project. You can do this with the `--recurse-submodules` flag when running git clone:
+
+```
+git clone --recurse-submodules <git-url>
+```
+
 To compile the code, you just need to configure the CMakeLists provided in the following way:
 ```
 mkdir build

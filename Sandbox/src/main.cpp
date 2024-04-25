@@ -4,7 +4,7 @@ class SandboxLayer : public Hydrogen::Layer {
   public:
     SandboxLayer()
         : m_camera_position(0.0f, 0.0f, 4.0f),
-          m_model("../../Sandbox/assets/models/john_117/scene.gltf", false) {
+          m_model("../../Sandbox/assets/john_117/scene.gltf", false) {
         const auto width = Hydrogen::Application::instance()->get_window().get_width();
         const auto height = Hydrogen::Application::instance()->get_window().get_height();
 
@@ -12,7 +12,7 @@ class SandboxLayer : public Hydrogen::Layer {
         m_camera = Hydrogen::PerspectiveCamera(glm::radians(60.0f), ratio, 0.1f, 100.0f);
         m_camera.set_position(m_camera_position);
 
-        m_skybox = new Hydrogen::Skybox("../../Sandbox/assets/newport_loft.hdr");
+        m_skybox = new Hydrogen::Skybox("../../Sandbox/assets/old_hall_4k.hdr");
 
         Hydrogen::Renderer3D::set_skybox(m_skybox);
 
